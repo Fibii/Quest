@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-
-
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
 // used for a user page
 router.get('/user/:id', (request, response, next) => {
 
@@ -24,9 +24,43 @@ router.get('/user/:id', (request, response, next) => {
 });
 
 // used add a new user info
-router.post('/user', (request, response, next) => {
-  const user = request.body;
-  return response.json(user);
+router.post('/user', async(request, response, next) => {
+  const body = request.body
+  const salt = 10
+
+  //todo: validate email
+  if(body.password === undefined || body.username === undefined || body.email === undefined){
+    response.status(400).send({
+      error:'error: Both username and password and email must be given'
+    })
+    return
+  }
+
+  if(body.password.length < 3 || body.username.length < 3 || body.email.length < 6){
+    response.status(400).send({
+      error:'error: Both username and password must be at least 3 characters long and email must be bigger than 5'
+    })
+    return
+  }
+
+  try {
+    const passwordHash = await bcrypt.hashSync(body.password, salt)
+
+    const newUser = new User({
+      username: body.username,
+      passwordHash: passwordHash,
+      email: body.email,
+      dateOfBirth: body.dateOfBirth,
+      registerDate: new Date(),
+    })
+
+    await newUser.save()
+    return response.status(200).json(newUser);
+
+  } catch (error) {
+    console.log(error)
+  }
+
 });
 
 

@@ -6,15 +6,16 @@ const userSchema = mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    required: true,
+    required:true,
     minlength: 3
   },
   passwordHash: String,
   dateOfBirth: Date,
   email: {
-    String,
+    type: String,
     unique: true,
     required: true,
+    minlength: 6
   },
   location: String,
   registerDate: Date,
@@ -25,11 +26,10 @@ const userSchema = mongoose.Schema({
       ref: 'Question'
     },
   ],
-  comments: [{
-    type: String,
-  }]
+  comments: []
 })
 
+userSchema.plugin(uniqueValidator)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -41,7 +41,6 @@ userSchema.set('toJSON', {
   }
 })
 
-userSchema.plugin(uniqueValidator)
 
 const User = mongoose.model('User', userSchema)
 
