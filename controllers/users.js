@@ -2,6 +2,19 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+
+router.get('/users', async(request, response, next) => {
+
+  try {
+    const users = await User.find({})
+    return response.json(users)
+  } catch (error) {
+    console.log(error)
+  }
+
+})
+
+
 // used for a user page
 router.get('/user/:id', (request, response, next) => {
 

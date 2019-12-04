@@ -3,9 +3,9 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var questionRouter = require('./routes/question');
+var indexRouter = require('./controllers/index');
+var usersRouter = require('./controllers/users');
+var questionRouter = require('./controllers/question');
 const mongoose = require('mongoose')
 var app = express();
 
