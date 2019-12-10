@@ -71,7 +71,7 @@ describe('user crud', () => {
 
     const user = initialUsers[0]
     await api.delete(`/api/users/${user.id}`)
-    .expect(200)
+    .expect(204)
 
     const finalUsers = await testHelper.getUsersInDb()
     const finalUsernames = finalUsers.map(user => user.username)
@@ -93,7 +93,7 @@ describe('user crud', () => {
     .expect(200)
 
     const finalUsers = await testHelper.getUsersInDb()
-    const finalUser = finalUser.filter(user => user.username === initialUsers[0].username)[0]
+    const finalUser = finalUsers.filter(user => user.username === initialUsers[0].username)[0]
 
     expect(finalUser.email).not.toEqual(user.email)
 
