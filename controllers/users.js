@@ -16,23 +16,15 @@ router.get('/', async(request, response, next) => {
 
 
 // used for a user page
-router.get('/:id', (request, response, next) => {
+router.get('/:id', async (request, response, next) => {
 
-  const id = request.params.id;
-
-  const basicUser = {
-    id,
-    fullname: 'john doe',
-    username: 'john',
-    password: 'john',
-    dateOfBirth: new Date('1/1/2017'),
-    email: 'john@doe.com',
-    location: 'anything',
-    registerDate: new Date('1/1/2017'),
-    lastSignedInDate: new Date()
-  };
-
-  return response.json(basicUser);
+  try {
+    const id = request.params.id;
+    const user = await User.findById(id)
+    return response.json(user)
+  } catch (error) {
+    next(error)
+  }
 
 });
 
@@ -78,16 +70,28 @@ router.post('/', async(request, response, next) => {
 
 
 //used to update a user's info
-router.put('/:id', (request, response, next) => {
-  const user = request.body;
-  return response.json(user);
+router.put('/:id', async (request, response, next) => {
+  try {
+    const user = request.body
+    const id = request.params.id
+
+    const updatedUser = await User.findByIdAndUpdate(id, user)
+    response.json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
 });
 
 
 // used to delete a user
-router.delete('/:id', (request, response, next) => {
+router.delete('/:id',  async (request, response, next) => {
   const id = request.params.id;
-  return response.json(id);
-});
+  try {
+    await User.findByIdAndRemove(id)
+    return response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = router;
