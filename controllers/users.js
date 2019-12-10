@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express')
+const router = express.Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
@@ -9,7 +9,7 @@ router.get('/', async(request, response, next) => {
     const users = await User.find({})
     return response.json(users)
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 
 })
@@ -80,7 +80,7 @@ router.put('/:id', async (request, response, next) => {
   } catch (error) {
     next(error)
   }
-});
+})
 
 
 // used to delete a user
