@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // used to show a question in frontend
-router.get('/question/:id', (request, response, next) => {
+router.get('/:id', (request, response, next) => {
 
   const id = request.params.id;
 
@@ -22,21 +22,21 @@ router.get('/question/:id', (request, response, next) => {
 });
 
 // create a new question
-router.post('/question', (request, response, next) => {
+router.post('/', (request, response, next) => {
   const user = request.body;
   return response.json(user);
 });
 
 
 // update a question
-router.put('/question/:id', (request, response, next) => {
+router.put('/:id', (request, response, next) => {
   const user = request.body;
   return response.json(user);
 });
 
 
 // delete a question
-router.delete('/question/:id', (request, response, next) => {
+router.delete('/:id', (request, response, next) => {
   const id = request.params.id;
   return response.json(id);
 });

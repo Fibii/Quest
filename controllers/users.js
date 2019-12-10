@@ -16,7 +16,7 @@ router.get('/users', async(request, response, next) => {
 
 
 // used for a user page
-router.get('/user/:id', (request, response, next) => {
+router.get('/:id', (request, response, next) => {
 
   const id = request.params.id;
 
@@ -37,7 +37,7 @@ router.get('/user/:id', (request, response, next) => {
 });
 
 // used add a new user info
-router.post('/user', async(request, response, next) => {
+router.post('/', async(request, response, next) => {
   const body = request.body
   const salt = 10
 
@@ -78,14 +78,14 @@ router.post('/user', async(request, response, next) => {
 
 
 //used to update a user's info
-router.put('/user/:id', (request, response, next) => {
+router.put('/:id', (request, response, next) => {
   const user = request.body;
   return response.json(user);
 });
 
 
 // used to delete a user
-router.delete('/user/:id', (request, response, next) => {
+router.delete('/:id', (request, response, next) => {
   const id = request.params.id;
   return response.json(id);
 });
