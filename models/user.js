@@ -26,7 +26,6 @@ const userSchema = mongoose.Schema({
       ref: 'Question'
     },
   ],
-  comments: []
 })
 
 userSchema.plugin(uniqueValidator)

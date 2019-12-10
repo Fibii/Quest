@@ -16,9 +16,12 @@ const questionSchema = mongoose.Schema({
   postedDate: Date,
   solved: Boolean,
   tags: [],
-  comments: [],
+  comments: [{
+    body: 'String',
+    by: mongoose.Schema.Types.ObjectId
+  }],
   likes: Number,
-  user: {
+  postedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
