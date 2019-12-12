@@ -48,7 +48,7 @@ describe('auth', () => {
         .expect(401)
         .expect('Content-Type', /application\/json/)
 
-    expect(response.text.error).toBe('invalid password')
+    expect(response.body.error).toBe('invalid password')
 
   })
 

@@ -21,11 +21,11 @@ router.post('/', async (request, response, next) => {
 
       const token = jwt.sign(userTokenObj, process.env.SECRET)
 
-      response.status(200)
+      return response.status(200)
           .json({username, token})
 
     } else {
-      response.status(401)
+      return response.status(401)
           .json({
         error: "invalid password"
       })
