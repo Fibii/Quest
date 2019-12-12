@@ -1,5 +1,16 @@
 const express = require('express')
 const router = express.Router()
+const Question = require('../models/question')
+
+
+router.get('/', async (request, response, next) => {
+  try {
+    const questions = await Question.find({})
+    return response.json(questions)
+  } catch (error) {
+    next(error)
+  }
+})
 
 // used to show a question in frontend
 router.get('/:id', (request, response, next) => {
@@ -22,16 +33,15 @@ router.get('/:id', (request, response, next) => {
 })
 
 // create a new question
-router.post('/', (request, response, next) => {
-  const user = request.body
-  return response.json(user)
+router.post('/', async (request, response, next) => {
+
 })
 
 
 // update a question
-router.put('/:id', (request, response, next) => {
-  const user = request.body
-  return response.json(user)
+// only update likes, solved by the posted user, or comments
+router.put('/:id', async (request, response, next) => {
+
 })
 
 

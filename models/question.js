@@ -3,7 +3,6 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 
 const questionSchema = mongoose.Schema({
-  userId: 1,
   title: {
     type: String,
     required: true,
@@ -18,6 +17,7 @@ const questionSchema = mongoose.Schema({
   tags: [],
   comments: [{
     body: 'String',
+    likes: Number,
     by: mongoose.Schema.Types.ObjectId
   }],
   likes: Number,
@@ -27,9 +27,9 @@ const questionSchema = mongoose.Schema({
   }
 })
 
-userSchema.plugin(uniqueValidator)
+questionSchema.plugin(uniqueValidator)
 
-noteSchema.set('toJSON', {
+questionSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
