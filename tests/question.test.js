@@ -47,6 +47,14 @@ describe('question crud', () => {
   })
 
   test('a specific question is returned', async () => {
+    const question = (await testHelper.getQuestionsInDb())[0]
+    const response = await api.get(`/api/questions/${question.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const returnedQuestion = JSON.parse(response.text)
+
+    expect(returnedQuestion).toEqual(question)
 
   })
 

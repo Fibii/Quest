@@ -13,23 +13,18 @@ router.get('/', async (request, response, next) => {
 })
 
 // used to show a question in frontend
-router.get('/:id', (request, response, next) => {
-
+router.get('/:id', async (request, response, next) => {
   const id = request.params.id
-
-  const basicQuestion = {
-    userId: 1,
-    title: 'first question',
-    content: 'how to use this?',
-    postedDate: new Date(),
-    solved: false,
-    tags: ['anything', 'new_question'],
-    comments: ['duplicated question..'],
-    likes:1
+  try {
+    const question = await Question.findById(id)
+    if (question) {
+      return response.json(question)
+    } else {
+      return response.status(404).end()
+    }
+  } catch (error) {
+    next(error)
   }
-
-  return response.json(basicQuestion)
-
 })
 
 // create a new question
