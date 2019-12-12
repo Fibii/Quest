@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Question = require('../models/question')
-
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 router.get('/', async (request, response, next) => {
   try {
@@ -29,7 +30,45 @@ router.get('/:id', async (request, response, next) => {
 
 // create a new question
 router.post('/', async (request, response, next) => {
+  try {
+    const body = request.body
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
 
+    // if the token is invalid
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    console.log('t=', body.title, 'c=', request.content)
+    console.log(body)
+    if (!body.title || !body.content) {
+      return response.status(401)
+          .json({ error: 'title and content must be provided' })
+    }
+
+    const newQuestion = new Question({
+      title: body.title,
+      content: body.content,
+      solved: false,
+      likes: 0,
+      postedDate: new Date(),
+      tags: body.tags ? body.tags : [],
+      postedBy: user.id
+    })
+
+    const question = await newQuestion.save()
+    return response.status(201)
+        .json(question)
+
+  } catch (error) {
+    next(error)
+  }
 })
 
 
