@@ -80,9 +80,37 @@ router.put('/:id', async (request, response, next) => {
 
 
 // delete a question
-router.delete('/:id', (request, response, next) => {
-  const id = request.params.id
-  return response.json(id)
+router.delete('/:id', async (request, response, next) => {
+  try {
+    const id = request.params.id
+    const question = await Question.findById(id)
+
+    if (!question) {
+      return response.status(401).json({ error: 'invalid question id' })
+    }
+
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (question.postedBy.toString() !== user._id.toString()) {
+      return response.status(401).json({ error: 'a questions can be deleted by authors only' })
+    }
+
+    await Question.findByIdAndRemove(id)
+    return response.status(204).end()
+
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = router
