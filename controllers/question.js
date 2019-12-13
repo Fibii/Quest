@@ -45,8 +45,6 @@ router.post('/', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-    console.log('t=', body.title, 'c=', request.content)
-    console.log(body)
     if (!body.title || !body.content) {
       return response.status(401)
           .json({ error: 'title and content must be provided' })
@@ -63,6 +61,11 @@ router.post('/', async (request, response, next) => {
     })
 
     const question = await newQuestion.save()
+
+    // add the question to the user's questions
+    user.questions.push(question._id)
+    await User.findByIdAndUpdate(user.id, user)
+
     return response.status(201)
         .json(question)
 

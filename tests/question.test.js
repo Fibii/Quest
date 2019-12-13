@@ -48,7 +48,7 @@ describe('question crud', () => {
     }
 
     // register the user
-    await api.post('/api/users')
+    const userPostResponse = await api.post('/api/users')
         .send(initialUsers[0])
 
     // login the user to get jwt
@@ -61,15 +61,18 @@ describe('question crud', () => {
       tags: ['testing', 'hello_world'],
     }
 
-    await api.post('/api/questions')
+    const questionResponse = await api.post('/api/questions')
         .set('Authorization', `bearer ${response.body.token}`)
         .send(newQuestion)
         .expect(201)
 
+    const userGetResponse = await api.get(`/api/users/${userPostResponse.body.id}`)
     const finalQuestions = await testHelper.getQuestionsInDb()
 
-    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
+    const userQuestions = userGetResponse.body.questions
 
+    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
+    expect(userQuestions).toContain(questionResponse.body.id)
   })
 
 
