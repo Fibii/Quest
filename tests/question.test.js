@@ -21,6 +21,29 @@ beforeEach(async () => {
 
 })
 
+/**
+ * userIndex is the index of user in initialUsers
+ * returns the response of user login
+ * */
+const getUserResponse = async (userIndex=0) => {
+  const initialUsers = testHelper.getInitialUsers()
+
+  const user = {
+    username: initialUsers[0].username,
+    password: initialUsers[0].password
+  }
+
+  // register the user
+  await api.post('/api/users')
+      .send(initialUsers[0])
+
+  // login the user to get jwt
+  const response = await api.post('/api/login')
+      .send(user)
+
+  return response
+}
+
 describe('question crud', () => {
 
   test("all questions are returned", async() => {
@@ -78,6 +101,40 @@ describe('question crud', () => {
 
 
   test('a question with title and content can be updated', async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const response = await getUserResponse()
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    // edit title and content
+    const editedQuestion = {
+      title: 'this question has been edited',
+      content: 'this question has been edited'
+    }
+
+    await api.post(`/api/questions/${question.body.id}/title-content`)
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(editedQuestion)
+        .expect(303)
+
+    const finalQuestions = (await testHelper.getQuestionsInDb()).map(question => {
+      return {
+        title: question.title,
+        content: question.content
+      }
+    })
+
+    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
+    expect(finalQuestions).toContainEqual(editedQuestion)
 
   })
 
@@ -94,30 +151,6 @@ describe('question crud', () => {
   })
 
 })
-
-/**
- * userIndex is the index of user in initialUsers
- * returns the response of user login
- * */
-const getUserResponse = async (userIndex=0) => {
-  const initialUsers = testHelper.getInitialUsers()
-
-  const user = {
-    username: initialUsers[0].username,
-    password: initialUsers[0].password
-  }
-
-  // register the user
-  await api.post('/api/users')
-      .send(initialUsers[0])
-
-  // login the user to get jwt
-  const response = await api.post('/api/login')
-      .send(user)
-
-  return response
-}
-
 
 describe('question deletion/editing', () => {
   test('a question can be deleted with the user that created it', async () => {
