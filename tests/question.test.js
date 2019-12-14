@@ -99,45 +99,6 @@ describe('question crud', () => {
   })
 
 
-
-  test('a question with title and content can be updated', async () => {
-    const initialQuestions = await testHelper.getQuestionsInDb()
-    const response = await getUserResponse()
-
-    const newQuestion = {
-      title: 'first question',
-      content: 'first question added for the sake of testing',
-      tags: ['testing', 'hello_world'],
-    }
-
-    const question = await api.post('/api/questions')
-        .set('Authorization', `bearer ${response.body.token}`)
-        .send(newQuestion)
-        .expect(201)
-
-    // edit title and content
-    const editedQuestion = {
-      title: 'this question has been edited',
-      content: 'this question has been edited'
-    }
-
-    await api.post(`/api/questions/${question.body.id}/title-content`)
-        .set('Authorization', `bearer ${response.body.token}`)
-        .send(editedQuestion)
-        .expect(303)
-
-    const finalQuestions = (await testHelper.getQuestionsInDb()).map(question => {
-      return {
-        title: question.title,
-        content: question.content
-      }
-    })
-
-    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
-    expect(finalQuestions).toContainEqual(editedQuestion)
-
-  })
-
   test('a specific question is returned', async () => {
     const question = (await testHelper.getQuestionsInDb())[0]
     const response = await api.get(`/api/questions/${question.id}`)
@@ -152,7 +113,7 @@ describe('question crud', () => {
 
 })
 
-describe('question deletion/editing', () => {
+describe('question deletion', () => {
   test('a question can be deleted by the user that created it', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
     const response = await getUserResponse()
@@ -211,6 +172,81 @@ describe('question deletion/editing', () => {
     expect(deleteResponse.body.error).toBe('a questions can be deleted by authors only')
 
   })
+})
+
+describe('question updation', () => {
+
+  test("a question's with title and content can be updated by the author", async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const response = await getUserResponse()
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    // edit title and content
+    const editedQuestion = {
+      title: 'this question has been edited',
+      content: 'this question has been edited'
+    }
+
+    await api.post(`/api/questions/${question.body.id}/title-content`)
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(editedQuestion)
+        .expect(303)
+
+    const finalQuestions = (await testHelper.getQuestionsInDb()).map(question => {
+      return {
+        title: question.title,
+        content: question.content
+      }
+    })
+
+    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
+    expect(finalQuestions).toContainEqual(editedQuestion)
+
+  })
+
+  test("a question with title and content cannot be updated by the user that didnt create it", async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    // edit title and content
+    const editedQuestion = {
+      title: 'this question has been edited',
+      content: 'this question has been edited'
+    }
+
+    await api.post(`/api/questions/${question.body.id}/title-content`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(editedQuestion)
+        .expect(401)
+
+    const finalQuestions = await testHelper.getQuestionsInDb()
+
+    expect(finalQuestions.length).toBe(initialQuestions.length + 1)
+
+  })
+
 })
 
 afterAll(() => {
