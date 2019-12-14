@@ -22,7 +22,7 @@ router.post('/', async (request, response, next) => {
       const token = jwt.sign(userTokenObj, process.env.SECRET)
 
       return response.status(200)
-          .json({username, token})
+          .json({username, token, id: user._id})
 
     } else {
       return response.status(401)
