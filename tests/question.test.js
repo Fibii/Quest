@@ -77,7 +77,7 @@ describe('question crud', () => {
 
 
 
-  test('a question can title and content can be updated', async () => {
+  test('a question with title and content can be updated', async () => {
 
   })
 
@@ -95,25 +95,34 @@ describe('question crud', () => {
 
 })
 
+/**
+ * userIndex is the index of user in initialUsers
+ * returns the response of user login
+ * */
+const getUserResponse = async (userIndex=0) => {
+  const initialUsers = testHelper.getInitialUsers()
+
+  const user = {
+    username: initialUsers[0].username,
+    password: initialUsers[0].password
+  }
+
+  // register the user
+  await api.post('/api/users')
+      .send(initialUsers[0])
+
+  // login the user to get jwt
+  const response = await api.post('/api/login')
+      .send(user)
+
+  return response
+}
+
+
 describe('question deletion/editing', () => {
   test('a question can be deleted with the user that created it', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const initialUsers = testHelper.getInitialUsers()
-
-    console.log(initialUsers)
-
-    const user = {
-      username: initialUsers[0].username,
-      password: initialUsers[0].password
-    }
-
-    // register the user
-    await api.post('/api/users')
-        .send(initialUsers[0])
-
-    // login the user to get jwt
-    const response = await api.post('/api/login')
-        .send(user)
+    const response = await getUserResponse()
 
     const newQuestion = {
       title: 'first question',
@@ -140,33 +149,12 @@ describe('question deletion/editing', () => {
 
   test("a question cannot be deleted with a user that didn't create it", async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const initialUsers = testHelper.getInitialUsers()
-
-    console.log(initialUsers)
-
-    const user = {
-      username: initialUsers[0].username,
-      password: initialUsers[0].password
-    }
-
-    const anotherUser = {
-      username: initialUsers[1].username,
-      password: initialUsers[1].password
-    }
-
-    // register the users
-    await api.post('/api/users')
-        .send(initialUsers[0])
-
-    await api.post('/api/users')
-        .send(initialUsers[1])
+    const response = await getUserResponse()
 
     // login the user to get jwt
-    const responseOne = await api.post('/api/login')
-        .send(user)
+    const responseOne = await getUserResponse(0)
 
-    const responseTwo = await api.post('/api/login')
-        .send(anotherUser)
+    const responseTwo = await getUserResponse(1)
 
     const newQuestion = {
       title: 'first question',
