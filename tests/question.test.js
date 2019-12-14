@@ -153,7 +153,7 @@ describe('question crud', () => {
 })
 
 describe('question deletion/editing', () => {
-  test('a question can be deleted with the user that created it', async () => {
+  test('a question can be deleted by the user that created it', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
     const response = await getUserResponse()
 
@@ -171,13 +171,14 @@ describe('question deletion/editing', () => {
     const deleteResponse = await api.delete(`/api/questions/${question.body.id}`)
         .set('Authorization', `bearer ${response.body.token}`)
         .send()
-        //.expect(204)
+        .expect(204)
 
-    console.log(deleteResponse.body.error)
+    // expect the question to be deleted from the user question list
+    const userResponse = await api.get(`/api/users/${response.body.id}`)
     const finalQuestions = await testHelper.getQuestionsInDb()
 
     expect(finalQuestions.length).toBe(initialQuestions.length)
-
+    expect(userResponse.body.questions).not.toContainEqual(question.body.id)
   })
 
   test("a question cannot be deleted with a user that didn't create it", async () => {

@@ -141,9 +141,15 @@ router.delete('/:id', async (request, response, next) => {
       return response.status(401).json({ error: 'a questions can be deleted by authors only' })
     }
 
-    await Question.findByIdAndRemove(id)
-    return response.status(204).end()
+    const updatedUserQuestion = user._doc.questions.filter(userQuestion => userQuestion.toString() !== question.id.toString())
+    const updatedUser = {
+      ...user._doc,
+      questions: updatedUserQuestion
+    }
 
+    await Promise.all([User.findByIdAndUpdate(user.id, updatedUser), Question.findByIdAndRemove(id)])
+
+    return response.status(204).end()
   } catch (error) {
     next(error)
   }
