@@ -29,13 +29,13 @@ const getUserResponse = async (userIndex=0) => {
   const initialUsers = testHelper.getInitialUsers()
 
   const user = {
-    username: initialUsers[0].username,
-    password: initialUsers[0].password
+    username: initialUsers[userIndex].username,
+    password: initialUsers[userIndex].password
   }
 
   // register the user
   await api.post('/api/users')
-      .send(initialUsers[0])
+      .send(initialUsers[userIndex])
 
   // login the user to get jwt
   const response = await api.post('/api/login')
@@ -183,7 +183,6 @@ describe('question deletion/editing', () => {
 
   test("a question cannot be deleted with a user that didn't create it", async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const response = await getUserResponse()
 
     // login the user to get jwt
     const responseOne = await getUserResponse(0)
