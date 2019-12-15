@@ -141,10 +141,6 @@ router.post('/:id/likes', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-    if (question.postedBy.toString() !== user._id.toString()) {
-      return response.status(401).json({ error: 'a questions can be deleted by authors only' })
-    }
-
     const updatedQuestion = {
       ...question._doc,
       likes: body.likes >= 0 ? question.likes + 1 : question.likes - 1

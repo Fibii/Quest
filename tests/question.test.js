@@ -250,6 +250,7 @@ describe('question updation', () => {
   test("the number of likes can be increased, decreased", async () => {
 
     const response = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
 
     const newQuestion = {
       title: 'first question',
@@ -263,7 +264,7 @@ describe('question updation', () => {
         .expect(201)
 
     await api.post(`/api/questions/${question.body.id}/likes`)
-        .set('Authorization', `bearer ${response.body.token}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
         .send({likes: 1})
         .expect(303)
 
