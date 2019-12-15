@@ -247,6 +247,44 @@ describe('question updation', () => {
 
   })
 
+  test("the number of likes can be increased, decreased", async () => {
+
+    const response = await getUserResponse()
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    await api.post(`/api/questions/${question.body.id}/likes`)
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send({likes: 1})
+        .expect(303)
+
+    const questionIncreased = (await testHelper.getQuestionsInDb())
+        .filter(incQuestion => incQuestion.id === question.body.id)[0]
+
+    expect(questionIncreased.likes).toBe(question.body.likes + 1)
+
+    await api.post(`/api/questions/${question.body.id}/likes`)
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send({likes: -1})
+        .expect(303)
+
+    const questionDecreased = (await testHelper.getQuestionsInDb())
+        .filter(decQuestion => decQuestion.id === question.body.id)[0]
+
+    expect(questionDecreased.likes).toBe(questionIncreased.likes - 1)
+
+
+  })
+
 })
 
 afterAll(() => {
