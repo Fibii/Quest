@@ -320,7 +320,42 @@ describe('question updation', () => {
     expect(authorQuestion.body.tags.sort()).toEqual(tags.tags.sort())
 
   })
-  
+
+  test("question can be set to solved by the author", async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    const solved = {
+      solved:true
+    }
+
+    await api.post(`/api/questions/${question.body.id}/solved`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(solved)
+        .expect(303)
+
+    await api.post(`/api/questions/${question.body.id}/solved`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(solved)
+        .expect(401)
+
+    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    expect(authorQuestion.body.solved).toBeTruthy()
+
+  })
+
 })
 
 afterAll(() => {

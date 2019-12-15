@@ -155,6 +155,45 @@ router.post('/:id/tags', async (request, response, next) => {
   }
 })
 
+router.post('/:id/solved', async (request, response, next) => {
+  try {
+    const body = request.body
+    const id = request.params.id
+    const question = await Question.findById(id)
+
+    if (!question) {
+      return response.status(401).json({ error: 'invalid question id' })
+    }
+
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (question.postedBy.toString() !== user._id.toString()) {
+      return response.status(401).json({ error: 'a questions can be deleted by authors only' })
+    }
+
+    const updatedQuestion = {
+      ...question._doc,
+      solved: body.solved
+    }
+
+    // todo: add more error checking, like check if body.solved is a boolean (FOR ALL ROUTES)
+    await Question.findByIdAndUpdate(id, updatedQuestion)
+    return response.status(303).end()
+
+  } catch (error) {
+    next(error)
+  }
+})
 
 /**
  * increases the number of likes based on the likes object that's posted
