@@ -286,6 +286,41 @@ describe('question updation', () => {
 
   })
 
+  test("question tags can be updated by the author", async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    const tags = {
+      tags:['new_tag', 'react', 'redux']
+    }
+
+    await api.post(`/api/questions/${question.body.id}/tags`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(tags)
+        .expect(303)
+
+    await api.post(`/api/questions/${question.body.id}/tags`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(tags)
+        .expect(401)
+
+    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    expect(authorQuestion.body.tags.sort()).toEqual(tags.tags.sort())
+
+  })
+  
 })
 
 afterAll(() => {
