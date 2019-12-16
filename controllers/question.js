@@ -143,13 +143,16 @@ router.post('/:id/new-comment', async (request, response, next) => {
       likes: 0,
       postedBy: user.id
     })
+
+    await comment.save()
+
     const updatedQuestion = {
       ...question._doc,
       comments: question._doc.comments.concat(comment)
     }
 
     await Question.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).end()
+    return response.status(303).json(comment)
 
   } catch (error) {
     next(error)

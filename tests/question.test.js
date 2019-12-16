@@ -1,6 +1,7 @@
 const app = require('../app')
 const Question = require('../models/question')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const supertest = require('supertest')
 const api = supertest(app)
 const mongoose = require('mongoose')
@@ -384,8 +385,10 @@ describe('question updation', () => {
     const finalQuestion = (await testHelper.getQuestionsInDb())
         .filter(finalQuestion => finalQuestion.id === question.body.id)[0]
 
-    expect(finalQuestion.comments.length).toBe(1)
+    const comment = await Comment.findById(commentResponse.body.id)
 
+    expect(finalQuestion.comments.length).toBe(1)
+    expect(comment).toBeTruthy()
 
   })
 })
