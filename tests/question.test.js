@@ -356,6 +356,38 @@ describe('question updation', () => {
 
   })
 
+  test("a comment can by added by any user", async () => {
+
+    const response = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const newComment = {
+      content: 'first comment added for the sake of testing',
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${response.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(newComment)
+        .expect(303)
+
+    const finalQuestion = (await testHelper.getQuestionsInDb())
+        .filter(finalQuestion => finalQuestion.id === question.body.id)[0]
+
+    expect(finalQuestion.comments.length).toBe(1)
+
+
+  })
 })
 
 afterAll(() => {

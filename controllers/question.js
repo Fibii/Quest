@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Question = require('../models/question')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const jwt = require('jsonwebtoken')
 
 router.get('/', async (request, response, next) => {
@@ -115,6 +116,46 @@ router.post('/:id/title-content', async (request, response, next) => {
   }
 })
 
+router.post('/:id/new-comment', async (request, response, next) => {
+  try {
+    const body = request.body
+    const id = request.params.id
+    const question = await Question.findById(id)
+
+    if (!question) {
+      return response.status(401).json({ error: 'invalid question id' })
+    }
+
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const comment = new Comment({
+      content: body.content,
+      likes: 0,
+      postedBy: user.id
+    })
+    const updatedQuestion = {
+      ...question._doc,
+      comments: question._doc.comments.concat(comment)
+    }
+
+    await Question.findByIdAndUpdate(id, updatedQuestion)
+    return response.status(303).end()
+
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post('/:id/tags', async (request, response, next) => {
   try {
     const body = request.body
@@ -194,6 +235,8 @@ router.post('/:id/solved', async (request, response, next) => {
     next(error)
   }
 })
+
+
 
 /**
  * increases the number of likes based on the likes object that's posted
