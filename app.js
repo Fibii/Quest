@@ -37,4 +37,6 @@ app.use('/api/users', usersRouter)
 app.use('/api/questions', questionRouter)
 app.use('/api/login', loginRouter)
 
+app.use(middleware.errorLogger)
+
 module.exports = app

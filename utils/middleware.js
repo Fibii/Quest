@@ -12,6 +12,12 @@ const tokenExtractor = (request, response, next) => {
   }
 }
 
+const errorLogger = (error, request, response, next) => {
+  console.log(error)
+  next()
+}
+
 module.exports = {
-  tokenExtractor
+  tokenExtractor,
+  errorLogger,
 }
