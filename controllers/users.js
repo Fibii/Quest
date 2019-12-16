@@ -7,6 +7,11 @@ router.get('/', async(request, response, next) => {
 
   try {
     const users = await User.find({})
+        .populate({
+          path: 'questions',
+          model: 'Question',
+          select: ['title', 'likes']
+        })
     return response.json(users)
   } catch (error) {
     next(error)

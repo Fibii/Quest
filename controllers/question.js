@@ -8,6 +8,19 @@ const jwt = require('jsonwebtoken')
 router.get('/', async (request, response, next) => {
   try {
     const questions = await Question.find({})
+        .populate({
+          path: 'postedBy',
+          model: 'User',
+          select: 'username'
+        })
+        .populate({
+          path: 'comments',
+          populate: {
+            path: 'postedBy',
+            model: 'User',
+            select: 'username'
+          }
+        })
     return response.json(questions)
   } catch (error) {
     next(error)
@@ -18,7 +31,19 @@ router.get('/', async (request, response, next) => {
 router.get('/:id', async (request, response, next) => {
   const id = request.params.id
   try {
-    const question = await Question.findById(id)
+    const question = await Question.findById(id).populate({
+      path: 'postedBy',
+      model: 'User',
+      select: 'username'
+    })
+        .populate({
+          path: 'comments',
+          populate: {
+            path: 'postedBy',
+            model: 'User',
+            select: 'username'
+          }
+        })
     if (question) {
       return response.json(question)
     } else {
