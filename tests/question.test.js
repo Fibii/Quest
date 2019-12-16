@@ -96,7 +96,7 @@ describe('question crud', () => {
     const userQuestions = userGetResponse.body.questions
 
     expect(finalQuestions.length).toBe(initialQuestions.length + 1)
-    expect(userQuestions).toContain(questionResponse.body.id)
+    expect(userQuestions.map(question => question.id )).toContain(questionResponse.body.id)
   })
 
 

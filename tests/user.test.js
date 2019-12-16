@@ -32,6 +32,7 @@ describe('user crud', () => {
         email: user.email,
         questions: user.questions,
         id: user.id,
+        registerDate: new Date(user.registerDate),
         dateOfBirth: new Date(user.dateOfBirth),
       }
       return userObj
@@ -187,6 +188,7 @@ describe('user crud', () => {
       email: user.email,
       questions: user.questions,
       id: user.id,
+      registerDate: new Date(user.registerDate),
       dateOfBirth: new Date(user.dateOfBirth),
     }
 
