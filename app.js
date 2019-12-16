@@ -38,5 +38,6 @@ app.use('/api/questions', questionRouter)
 app.use('/api/login', loginRouter)
 
 app.use(middleware.errorLogger)
-
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 module.exports = app
