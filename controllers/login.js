@@ -10,6 +10,12 @@ router.post('/', async (request, response, next) => {
     const password = request.body.password
 
     const user = await User.findOne({username})
+
+    if (!user || !password) {
+      return response.json({
+        error: "user doesn't exist"
+      })
+    }
     const isPasswordCorrect = user === null ?
         false : await bcrypt.compare(password, user.passwordHash)
 
