@@ -437,6 +437,48 @@ describe('question updation', () => {
 
   })
 
+  test("likes of a comment can be increased, decreased", async () => {
+
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    const comment = {
+      content: 'new comment'
+    }
+
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(comment)
+        .expect(303)
+
+    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send({likes: 1})
+        .expect(303)
+
+    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send({likes: -1})
+        .expect(303)
+
+    const finalComment = await Comment.findById(commentResponse.body.id)
+
+    expect(finalComment.likes).toBe(0)
+
+
+  })
+
 })
 
 afterAll(() => {

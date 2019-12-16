@@ -204,6 +204,46 @@ router.delete('/:questionID/delete-comment/:commentID', async (request, response
   }
 })
 
+/**
+ * increases or decreases the number of likes of a comment
+ * */
+router.post('/:questionID/likes/:commentID', async (request, response, next) => {
+  try {
+    const body = request.body
+    const questionID = request.params.questionID
+    const commentID = request.params.commentID
+    const comment = await Comment.findById(commentID)
+    const question = await Question.findById(questionID)
+
+    if (!comment || !question) {
+      return response.status(401).json({ error: 'invalid comment id or question id' })
+    }
+
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const updatedComment = {
+      ...comment._doc,
+      likes: body.likes >= 0 ? comment.likes + 1 : comment.likes - 1
+    }
+
+    await Comment.findByIdAndUpdate(commentID, updatedComment)
+    return response.status(303).end()
+
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post('/:id/tags', async (request, response, next) => {
   try {
     const body = request.body
