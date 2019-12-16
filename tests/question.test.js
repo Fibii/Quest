@@ -391,6 +391,52 @@ describe('question updation', () => {
     expect(comment).toBeTruthy()
 
   })
+
+
+  test("comment can be deleted to solved by the author", async () => {
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(newQuestion)
+        .expect(201)
+
+    const comment = {
+      content: 'another comment, thanks'
+    }
+
+    await api.post(`/api/questions/${question.body.id}/new-comment`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send({
+          content: 'new comment, thanks'
+        })
+        .expect(303)
+
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(comment)
+        .expect(303)
+
+    await api.delete(`/api/questions/${question.body.id}/delete-comment/${commentResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .expect(401)
+
+    await api.delete(`/api/questions/${question.body.id}/delete-comment/${commentResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .expect(303)
+
+    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    expect(authorQuestion.body.comments.length).toBe(1)
+
+  })
+
 })
 
 afterAll(() => {

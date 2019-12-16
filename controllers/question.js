@@ -159,6 +159,51 @@ router.post('/:id/new-comment', async (request, response, next) => {
   }
 })
 
+/**
+ * deletes the comment with the given id,
+ * since every comment has its id, there's no need to specify the id of the question
+ * */
+router.delete('/:questionID/delete-comment/:commentID', async (request, response, next) => {
+  try {
+    const body = request.body
+    const questionID = request.params.questionID
+    const commentID = request.params.commentID
+    const comment = await Comment.findById(commentID)
+    const question = await Question.findById(questionID)
+
+    if (!comment || !question) {
+      return response.status(401).json({ error: 'invalid comment id or question id' })
+    }
+
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (comment.postedBy.toString() !== user._id.toString()) {
+      return response.status(401).json({ error: 'comments can be deleted by authors only' })
+    }
+
+    const updatedQuestion = {
+      ...question._doc,
+      comments: question._doc.comments.filter(commentId => commentId != commentID)
+    }
+
+    await Promise.all([Question.findByIdAndUpdate(questionID, updatedQuestion), Comment.findByIdAndRemove(commentID)])
+    return response.status(303).end()
+
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post('/:id/tags', async (request, response, next) => {
   try {
     const body = request.body
