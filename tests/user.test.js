@@ -12,9 +12,8 @@ beforeEach(async () => {
 
   // add initial users to the db 
   const users = testHelper.getInitialUsers()
-  .map(user => new User(user))
   
-  const promiseArray = users.map(user => user.save())
+  const promiseArray = users.map(user => api.post('/api/users').send(user))
   await Promise.all(promiseArray)
 
 })
@@ -67,35 +66,113 @@ describe('user crud', () => {
   })
 
   test('a user can be deleted', async () => {
-    const initialUsers = await testHelper.getUsersInDb()
 
-    const user = initialUsers[0]
-    await api.delete(`/api/users/${user.id}`)
-    .expect(204)
+    const initialUsers = testHelper.getInitialUsers()
+
+    const firstUser = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password
+    }
+
+    const secondUser = {
+      username: initialUsers[1].username,
+      password: initialUsers[1].password
+    }
+
+    const firstUserResponse = await api.post('/api/login')
+        .send(firstUser)
+
+    const secondUserResponse = await api.post('/api/login')
+        .send(secondUser)
+
+    // bad token and bad password
+    await api.delete(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(secondUser)
+        .expect(401)
+
+    // bad token and good password
+    await api.delete(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(firstUser)
+        .expect(401)
+
+    // good token and bad password
+    await api.delete(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(secondUser)
+        .expect(401)
+
+    // good token and good password
+    await api.delete(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(firstUser)
+        .expect(204)
+
 
     const finalUsers = await testHelper.getUsersInDb()
     const finalUsernames = finalUsers.map(user => user.username)
 
     expect(finalUsers.length).toBe(initialUsers.length - 1)
-    expect(finalUsernames).not.toContain(user.username)
+    expect(finalUsernames).not.toContain(firstUser.username)
 
   })
 
   test('a user can be updated', async () => {
-    const initialUsers = await testHelper.getUsersInDb()
+    const initialUsers = testHelper.getInitialUsers()
 
-    const user = {
+
+    const updatedUser = {
       ...initialUsers[0],
       email: 'newemailwho@dis.com',
     }
 
-    await api.put(`/api/users/${user.id}`)
-    .expect(200)
+    const firstUser = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password
+    }
+
+    const secondUser = {
+      username: initialUsers[1].username,
+      password: initialUsers[1].password
+    }
+
+    // login both users
+    const firstUserResponse = await api.post('/api/login')
+        .send(firstUser)
+
+    const secondUserResponse = await api.post('/api/login')
+        .send(secondUser)
+
+    // bad token and bad password
+    await api.put(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(secondUser)
+        .expect(401)
+
+    // bad token and good password
+    await api.put(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+        .send(firstUser)
+        .expect(401)
+
+    // good token and bad password
+    await api.put(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(secondUser)
+        .expect(401)
+
+    // good token and good password
+    await api.put(`/api/users/${firstUserResponse.body.id}`)
+        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+        .send(updatedUser)
+        .expect(200)
 
     const finalUsers = await testHelper.getUsersInDb()
     const finalUser = finalUsers.filter(user => user.username === initialUsers[0].username)[0]
 
-    expect(finalUser.email).not.toEqual(user.email)
+    console.log('em=', finalUser.email)
+    expect(finalUser.email).toEqual(updatedUser.email)
 
   })
 

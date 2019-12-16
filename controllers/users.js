@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
 
 router.get('/', async(request, response, next) => {
 
@@ -25,7 +27,11 @@ router.get('/:id', async (request, response, next) => {
 
   try {
     const id = request.params.id;
-    const user = await User.findById(id)
+    const user = await User.findById(id).populate({
+      path: 'questions',
+      model: 'Question',
+      select: ['title', 'likes']
+    })
     return response.json(user)
   } catch (error) {
     next(error)
@@ -68,7 +74,7 @@ router.post('/', async(request, response, next) => {
     return response.status(200).json(newUser);
 
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 
 });
@@ -77,11 +83,36 @@ router.post('/', async(request, response, next) => {
 //used to update a user's info
 router.put('/:id', async (request, response, next) => {
   try {
-    const user = request.body
+    const body = request.body
     const id = request.params.id
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
 
-    const updatedUser = await User.findByIdAndUpdate(id, user)
-    response.json(updatedUser)
+    if (!decodedToken.id || decodedToken.id !== id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const isPasswordCorrect = user === null ?
+        false : await bcrypt.compare(body.password, user.passwordHash)
+
+    if(!isPasswordCorrect) {
+      return response.status(401).json({error: 'wrong password'})
+    }
+
+    const updatedUserObj = {
+      ...user._doc,
+      email: body.email,
+      dateOfBirth: body.dateOfBirth,
+      location: body.location,
+      fullname: body.fullname
+    }
+    const updatedUser = await User.findByIdAndUpdate(id, updatedUserObj)
+    return response.status(200).json(updatedUser)
   } catch (error) {
     next(error)
   }
@@ -90,8 +121,28 @@ router.put('/:id', async (request, response, next) => {
 
 // used to delete a user
 router.delete('/:id',  async (request, response, next) => {
-  const id = request.params.id;
   try {
+    const body = request.body
+    const id = request.params.id
+    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+
+    if (!decodedToken.id || decodedToken.id !== id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(id)
+
+    if (!user) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const isPasswordCorrect = user === null ?
+        false : await bcrypt.compare(body.password, user.passwordHash)
+
+    if(!isPasswordCorrect) {
+      return response.status(401).json({error: 'wrong password'})
+    }
+
     await User.findByIdAndRemove(id)
     return response.status(204).end()
   } catch (error) {
