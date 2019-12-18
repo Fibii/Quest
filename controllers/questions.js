@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const Question = require('../models/question')
+const Questions = require('../models/question')
 const User = require('../models/user')
 const Comment = require('../models/comment')
 const jwt = require('jsonwebtoken')
 
 router.get('/', async (request, response, next) => {
   try {
-    const questions = await Question.find({})
+    const questions = await Questions.find({})
         .populate({
           path: 'postedBy',
           model: 'User',
@@ -31,7 +31,7 @@ router.get('/', async (request, response, next) => {
 router.get('/:id', async (request, response, next) => {
   const id = request.params.id
   try {
-    const question = await Question.findById(id).populate({
+    const question = await Questions.findById(id).populate({
       path: 'postedBy',
       model: 'User',
       select: 'username'
@@ -76,7 +76,7 @@ router.post('/', async (request, response, next) => {
           .json({ error: 'title and content must be provided' })
     }
 
-    const newQuestion = new Question({
+    const newQuestion = new Questions({
       title: body.title,
       content: body.content,
       solved: false,
@@ -105,7 +105,7 @@ router.post('/:id/title-content', async (request, response, next) => {
   try {
     const body = request.body
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -121,6 +121,11 @@ router.post('/:id/title-content', async (request, response, next) => {
 
     if (!user) {
       return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (!body.title || !body.content) {
+      return response.status(401)
+          .json({ error: 'title and content must be provided' })
     }
 
     if (question.postedBy.toString() !== user._id.toString()) {
@@ -133,7 +138,7 @@ router.post('/:id/title-content', async (request, response, next) => {
       content: body.content
     }
 
-    await Question.findByIdAndUpdate(id, updatedQuestion)
+    await Questions.findByIdAndUpdate(id, updatedQuestion)
     return response.status(303).end()
 
   } catch (error) {
@@ -145,7 +150,7 @@ router.post('/:id/new-comment', async (request, response, next) => {
   try {
     const body = request.body
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -161,6 +166,11 @@ router.post('/:id/new-comment', async (request, response, next) => {
 
     if (!user) {
       return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (!body.content) {
+      return response.status(401)
+          .json({ error: 'content must be provided' })
     }
 
     const comment = new Comment({
@@ -176,7 +186,7 @@ router.post('/:id/new-comment', async (request, response, next) => {
       comments: question._doc.comments.concat(comment)
     }
 
-    await Question.findByIdAndUpdate(id, updatedQuestion)
+    await Questions.findByIdAndUpdate(id, updatedQuestion)
     return response.status(303).json(comment)
 
   } catch (error) {
@@ -194,7 +204,7 @@ router.delete('/:questionID/delete-comment/:commentID', async (request, response
     const questionID = request.params.questionID
     const commentID = request.params.commentID
     const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
+    const question = await Questions.findById(questionID)
 
     if (!comment || !question) {
       return response.status(401).json({ error: 'invalid comment id or question id' })
@@ -221,7 +231,7 @@ router.delete('/:questionID/delete-comment/:commentID', async (request, response
       comments: question._doc.comments.filter(commentId => commentId != commentID)
     }
 
-    await Promise.all([Question.findByIdAndUpdate(questionID, updatedQuestion), Comment.findByIdAndRemove(commentID)])
+    await Promise.all([Questions.findByIdAndUpdate(questionID, updatedQuestion), Comment.findByIdAndRemove(commentID)])
     return response.status(303).end()
 
   } catch (error) {
@@ -238,7 +248,7 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
     const questionID = request.params.questionID
     const commentID = request.params.commentID
     const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
+    const question = await Questions.findById(questionID)
 
     if (!comment || !question) {
       return response.status(401).json({ error: 'invalid comment id or question id' })
@@ -256,6 +266,10 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
+    if (!body.likes) {
+      return response.status(401)
+          .json({ error: 'likes must be provided as a number' })
+    }
     const updatedComment = {
       ...comment._doc,
       likes: body.likes >= 0 ? comment.likes + 1 : comment.likes - 1
@@ -278,7 +292,7 @@ router.post('/:questionID/edit-comment/:commentID', async (request, response, ne
     const questionID = request.params.questionID
     const commentID = request.params.commentID
     const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
+    const question = await Questions.findById(questionID)
 
     if (!comment || !question) {
       return response.status(401).json({ error: 'invalid comment id or question id' })
@@ -300,6 +314,11 @@ router.post('/:questionID/edit-comment/:commentID', async (request, response, ne
       return response.status(401).json({ error: 'comments can be deleted by authors only' })
     }
 
+    if (body.content) {
+      return response.status(401)
+          .json({ error: 'content must be provided' })
+    }
+
     const updatedComment = {
       ...comment._doc,
       content: body.content
@@ -317,7 +336,7 @@ router.post('/:id/tags', async (request, response, next) => {
   try {
     const body = request.body
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -339,13 +358,17 @@ router.post('/:id/tags', async (request, response, next) => {
       return response.status(401).json({ error: 'a questions can be deleted by authors only' })
     }
 
+    if (!body.tags) {
+      return response.status(401)
+          .json({ error: 'tags must be provided' })
+    }
+
     const updatedQuestion = {
       ...question._doc,
       tags: body.tags
     }
 
-    console.log(body)
-    await Question.findByIdAndUpdate(id, updatedQuestion)
+    await Questions.findByIdAndUpdate(id, updatedQuestion)
     return response.status(303).end()
 
   } catch (error) {
@@ -357,7 +380,7 @@ router.post('/:id/solved', async (request, response, next) => {
   try {
     const body = request.body
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -379,13 +402,17 @@ router.post('/:id/solved', async (request, response, next) => {
       return response.status(401).json({ error: 'a questions can be deleted by authors only' })
     }
 
+    if (!body.solved) {
+      return response.status(401)
+          .json({ error: 'solved must be provided' })
+    }
+
     const updatedQuestion = {
       ...question._doc,
       solved: body.solved
     }
 
-    // todo: add more error checking, like check if body.solved is a boolean (FOR ALL ROUTES)
-    await Question.findByIdAndUpdate(id, updatedQuestion)
+    await Questions.findByIdAndUpdate(id, updatedQuestion)
     return response.status(303).end()
 
   } catch (error) {
@@ -403,7 +430,7 @@ router.post('/:id/likes', async (request, response, next) => {
   try {
     const body = request.body
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -421,12 +448,17 @@ router.post('/:id/likes', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
+    if (!body.likes) {
+      return response.status(401)
+          .json({ error: 'likes must be provided as a number' })
+    }
+
     const updatedQuestion = {
       ...question._doc,
       likes: body.likes >= 0 ? question.likes + 1 : question.likes - 1
     }
 
-    await Question.findByIdAndUpdate(id, updatedQuestion)
+    await Questions.findByIdAndUpdate(id, updatedQuestion)
     return response.status(303).end()
 
   } catch (error) {
@@ -438,7 +470,7 @@ router.post('/:id/likes', async (request, response, next) => {
 router.delete('/:id', async (request, response, next) => {
   try {
     const id = request.params.id
-    const question = await Question.findById(id)
+    const question = await Questions.findById(id)
 
     if (!question) {
       return response.status(401).json({ error: 'invalid question id' })
@@ -466,7 +498,7 @@ router.delete('/:id', async (request, response, next) => {
       questions: updatedUserQuestion
     }
 
-    await Promise.all([User.findByIdAndUpdate(user.id, updatedUser), Question.findByIdAndRemove(id)])
+    await Promise.all([User.findByIdAndUpdate(user.id, updatedUser), Questions.findByIdAndRemove(id)])
 
     return response.status(204).end()
   } catch (error) {

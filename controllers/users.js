@@ -104,6 +104,11 @@ router.put('/:id', async (request, response, next) => {
       return response.status(401).json({error: 'wrong password'})
     }
 
+    if(!body.email || !body.dateOfBirth || !body.fullname) {
+      return response.status(401)
+          .json({error: 'email, dateOfBirth, fullname must be provided'})
+    }
+
     const updatedUserObj = {
       ...user._doc,
       email: body.email,

@@ -6,7 +6,7 @@ const middleware = require('./utils/middleware')
 
 const indexRouter = require('./controllers/index')
 const usersRouter = require('./controllers/users')
-const questionRouter = require('./controllers/question')
+const questionRouter = require('./controllers/questions')
 const loginRouter = require('./controllers/login')
 
 const mongoose = require('mongoose')
