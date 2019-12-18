@@ -314,7 +314,7 @@ router.post('/:questionID/edit-comment/:commentID', async (request, response, ne
       return response.status(401).json({ error: 'comments can be deleted by authors only' })
     }
 
-    if (body.content) {
+    if (!body.content) {
       return response.status(401)
           .json({ error: 'content must be provided' })
     }
