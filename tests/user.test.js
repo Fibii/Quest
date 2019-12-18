@@ -48,9 +48,9 @@ describe('user crud', () => {
 
     const newUser = {
       username: "fibi",
-      password: "fibi",
-      email: "fibi@fibi.fb",
-      dateOfBirth: "2069-12-12"
+      password: "ayoFibCome6layHere",
+      email: "fibi@fibi.fr",
+      dateOfBirth: "06-22-1955"
     }
 
     const response = await api.post('/api/users')
@@ -172,7 +172,6 @@ describe('user crud', () => {
     const finalUsers = await testHelper.getUsersInDb()
     const finalUser = finalUsers.filter(user => user.username === initialUsers[0].username)[0]
 
-    console.log('em=', finalUser.email)
     expect(finalUser.email).toEqual(updatedUser.email)
 
   })

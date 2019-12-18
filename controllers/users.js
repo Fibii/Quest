@@ -3,7 +3,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-
+const validator = require('../utils/validator')
 
 router.get('/', async(request, response, next) => {
 
@@ -39,12 +39,11 @@ router.get('/:id', async (request, response, next) => {
 
 });
 
-// used add a new user info
+
 router.post('/', async(request, response, next) => {
   const body = request.body
   const salt = 10
 
-  //todo: validate email
   if(body.password === undefined || body.username === undefined || body.email === undefined){
     response.status(400).send({
       error:'error: Both username and password and email must be given'
@@ -52,11 +51,10 @@ router.post('/', async(request, response, next) => {
     return
   }
 
-  if(body.password.length < 3 || body.username.length < 3 || body.email.length < 6){
-    response.status(400).send({
-      error:'error: Both username and password must be at least 3 characters long and email must be bigger than 5'
-    })
-    return
+  const error = await validator.validate(body.username, body.password, body.email, body.dateOfBirth)
+
+  if(error){
+    return response.status(400).send(error)
   }
 
   try {
@@ -107,6 +105,12 @@ router.put('/:id', async (request, response, next) => {
     if(!body.email || !body.dateOfBirth || !body.fullname) {
       return response.status(401)
           .json({error: 'email, dateOfBirth, fullname must be provided'})
+    }
+
+    const error = await validator.validate(body.username, body.password, body.email, body.dateOfBirth)
+
+    if(error){
+      return response.status(400).send(error)
     }
 
     const updatedUserObj = {

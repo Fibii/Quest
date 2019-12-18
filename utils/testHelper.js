@@ -6,14 +6,16 @@ const initialUsers = [
     username: 'johnny1023',
     email: 'john@doe.com',
     password: 'johnnyBoy123',
-    dateOfBirth: '1994-12-12'
+    dateOfBirth: '1994-12-12',
+    fullname: 'john doe'
   },
   
   {
-    username: 'karen_',
+    username: 'karen88',
     email: 'kkkk@doe.com',
-    password: 'ayylmao123',
-    dateOfBirth: '1998-01-23'
+    password: 'Ayylmao123',
+    dateOfBirth: '1998-01-23',
+    fullname: 'karen doe'
   }
 ]
 
