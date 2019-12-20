@@ -1,9 +1,13 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
+import Button from '@material-ui/core/Button'
+import SignUpForm from "./components/signupForm"
 
-function App() {
+const App = () => {
   return (
-   <h1>hello world</h1>
-     )
+      <SignUpForm />
+  )
 }
+
 
 export default App
