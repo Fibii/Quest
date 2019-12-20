@@ -18,7 +18,11 @@ app.use(logger('dev'))
 const DB = process.env.DB
 console.log(DB)
 
-mongoose.connect('mongodb://127.0.0.1:27017/qaTEST', { useNewUrlParser: true })
+mongoose.connect('mongodb://127.0.0.1:27017/qaTEST', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+})
     .then(() => {
       console.log("connected to db")
     })
