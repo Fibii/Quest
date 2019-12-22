@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import { BrowserRouter, Route, Switch,  Redirect } from 'react-router-dom'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -34,16 +35,23 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const SignIn = () => {
+const SignIn = ({setUser}) => {
   const classes = useStyles()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [token, setToken] = useState('')
   const [rememberUser, setRememberUser] = useState(false)
 
   const formHandler = (event) => {
     event.preventDefault()
-    console.log(username, password, rememberUser)
+    setToken('token')
+    setUser({
+      username: username,
+      password: password,
+      token: token
+    })
+
   }
 
   return (
@@ -112,6 +120,16 @@ const SignIn = () => {
       <Box mt={8}>
         <Copyright/>
       </Box>
+
+      <Switch>
+        <Route exact path="/login" render={() => (
+          token ? (
+            <Redirect to="/"/>
+          ) : (
+            ''
+          )
+          )}/>
+      </Switch>
     </Container>
   )
 }
