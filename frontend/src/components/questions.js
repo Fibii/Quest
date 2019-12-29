@@ -14,6 +14,7 @@ import Copyright from './copyrights'
 import SignIn from './signInForm'
 import SignUpForm from './signupForm'
 import Question from './question'
+import QuestionForm from './questionForm'
 import UserContext from './userContext'
 
 const useStyles = makeStyles(theme => ({
@@ -182,7 +183,8 @@ const MainApp = () => {
         <Route path='/welcome' render={() => <Welcome/>}/>
         <Route path='/login' render={() => <SignIn setUser={setUser}/>}/>
         <Route path='/register' component={SignUpForm}/>
-        <Route path='/question/:id' render={() => <Question/>}/>
+        <Route path='/question/new' exact render={() => <QuestionForm/>}/>
+        <Route path='/question/:id' exact render={() => <Question/>}/>
       </Switch>
     </UserContext.Provider>
   )
