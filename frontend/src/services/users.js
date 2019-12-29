@@ -7,17 +7,16 @@ const setToken = newToken => {
   token = `bearer ${newToken}`
 }
 
-const getAll = async () => {
+const login = async (credentials) => {
   try {
-    const result = await axios.get(baseUrl + '/questions/')
-    return result.data
+    const response = await axios.post(baseUrl + '/login/', credentials)
+    return response.data
   } catch (error) {
     console.log(error)
   }
 }
 
 export default {
-  getAll,
-  setToken,
-  get
+  login,
+  setToken
 }

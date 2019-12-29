@@ -18,6 +18,7 @@ import QuestionForm from './questionForm'
 import UserContext from './userContext'
 import questionService from '../services/questions'
 import Notification from './notification'
+import userService from '../services/users'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -123,7 +124,7 @@ const InteractiveList = ({ user }) => {
                   </Grid>
 
                   <Grid item>
-                    {user ?
+                    {user.id === question.postedBy ?
                       <IconButton edge="end" aria-label="delete"
                                   onClick={() => alert('delete this question')}>
                         <DeleteIcon/>
@@ -168,6 +169,14 @@ const Welcome = () => {
 const MainApp = () => {
   const [user, setUser] = useState(null)
 
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('qa_userLoggedIn')
+    if (loggedUser) {
+      setUser(loggedUser)
+      questionService.setToken(loggedUser.token)
+      userService.setToken(loggedUser.token)
+    }
+  }, [])
   return (
     <UserContext.Provider value={user}>
       <Switch>
