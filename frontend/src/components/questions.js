@@ -17,6 +17,7 @@ import Question from './question'
 import QuestionForm from './questionForm'
 import UserContext from './userContext'
 import questionService from '../services/questions'
+import Notification from './notification'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,11 +74,7 @@ const InteractiveList = ({ user }) => {
 
   if (error) {
     return (
-      <Grid container justify='center'>
-        <Typography variant='h3' color='error'>
-          ERROR
-        </Typography>
-      </Grid>
+      <Notification message={'error: cannot connect to the server'}/>
     )
   }
   return (
