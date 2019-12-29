@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route, Switch, Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
@@ -16,7 +16,7 @@ import SignUpForm from './signupForm'
 import Question from './question'
 import QuestionForm from './questionForm'
 import UserContext from './userContext'
-import Header from './header'
+import questionService from '../services/questions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,38 +51,35 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-const initialQuestion = [
-  {
-    title: 'is this a valid proof?',
-    content: 'prove that for all x < x^3 => x^2 < x^4\nmy solution is: (x < x^3 ) * x QED',
-    tags: ['proof', 'analysis'],
-    likes: 10,
-    id: 1,
-    comments: [
-      {
-        content: 'first comment',
-        likes: 1
-      },
-      {
-        content: 'second comment',
-        likes: 2
-      },
-    ]
-  },
-  {
-    title: 'How to un-commit last un-pushed git commit without losing the changes',
-    content: ' there a way to revert a commit so that my local copy keeps the changes made in that commit, but they become non-committed changes in my working copy?',
-    tags: ['git'],
-    likes: 123,
-    id: 2
-  },
-]
-
-
 const InteractiveList = ({ user }) => {
   const classes = useStyles()
   const [dense, setDense] = useState(false)
+  const [questions, setQuestions] = useState([])
+  const [error, setError] = useState(false)
 
+  useEffect(() => {
+    const getQuestions = async () => {
+      const questions = await questionService.getAll()
+      if (!questions) {
+        setError(true)
+      } else {
+        setQuestions(questions)
+      }
+    }
+    getQuestions()
+
+
+  }, [])
+
+  if (error) {
+    return (
+      <Grid container justify='center'>
+        <Typography variant='h3' color='error'>
+          ERROR
+        </Typography>
+      </Grid>
+    )
+  }
   return (
     <div className={classes.root}>
       <Grid item xs={12} md={6} style={{
@@ -92,7 +89,7 @@ const InteractiveList = ({ user }) => {
         </Typography>
         <div>
           <List dense={dense}>
-            {initialQuestion.map(question =>
+            {questions.map(question =>
               <Paper elevation={4} className={classes.paper} key={question.title}>
                 <Grid container>
 
