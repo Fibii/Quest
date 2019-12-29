@@ -17,21 +17,25 @@ import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Copyright from './copyrights'
 import { useParams } from 'react-router'
 import UserContext from './userContext'
+import Header from './header'
 
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+    position: 'relative',
+    minHeight: '100vh'
   },
 
   root: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
+    paddingTop: 8
   },
   gridList: {
     prefWidth: 800,
@@ -132,10 +136,13 @@ const Question = () => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.root}>
+      <div className={classes.root} style={{
+        paddingBottom: '3 rem'
+      }}>
         <CssBaseline/>
         <Paper className={classes.paper} elevation={14} style={{
-          marginBottom: 16
+          marginBottom: 16,
+          marginTop: 0
         }}>
           <Grid container justify='space-between' direction='column'>
             <Grid container>

@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Copyright from './copyrights'
+import Header from './header'
 
 const Joi = require('@hapi/joi')
 
@@ -151,127 +152,131 @@ const SignUpForm = () => {
 
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline/>
-      <div className={classes.paper}>
+    <div style={{
+      position: 'relative',
+      minHeight: '100vh'
+    }}>
+      <Container component="main" maxWidth="xs" style={{
+        paddingBottom: '3 rem'
+      }}>
+        <CssBaseline/>
+        <div className={classes.paper}>
 
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon/>
-        </Avatar>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon/>
+          </Avatar>
 
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
 
-        <form className={classes.form} noValidate onSubmit={formOnSubmitHandler}>
+          <form className={classes.form} noValidate onSubmit={formOnSubmitHandler}>
 
-          <Grid container spacing={2}>
+            <Grid container spacing={2}>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                error={fullNameHelperText.length > 0}
-                helperText={fullNameHelperText}
-                autoComplete="fname"
-                name="fullName"
-                variant="outlined"
-                required
-                fullWidth
-                id="fullName"
-                label="Full Name"
-                autoFocus
-                onChange={fullNameOnChange}
-              />
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  error={fullNameHelperText.length > 0}
+                  helperText={fullNameHelperText}
+                  autoComplete="fname"
+                  name="fullName"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="fullName"
+                  label="Full Name"
+                  autoFocus
+                  onChange={fullNameOnChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  error={usernameHelperText.length > 0}
+                  helperText={usernameHelperText}
+                  onChange={userNameOnChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  error={emailHelperText.length > 0}
+                  helperText={emailHelperText}
+                  onChange={emailOnChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  error={passwordHelperText.length > 0}
+                  helperText={passwordHelperText}
+                  onChange={passwordOnChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  error={dateOfBirthHelperText.length > 0}
+                  helperText={dateOfBirthHelperText}
+                  onChange={dateOfBirthOnChange}
+                  variant="outlined"
+                  id="dateOfBirth"
+                  label="Birthday"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Grid>
+
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                error={usernameHelperText.length > 0}
-                helperText={usernameHelperText}
-                onChange={userNameOnChange}
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
-              />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign Up
+            </Button>
+
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link href="#" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
             </Grid>
 
-            <Grid item xs={12}>
-              <TextField
-                error={emailHelperText.length > 0}
-                helperText={emailHelperText}
-                onChange={emailOnChange}
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
+          </form>
+        </div>
+      </Container>
+      <Copyright/>
+    </div>
 
-            <Grid item xs={12}>
-              <TextField
-                error={passwordHelperText.length > 0}
-                helperText={passwordHelperText}
-                onChange={passwordOnChange}
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                error={dateOfBirthHelperText.length > 0}
-                helperText={dateOfBirthHelperText}
-                onChange={dateOfBirthOnChange}
-                variant="outlined"
-                id="dateOfBirth"
-                label="Birthday"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-
-          </Grid>
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign Up
-          </Button>
-
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
-
-        </form>
-      </div>
-
-      <Box mt={5}>
-        <Copyright/>
-      </Box>
-
-    </Container>
   )
 
 }

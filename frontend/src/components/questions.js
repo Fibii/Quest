@@ -16,6 +16,7 @@ import SignUpForm from './signupForm'
 import Question from './question'
 import QuestionForm from './questionForm'
 import UserContext from './userContext'
+import Header from './header'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,7 +25,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-around',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
-    paddingBottom: 24
+    paddingBottom: 24,
+    position: 'relative',
+    minHeight: '100vh'
   },
   gridList: {
     width: 500,
@@ -81,9 +84,10 @@ const InteractiveList = ({ user }) => {
   const [dense, setDense] = useState(false)
 
   return (
-
     <div className={classes.root}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} style={{
+        paddingBottom: '3 rem'
+      }}>
         <Typography variant="h6" className={classes.title}>
         </Typography>
         <div>
