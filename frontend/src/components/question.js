@@ -310,10 +310,10 @@ const Question = () => {
           </Grid>
 
           <Grid item>
-            <Copyright/>
           </Grid>
         </Grid>
       </div>
+      <Copyright/>
     </div>
   )
 }
