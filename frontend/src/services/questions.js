@@ -2,9 +2,13 @@ import axios from 'axios'
 
 const baseUrl = 'http://localhost:3001/api'
 let token = null
+let config = null
 
 const setToken = newToken => {
   token = `bearer ${newToken}`
+  config = {
+    headers: {'Authorization': token}
+  }
 }
 
 const getAll = async () => {
@@ -25,8 +29,20 @@ const get = async (id) => {
   }
 }
 
+const addComment = async (id, comment) => {
+  try {
+    const response = await axios
+      .post(baseUrl + `/questions/${id}/new-comment`, comment, config)
+
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   getAll,
   setToken,
-  get
+  get,
+  addComment
 }

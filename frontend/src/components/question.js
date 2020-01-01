@@ -102,9 +102,29 @@ const Question = () => {
     getQuestion()
   }, [])
 
-  const handleCommentPost = (event) => {
-    // validate content
-    alert(commentContent)
+  const handleCommentPost = async (event) => {
+    if (commentContent.length === 0) {
+      setErrorMessage('comment must not be empty')
+    } else {
+      const comment = {
+        content: commentContent,
+        postedBy: user,
+        likes: 0
+      }
+
+      const newComment = await questionService.addComment(id, comment)
+      if (!newComment || newComment.error) {
+        setErrorMessage('error: couldn\'t add a new comment, try again later')
+      } else {
+        setQuestion({
+          ...question,
+          comments: question.comments.concat({
+            ...comment,
+            id: newComment.id
+          })
+        })
+      }
+    }
   }
 
   return (
