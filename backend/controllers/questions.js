@@ -139,7 +139,7 @@ router.post('/:id/title-content', async (request, response, next) => {
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
       next(error)
@@ -187,7 +187,7 @@ router.post('/:id/new-comment', async (request, response, next) => {
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).json(comment)
+    return response.status(200).json(comment)
 
   } catch (error) {
     next(error)
@@ -232,7 +232,7 @@ router.delete('/:questionID/delete-comment/:commentID', async (request, response
     }
 
     await Promise.all([Questions.findByIdAndUpdate(questionID, updatedQuestion), Comment.findByIdAndRemove(commentID)])
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
@@ -276,7 +276,7 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
     }
 
     await Comment.findByIdAndUpdate(commentID, updatedComment)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
@@ -325,7 +325,7 @@ router.post('/:questionID/edit-comment/:commentID', async (request, response, ne
     }
 
     await Comment.findByIdAndUpdate(commentID, updatedComment)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
@@ -369,7 +369,7 @@ router.post('/:id/tags', async (request, response, next) => {
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
@@ -413,7 +413,7 @@ router.post('/:id/solved', async (request, response, next) => {
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
@@ -459,7 +459,7 @@ router.post('/:id/likes', async (request, response, next) => {
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(303).end()
+    return response.status(200).end()
 
   } catch (error) {
     next(error)
