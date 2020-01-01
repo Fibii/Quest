@@ -26,7 +26,8 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     position: 'relative',
-    minHeight: '100vh'
+    minHeight: '100vh',
+    height: '100%',
   },
 
   root: {
@@ -36,11 +37,13 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
-    paddingTop: 8
+    paddingTop: 8,
+    height: '100%',
+    marginBottom: '4rem'
   },
   gridList: {
     prefWidth: 800,
-    height: 400,
+    height: '100%',
     padding: 0
   },
 
