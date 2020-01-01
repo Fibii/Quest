@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -17,7 +17,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Copyright from './copyrights'
 import { useParams } from 'react-router'
 import UserContext from './userContext'
-import Header from './header'
+import questionService from '../services/questions'
+import userService from '../services/users'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -76,58 +77,30 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
-const initialQuestion = [
-  {
-    title: 'is this a valid proof?',
-    content: 'prove that for all x < x^3 => x^2 < x^4\nmy solution is: (x < x^3 ) * x QED',
-    tags: ['proof', 'analysis'],
-    likes: 10,
-    id: 1,
-    comments: [
-      {
-        content: 'first comment',
-        likes: 1,
-        postedBy: 'fibi'
-      },
-      {
-        content: 'second comment',
-        likes: 2,
-        postedBy: 'fibbba'
-      },
-    ],
-    postedBy: 'fibi'
-  },
-  {
-    title: 'How to un-commit last un-pushed git commit without losing the changes',
-    content: ' there a way to revert a commit so that my local copy keeps the changes made in that commit, but they become non-committed changes in my working copy?',
-    tags: ['git'],
-    likes: 123,
-    id: 2,
-    comments: [
-      {
-        content: 'first comment',
-        likes: 1,
-        postedBy: 'fibi'
-      },
-      {
-        content: 'second comment',
-        likes: 2,
-        postedBy: 'fibbba'
-      },
-    ],
-    postedBy: 'fibi'
-  },
-]
-
 const Question = () => {
 
   const classes = useStyles()
+
   const [dense, setDense] = useState(false)
+  const [question, setQuestion] = useState({})
   const [commentContent, setCommentContent] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+
   const { id } = useParams()
-  // get json from id and show it
-  const question = initialQuestion.filter(question => question.id == id)[0]
   const user = useContext(UserContext)
+
+  useEffect(() => {
+
+    const getQuestion = async () => {
+      const question = await questionService.get(id)
+      if (!question || question.error) {
+        setErrorMessage('error: cannot connect to the server')
+      } else {
+        setQuestion(question)
+      }
+    }
+    getQuestion()
+  }, [])
 
   const handleCommentPost = (event) => {
     // validate content
@@ -206,8 +179,7 @@ const Question = () => {
                 marginBottom: 6,
                 marginLeft: 18,
               }}>
-                {question.tags.map(tag => <Button key={tag} style={{
-                  maxWidth: '60px',
+                {question && question.tags && question.tags.map(tag => <Button key={tag} style={{
                   maxHeight: '20px',
                   minWidth: '60px',
                   minHeight: '20px',
@@ -222,7 +194,7 @@ const Question = () => {
                 bottom: 0,
                 right: 0,
               }}>
-                posted by: {question.postedBy}
+                posted by: {question && question.postedBy && question.postedBy.username}
               </Typography>
             </Grid>
 
@@ -231,7 +203,7 @@ const Question = () => {
         <Grid container justify='center' direction='column'>
           <Grid item>
             <List dense={dense} className={classes.gridList}>
-              {question.comments.map(comment =>
+              {question && question.comments && question.comments.map(comment =>
                 <Paper className={classes.paper} key={comment.content + comment.likes}>
                   <Grid container justify='space-between' direction='column'>
 
@@ -287,7 +259,7 @@ const Question = () => {
                         marginRight: 8,
                         color: 'grey'
                       }}>
-                        posted by: {comment.postedBy}
+                        posted by: {comment.postedBy.username}
                       </Typography>
                     </Grid>
 

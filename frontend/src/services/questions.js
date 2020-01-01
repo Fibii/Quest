@@ -16,6 +16,15 @@ const getAll = async () => {
   }
 }
 
+const get = async (id) => {
+  try {
+    const result = await axios.get(baseUrl + `/questions/${id}`)
+    return result.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   getAll,
   setToken,
