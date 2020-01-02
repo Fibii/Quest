@@ -40,9 +40,19 @@ const addComment = async (id, comment) => {
   }
 }
 
+const addQuestion = async (question) => {
+  try {
+    const response = await axios.post(baseUrl + '/questions', question, config)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   getAll,
   setToken,
   get,
-  addComment
+  addComment,
+  addQuestion
 }

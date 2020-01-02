@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper'
 import UserContext from './userContext'
 import Copyright from './copyrights'
 import Notification from './notification'
+import questionService from '../services/questions'
+import { useHistory } from 'react-router-dom'
 
 const Joi = require('@hapi/joi')
 
@@ -43,8 +45,10 @@ const QuestionForm = () => {
   const [titleHelperText, setTitleHelperText] = useState('')
   const [contentHelperText, setContentHelperText] = useState('')
   const [tagsHelperText, setTagsHelperText] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const user = useContext(UserContext)
+  const history = useHistory()
 
   const schema = Joi.object({
     title: Joi.string()
@@ -118,12 +122,33 @@ const QuestionForm = () => {
     }
   }
 
-
-  const handleQuestionPost = () => {
+  /**
+   * Adds a new Question to the database
+   *
+   * Sends a post request to backend to add a question, if success, the user
+   * is redirected to the /question/id, otherwise an error is shown
+   *
+   * @see questionService
+   * */
+  const handleQuestionPost = async () => {
     const tags = questionTags.split(',')
       .map(tag => {
         return tag.replace(/^\s+|\s+$/gm, '')
       })
+
+    const question = {
+      title: questionTitle,
+      content: questionContent,
+      tags: tags
+    }
+
+    const newQuestion = await questionService.addQuestion(question)
+
+    if (!newQuestion || newQuestion.error) {
+      setErrorMessage(newQuestion.error)
+    } else {
+      history.push(`/question/${newQuestion.id}`)
+    }
   }
 
   /**
@@ -154,6 +179,7 @@ const QuestionForm = () => {
       minHeight: '100vh'
     }}
     >
+      <Notification message={errorMessage} />
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
