@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
@@ -6,6 +6,7 @@ import grey from '@material-ui/core/colors/grey'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { Link } from 'react-router-dom'
+import UserContext from './userContext'
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const Header = () => {
   const classes = useStyles()
+  const user = useContext(UserContext)
 
   return (
     <React.Fragment>
@@ -45,6 +47,13 @@ const Header = () => {
                 Home
               </Button>
             </Link>
+            { user ? <Link to={'/question/new'} style={{
+              marginLeft: 8
+            }}>
+              <Button variant="outlined" size="small">
+                New
+              </Button>
+            </Link> : '' }
           </Grid>
           <Grid>
             <Typography

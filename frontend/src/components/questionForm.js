@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import UserContext from './userContext'
 import Copyright from './copyrights'
+import Notification from './notification'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,6 +54,11 @@ const QuestionForm = () => {
     setQuestionTags('')
   }
 
+  if (!user) {
+    return (
+      <Notification message={'you must be logged in'} />
+    )
+  }
 
   return (
     <div id='container' style={{

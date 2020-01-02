@@ -19,6 +19,7 @@ import UserContext from './userContext'
 import questionService from '../services/questions'
 import Notification from './notification'
 import userService from '../services/users'
+import Header from './header'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -179,6 +180,7 @@ const MainApp = () => {
   }, [])
   return (
     <UserContext.Provider value={user}>
+      <Header/>
       <Switch>
         <Route exact path="/" render={() => (
           user ? (
