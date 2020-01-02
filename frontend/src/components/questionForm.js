@@ -8,6 +8,8 @@ import UserContext from './userContext'
 import Copyright from './copyrights'
 import Notification from './notification'
 
+const Joi = require('@hapi/joi')
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: 600,
@@ -38,8 +40,84 @@ const QuestionForm = () => {
   const [questionTitle, setQuestionTitle] = useState('')
   const [questionContent, setQuestionContent] = useState('')
   const [questionTags, setQuestionTags] = useState('')
+  const [titleHelperText, setTitleHelperText] = useState('')
+  const [contentHelperText, setContentHelperText] = useState('')
+  const [tagsHelperText, setTagsHelperText] = useState('')
 
   const user = useContext(UserContext)
+
+  const schema = Joi.object({
+    title: Joi.string()
+      .pattern(new RegExp('^[a-zA-Z0-9_." "-]*'))
+      .min(6)
+      .max(64),
+    content: Joi.string()
+      .min(6),
+    tags: Joi.string()
+      .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
+  })
+    .or('title', 'content', 'tags')
+
+  /**
+   * Updates questionTitle to user input, validates the title
+   * Updates tagsHelperText to an error message if validation fails, otherwise it will be an empty string
+   *
+   * @param event, react onChange event used to get the value of the textfield
+   * */
+  const titleOnChange = (event) => {
+    setQuestionTitle(event.target.value)
+    setTitleHelperText('')
+
+    const { error } = schema.validate({
+      title: questionTitle
+    })
+
+    if (error) {
+      setTitleHelperText('title must be 6 characters long at least and 64 at most')
+    }
+
+  }
+
+  /**
+   * Updates questionContent to user input, validates the title
+   * Updates contentHelperText to an error message if validation fails, otherwise it will be an empty string
+   *
+   * @param event, react onChange event used to get the value of the textfield
+   * */
+  const contentOnChange = (event) => {
+    setQuestionContent(event.target.value)
+    setContentHelperText('')
+
+    const { error } = schema.validate({
+      content: questionContent
+    })
+
+    if (error) {
+      setContentHelperText('content must be at least 6 characters long')
+    }
+
+  }
+
+  /**
+   * Updates questionTags to user input, validates the title
+   * Updates tagsHelperText to an error message if validation fails, otherwise it will be an empty string
+   *
+   * @param event, react onChange event used to get the value of the textfield
+   * */
+  const tagsOnChange = (event) => {
+    const tags = event.target.value
+    setQuestionTags(tags)
+    setTagsHelperText('')
+
+    const { error } = schema.validate({
+      tags: tags
+    })
+
+    if (error) {
+      setTagsHelperText('tags must be words, seperated by commas, such "hello, world"')
+    }
+  }
+
 
   const handleQuestionPost = () => {
     const tags = questionTags.split(',')
@@ -48,10 +126,20 @@ const QuestionForm = () => {
       })
   }
 
-  const handleClearButton = (event) => {
+  /**
+   * helper function that clears all the textfields
+   * */
+  const clearAll = () => {
     setQuestionContent('')
     setQuestionTitle('')
     setQuestionTags('')
+  }
+
+  /**
+   * clears all the textfields when "clear" button is clicked
+   * */
+  const handleClearButton = () => {
+    clearAll()
   }
 
   if (!user) {
@@ -76,16 +164,20 @@ const QuestionForm = () => {
           <Grid container justify='flex-start' direction='column' className={classes.root}>
             <Grid item className={classes.item}>
               <TextField
+                error={titleHelperText.length > 0}
+                helperText={titleHelperText}
                 placeholder="Title"
                 multiline={true}
                 fullWidth
                 variant="outlined"
                 value={questionTitle}
-                onChange={(event) => setQuestionTitle(event.target.value)}
+                onChange={titleOnChange}
               />
             </Grid>
             <Grid item className={classes.item}>
               <TextField
+                error={contentHelperText.length > 0}
+                helperText={contentHelperText}
                 placeholder="Content"
                 multiline={true}
                 rows={3}
@@ -93,17 +185,19 @@ const QuestionForm = () => {
                 fullWidth
                 variant="outlined"
                 value={questionContent}
-                onChange={(event) => setQuestionContent(event.target.value)}
+                onChange={contentOnChange}
               />
             </Grid>
             <Grid item className={classes.item}>
               <TextField
+                error={tagsHelperText.length > 0}
+                helperText={tagsHelperText}
                 placeholder="Tags"
                 multiline={true}
                 fullWidth
                 variant="outlined"
                 value={questionTags}
-                onChange={(event) => setQuestionTags(event.target.value)}
+                onChange={tagsOnChange}
               />
             </Grid>
             <Grid container justify='flex-end' className={classes.item}>
