@@ -20,6 +20,7 @@ import questionService from '../services/questions'
 import Notification from './notification'
 import userService from '../services/users'
 import Header from './header'
+import validator from '../services/validator'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,7 +54,11 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-
+/**
+ * returns a list of questions
+ *
+ * @see validator
+ * */
 const InteractiveList = ({ user }) => {
   const classes = useStyles()
   const [dense, setDense] = useState(false)
@@ -125,7 +130,7 @@ const InteractiveList = ({ user }) => {
                   </Grid>
 
                   <Grid item>
-                    {user.id === question.postedBy ?
+                    {validator.isAuthor(user, question)?
                       <IconButton edge="end" aria-label="delete"
                                   onClick={() => alert('delete this question')}>
                         <DeleteIcon/>

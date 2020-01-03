@@ -19,6 +19,7 @@ import { useParams } from 'react-router'
 import UserContext from './userContext'
 import questionService from '../services/questions'
 import userService from '../services/users'
+import validator from '../services/validator'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -187,7 +188,7 @@ const Question = () => {
                 top: '50%',
                 marginRight: 16
               }}>
-                {user ?
+                {validator.isAuthor(user, question) ?
                   <IconButton edge="end" aria-label="delete" onClick={() => alert('delete this')}>
                     <DeleteIcon/>
                   </IconButton> : ''}
@@ -265,7 +266,7 @@ const Question = () => {
                             primary={comment.content}
                           />
 
-                          {user ? <ListItemSecondaryAction>
+                          {validator.isAuthor(user, comment) ? <ListItemSecondaryAction>
                             <IconButton edge="end" aria-label="delete"
                                         onClick={() => alert('delete this')}>
                               <DeleteIcon/>
