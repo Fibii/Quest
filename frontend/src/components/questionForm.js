@@ -132,9 +132,8 @@ const QuestionForm = () => {
    * */
   const handleQuestionPost = async () => {
     const tags = questionTags.split(',')
-      .map(tag => {
-        return tag.replace(/^\s+|\s+$/gm, '')
-      })
+      .map(tag => tag.replace(/^\s+|\s+$/gm, ''))
+      .filter(tag => tag.length > 0)
 
     const question = {
       title: questionTitle,
@@ -158,7 +157,6 @@ const QuestionForm = () => {
       } else {
         history.push(`/question/${newQuestion.id}`)
       }
-
     }
   }
 
