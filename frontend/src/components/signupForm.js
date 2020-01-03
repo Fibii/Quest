@@ -12,6 +12,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Copyright from './copyrights'
 import Header from './header'
+import Notification from './notification'
+import { useHistory } from 'react-router-dom'
+import userService from '../services/users'
 
 const Joi = require('@hapi/joi')
 
@@ -49,7 +52,9 @@ const SignUpForm = () => {
   const [emailHelperText, setEmailHelperText] = useState('')
   const [passwordHelperText, setPasswordHelperText] = useState('')
   const [dateOfBirthHelperText, setDateOfBirthHelperText] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
+  const history = useHistory()
 
   const schema = Joi.object({
     fullName: Joi.string()
@@ -137,17 +142,39 @@ const SignUpForm = () => {
     }
   }
 
-  const formOnSubmitHandler = (event) => {
+  /**
+   * Adds a new user to the database, and validates the input, if filed is wrong, nothing is added
+   * and an error message is shown
+   *
+   * @param event: react form event
+   * @see userService
+   * */
+  const formOnSubmitHandler = async (event) => {
     event.preventDefault()
+
     const user = {
       fullname: fullName,
-      username,
-      password,
-      email,
-      dateOfBirth
+      username: username,
+      password: password,
+      email: email,
+      dateOfBirth: new Date(dateOfBirth)
     }
-    console.log('should post')
-    console.log(user)
+
+    const { error } = schema.validate(user)
+
+    if (error) {
+      setErrorMessage('All fields are required, if a field is red, then fix it, make sure dob is valid')
+    } else {
+
+      const newUser = await userService.createUser(user)
+      if (!newUser || newUser.error) {
+        setErrorMessage("error: couldn't connect to the server")
+      } else {
+        history.push('/login')
+      }
+
+    }
+
   }
 
 
@@ -156,6 +183,7 @@ const SignUpForm = () => {
       position: 'relative',
       minHeight: '100vh'
     }}>
+      <Notification message={errorMessage} />
       <Container component="main" maxWidth="xs" style={{
         paddingBottom: '3 rem'
       }}>

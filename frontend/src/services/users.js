@@ -16,7 +16,17 @@ const login = async (credentials) => {
   }
 }
 
+const createUser = async (user) => {
+  try {
+    const response = await axios.post(baseUrl + '/users', user)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   login,
-  setToken
+  setToken,
+  createUser
 }
