@@ -56,7 +56,7 @@ const QuestionForm = () => {
       .min(6)
       .max(64),
     content: Joi.string()
-      .min(6),
+      .min(8),
     tags: Joi.string()
       .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
   })
@@ -97,7 +97,7 @@ const QuestionForm = () => {
     })
 
     if (error) {
-      setContentHelperText('content must be at least 6 characters long')
+      setContentHelperText('content must be at least 8 characters long')
     }
 
   }
@@ -153,7 +153,7 @@ const QuestionForm = () => {
       const newQuestion = await questionService.addQuestion(question)
 
       if (!newQuestion || newQuestion.error) {
-        setErrorMessage(newQuestion.error)
+        setErrorMessage("error: could not create a new question")
       } else {
         history.push(`/question/${newQuestion.id}`)
       }
