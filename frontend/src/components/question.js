@@ -20,6 +20,7 @@ import UserContext from './userContext'
 import questionService from '../services/questions'
 import userService from '../services/users'
 import validator from '../services/validator'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -92,6 +93,7 @@ const Question = () => {
 
   const { id } = useParams()
   const user = useContext(UserContext)
+  const history = useHistory()
 
   useEffect(() => {
 
@@ -128,6 +130,19 @@ const Question = () => {
           })
         })
       }
+    }
+  }
+
+  /**
+   * deletes a question form the database
+   * */
+  const handleDeleteQuestion = async () => {
+    const response = await questionService.deleteQuestion(id)
+    if (response) {
+      history.push('/')
+    } else {
+      setErrorMessage('error: couldn\'t delete the question')
+      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
@@ -189,7 +204,7 @@ const Question = () => {
                 marginRight: 16
               }}>
                 {validator.isAuthor(user, question) ?
-                  <IconButton edge="end" aria-label="delete" onClick={() => alert('delete this')}>
+                  <IconButton edge="end" aria-label="delete" onClick={handleDeleteQuestion}>
                     <DeleteIcon/>
                   </IconButton> : ''}
               </Grid>

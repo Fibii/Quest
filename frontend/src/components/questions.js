@@ -64,6 +64,7 @@ const InteractiveList = ({ user }) => {
   const [dense, setDense] = useState(false)
   const [questions, setQuestions] = useState([])
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -84,68 +85,88 @@ const InteractiveList = ({ user }) => {
       <Notification message={'error: cannot connect to the server'}/>
     )
   }
+
+  /**
+   * deletes a question form the database
+   * @param int: the id of the question to be deleted
+   * */
+  const handleDeleteQuestion = async (id) => {
+    const response = await questionService.deleteQuestion(id)
+    if (response) {
+      const newQuestion = questions.filter(question => question.id !== id)
+      setQuestions(newQuestion)
+    } else {
+      setErrorMessage('error: couldn\'t delete the question')
+      setTimeout(() => setErrorMessage(''), 5000)
+    }
+  }
+
   return (
-    <div className={classes.root}>
-      <Grid item xs={12} md={6} style={{
-        paddingBottom: '3 rem'
-      }}>
-        <Typography variant="h6" className={classes.title}>
-        </Typography>
-        <div>
-          <List dense={dense}>
-            {questions.map(question =>
-              <Paper elevation={4} className={classes.paper} key={question.title}>
-                <Grid container>
+    <div>
+      <Notification message={errorMessage}/>
+      <div className={classes.root}>
+        <Grid item xs={12} md={6} style={{
+          paddingBottom: '3 rem'
+        }}>
+          <Typography variant="h6" className={classes.title}>
+          </Typography>
+          <div>
+            <List dense={dense}>
+              {questions.map(question =>
+                <Paper elevation={4} className={classes.paper} key={question.title}>
+                  <Grid container>
 
-                  <Grid container justify='center' direction='column' style={{
-                    width: 60,
-                  }}>
-                    <Box style={{
-                      padding: 0,
-                      margin: '0 auto',
+                    <Grid container justify='center' direction='column' style={{
+                      width: 60,
                     }}>
-                      <Typography variant='h6'>
-                        {question.likes}
-                      </Typography>
-                    </Box>
-                  </Grid>
+                      <Box style={{
+                        padding: 0,
+                        margin: '0 auto',
+                      }}>
+                        <Typography variant='h6'>
+                          {question.likes}
+                        </Typography>
+                      </Box>
+                    </Grid>
 
-                  <Grid item xs={10}>
-                    <ListItemText
-                      primary={
-                        <Link
-                          to={`/question/${question.id}`} style={{
-                          textDecoration: 'none',
-                        }}>
-                          <Typography variant='h6'>
-                            {question.title}
-                          </Typography>
-                        </Link>
-                      }
-                      secondary={question.content.length > 100 ? question.content.substr(0, 100)
-                        .concat('...') : question.content}
-                      display='block'
-                      key={question.content}
-                    />
-                  </Grid>
+                    <Grid item xs={10}>
+                      <ListItemText
+                        primary={
+                          <Link
+                            to={`/question/${question.id}`} style={{
+                            textDecoration: 'none',
+                          }}>
+                            <Typography variant='h6'>
+                              {question.title}
+                            </Typography>
+                          </Link>
+                        }
+                        secondary={question.content.length > 100 ? question.content.substr(0, 100)
+                          .concat('...') : question.content}
+                        display='block'
+                        key={question.content}
+                      />
+                    </Grid>
 
-                  <Grid item>
-                    {validator.isAuthor(user, question)?
-                      <IconButton edge="end" aria-label="delete"
-                                  onClick={() => alert('delete this question')}>
-                        <DeleteIcon/>
-                      </IconButton>
-                      : null}
+                    <Grid item>
+                      {validator.isAuthor(user, question) ?
+                        <IconButton edge="end" aria-label="delete"
+                                    onClick={() => handleDeleteQuestion(question.id)}>
+                          <DeleteIcon/>
+                        </IconButton>
+                        : null}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Paper>
-            )
-            }
-          </List>
-        </div>
-      </Grid>
-      <Copyright/>
+                </Paper>
+              )
+              }
+            </List>
+          </div>
+        </Grid>
+        <Copyright/>
+      </div>
     </div>
+
   )
 }
 

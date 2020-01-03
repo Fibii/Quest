@@ -49,10 +49,27 @@ const addQuestion = async (question) => {
   }
 }
 
+/**
+ * sends a delete question with the passed id
+ * returns true if the question was deleted successfully, false otherwise
+ * @param id: the id of a question
+ * @return boolean
+ * */
+const deleteQuestion = async (id) => {
+  try {
+    const response = await axios.delete(baseUrl + `/questions/${id}`, config)
+    console.log(response)
+    return response.status === 204
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   getAll,
   setToken,
   get,
   addComment,
-  addQuestion
+  addQuestion,
+  deleteQuestion
 }
