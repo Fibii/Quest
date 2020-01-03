@@ -118,7 +118,7 @@ const QuestionForm = () => {
     })
 
     if (error) {
-      setTagsHelperText('tags must be words, seperated by commas, such "hello, world"')
+      setTagsHelperText('tags must be words, separated by commas, such "hello, world"')
     }
   }
 
@@ -142,12 +142,23 @@ const QuestionForm = () => {
       tags: tags
     }
 
-    const newQuestion = await questionService.addQuestion(question)
+    // validating only these two to allow empty tags, maybe refactor this later
+    const { error } = schema.validate({
+      title: questionTitle,
+      content: questionContent,
+    })
 
-    if (!newQuestion || newQuestion.error) {
-      setErrorMessage(newQuestion.error)
+    if (error || tagsHelperText) {
+      setErrorMessage('All fields are required, if a field is red, fix it')
     } else {
-      history.push(`/question/${newQuestion.id}`)
+      const newQuestion = await questionService.addQuestion(question)
+
+      if (!newQuestion || newQuestion.error) {
+        setErrorMessage(newQuestion.error)
+      } else {
+        history.push(`/question/${newQuestion.id}`)
+      }
+
     }
   }
 
