@@ -80,7 +80,9 @@ router.post('/', async (request, response, next) => {
       title: body.title,
       content: body.content,
       solved: false,
-      likes: 0,
+      likes: [{
+        value: 0
+      }],
       postedDate: new Date(),
       tags: body.tags ? body.tags : [],
       postedBy: user.id
@@ -175,7 +177,9 @@ router.post('/:id/new-comment', async (request, response, next) => {
 
     const comment = new Comment({
       content: body.content,
-      likes: 0,
+      likes: [{
+        value: 0
+      }],
       postedBy: user.id
     })
 
@@ -266,13 +270,28 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-    if (!body.likes) {
+    if (!body.value) {
       return response.status(401)
-          .json({ error: 'likes must be provided as a number' })
+          .json({ error: 'value must be provided as a number' })
     }
+
+    const likeUsers = comment.likes.map(like => like.likedBy)
+    const currentLike = body.value >= 0 ? 1 : -1
+
+    // if the user upvotes or downvotes again
+    if (likeUsers.includes(user.id)) {
+      const userLike = (comment.likes.filter(like => like.likedBy == user.id)[0]).value
+      if (currentLike === userLike) {
+        return response.status(401).end()
+      }
+    }
+
     const updatedComment = {
       ...comment._doc,
-      likes: body.likes >= 0 ? comment.likes + 1 : comment.likes - 1
+      likes: comment.likes.concat({
+        value: currentLike,
+        likedBy: user.id
+      })
     }
 
     await Comment.findByIdAndUpdate(commentID, updatedComment)
@@ -453,9 +472,23 @@ router.post('/:id/likes', async (request, response, next) => {
           .json({ error: 'likes must be provided as a number' })
     }
 
+    const likeUsers = question.likes.map(like => like.likedBy)
+
+    // if the user upvotes or downvotes again
+    if (likeUsers.includes(user.id)) {
+      const currentLike = body.likes >= 0 ? 1 : -1
+      const userLike = (question.likes.filter(like => like.likedBy == user.id)[0]).value
+      if (currentLike === userLike) {
+        return response.status(401).end()
+      }
+    }
+
     const updatedQuestion = {
       ...question._doc,
-      likes: body.likes >= 0 ? question.likes + 1 : question.likes - 1
+      likes: question.likes.concat({
+        value: body.likes >= 0 ? 1 : -1,
+        likedBy: user.id
+      })
     }
 
     await Questions.findByIdAndUpdate(id, updatedQuestion)

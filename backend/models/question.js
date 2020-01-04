@@ -19,7 +19,13 @@ const questionSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
   }],
-  likes: Number,
+  likes: [{
+    value: Number,
+    likedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  }],
   postedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

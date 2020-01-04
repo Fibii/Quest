@@ -252,6 +252,7 @@ describe('question updation', () => {
 
     const response = await getUserResponse()
     const secondUserResponse = await getUserResponse(1)
+    const initLikes = 0
 
     const newQuestion = {
       title: 'first question',
@@ -269,20 +270,36 @@ describe('question updation', () => {
         .send({likes: 1})
         .expect(200)
 
+    await api.post(`/api/questions/${question.body.id}/likes`)
+      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+      .send({likes: 1})
+      .expect(401)
+
     const questionIncreased = (await testHelper.getQuestionsInDb())
         .filter(incQuestion => incQuestion.id === question.body.id)[0]
 
-    expect(questionIncreased.likes).toBe(question.body.likes + 1)
+    const increasedLikes = questionIncreased.likes.map(like => like.value)
+      .reduce((a, b) => a + b, 0)
+
+      expect(increasedLikes).toBe(initLikes + 1)
 
     await api.post(`/api/questions/${question.body.id}/likes`)
         .set('Authorization', `bearer ${response.body.token}`)
         .send({likes: -1})
         .expect(200)
 
+    await api.post(`/api/questions/${question.body.id}/likes`)
+      .set('Authorization', `bearer ${response.body.token}`)
+      .send({likes: -1})
+      .expect(401)
+
     const questionDecreased = (await testHelper.getQuestionsInDb())
         .filter(decQuestion => decQuestion.id === question.body.id)[0]
 
-    expect(questionDecreased.likes).toBe(questionIncreased.likes - 1)
+    const decreasedLikes = questionDecreased.likes.map(like => like.value)
+      .reduce((a, b) => a + b, 0)
+
+    expect(decreasedLikes).toBe(increasedLikes - 1)
 
 
   })
@@ -464,17 +481,30 @@ describe('question updation', () => {
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
         .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send({likes: 1})
+        .send({value: 1})
         .expect(200)
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+      .send({value: 1})
+      .expect(401)
+
+    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
         .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send({likes: -1})
+        .send({value: -1})
         .expect(200)
 
-    const finalComment = await Comment.findById(commentResponse.body.id)
+    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+      .send({value: -1})
+      .expect(401)
 
-    expect(finalComment.likes).toBe(0)
+    const finalComment = await Comment.findById(commentResponse.body.id)
+    console.log(finalComment)
+    const finalCommentLikes = finalComment.likes.map(like => like.value)
+      .reduce((a, b) => a + b, 0)
+
+    expect(finalCommentLikes).toBe(0)
 
 
   })
