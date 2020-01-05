@@ -57,7 +57,7 @@ const SignUpForm = () => {
   const history = useHistory()
 
   const schema = Joi.object({
-    fullName: Joi.string()
+    fullname: Joi.string()
       .pattern(new RegExp('^[a-zA-Z ]*$'))
       .min(3)
       .max(32),
@@ -75,12 +75,12 @@ const SignUpForm = () => {
       .greater('1900-1-1')
 
   })
-    .or('fullName', 'username', 'password', 'email', 'dateOfBirth')
+    .or('fullname', 'username', 'password', 'email', 'dateOfBirth')
 
   const fullNameOnChange = (event) => {
     const fullName = event.target.value
     const { error } = schema.validate({
-      fullName: fullName
+      fullname: fullName
     })
     setFullName(fullName)
     if (error) {
@@ -163,6 +163,7 @@ const SignUpForm = () => {
     const { error } = schema.validate(user)
 
     if (error) {
+      console.log(error)
       setErrorMessage('All fields are required, if a field is red, then fix it, make sure dob is valid')
     } else {
 
@@ -293,7 +294,7 @@ const SignUpForm = () => {
 
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link variant="body2" onClick={() => history.push('/login')}>
                   Already have an account? Sign in
                 </Link>
               </Grid>
