@@ -124,7 +124,8 @@ const InteractiveList = ({ user }) => {
                         margin: '0 auto',
                       }}>
                         <Typography variant='h6'>
-                          {question.likes}
+                          {question.likes.length == 0 ? 0 :
+                            question.likes.map(like => like.value).reduce((a,b) => a+b)}
                         </Typography>
                       </Box>
                     </Grid>

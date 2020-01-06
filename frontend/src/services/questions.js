@@ -65,11 +65,33 @@ const deleteQuestion = async (id) => {
   }
 }
 
+const upvote = async (id) => {
+  try {
+    const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: 1}, config)
+    console.log(response)
+    return response.status === 200
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const downvote = async (id) => {
+  try {
+    const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: -1}, config)
+    console.log(response)
+    return response.status === 200
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   getAll,
   setToken,
   get,
   addComment,
   addQuestion,
-  deleteQuestion
+  deleteQuestion,
+  upvote,
+  downvote
 }
