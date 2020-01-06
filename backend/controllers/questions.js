@@ -477,9 +477,20 @@ router.post('/:id/likes', async (request, response, next) => {
     // if the user upvotes or downvotes again
     if (likeUsers.includes(user.id)) {
       const currentLike = body.likes >= 0 ? 1 : -1
-      const userLike = (question.likes.filter(like => like.likedBy == user.id)[0]).value
-      if (currentLike === userLike) {
+      const userLikes = question.likes.filter(like => like.likedBy == user.id)
+      const userLike = userLikes[userLikes.length - 1].value
+      if (currentLike === userLike || currentLike * 2 == userLike) {
         return response.status(401).end()
+      } else {
+        const updatedQuestion = {
+          ...question._doc,
+          likes: question.likes.concat({
+            value: body.likes >= 0 ? 2 : -2, // if the question had 3 likes, and the user upvote, it becomes 4, then he downvotes, it should be (init value - 1) which is (4 - 2)
+            likedBy: user.id
+          })
+        }
+        await Questions.findByIdAndUpdate(id, updatedQuestion)
+        return response.status(200).end()
       }
     }
 
