@@ -154,7 +154,7 @@ const Question = () => {
       return
     }
 
-    const response = await questionService.upvote(id)
+    const response = await questionService.upvoteQuestion(id)
     if (response) {
       let value = 1
       if (question.likes) {
@@ -183,7 +183,7 @@ const Question = () => {
       return
     }
 
-    const response = await questionService.downvote(id)
+    const response = await questionService.downvoteQuestion(id)
     if (response) {
       let value = -1
       if (question.likes) {

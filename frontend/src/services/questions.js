@@ -65,7 +65,7 @@ const deleteQuestion = async (id) => {
   }
 }
 
-const upvote = async (id) => {
+const upvoteQuestion = async (id) => {
   try {
     const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: 1}, config)
     console.log(response)
@@ -75,7 +75,7 @@ const upvote = async (id) => {
   }
 }
 
-const downvote = async (id) => {
+const downvoteQuestion = async (id) => {
   try {
     const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: -1}, config)
     console.log(response)
@@ -92,6 +92,6 @@ export default {
   addComment,
   addQuestion,
   deleteQuestion,
-  upvote,
-  downvote
+  upvoteQuestion,
+  downvoteQuestion,
 }
