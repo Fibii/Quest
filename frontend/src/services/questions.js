@@ -40,6 +40,24 @@ const addComment = async (id, comment) => {
   }
 }
 
+const upvoteComment = async (questionId, commentId) => {
+  try {
+    const response = await axios.post(baseUrl + `/questions/${questionId}/likes/${commentId}`,{likes: 1}, config)
+    return response.status === 200
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const downvoteComment = async (questionId, commentId) => {
+  try {
+    const response = await axios.post(baseUrl + `/questions/${questionId}/likes/${commentId}`,{likes: -1}, config)
+    return response.status === 200
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const addQuestion = async (question) => {
   try {
     const response = await axios.post(baseUrl + '/questions', question, config)
@@ -94,4 +112,6 @@ export default {
   deleteQuestion,
   upvoteQuestion,
   downvoteQuestion,
+  upvoteComment,
+  downvoteComment,
 }
