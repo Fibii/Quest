@@ -283,6 +283,20 @@ const Question = () => {
     }
   }
 
+  const handleDeleteComment = async (commentId) => {
+    // todo: add confirmation window (material ui's not the browser's)
+    const response = await questionService.deleteComment(id, commentId)
+    if (response) {
+      const newComments = question.comments.filter(comment => comment.id !== commentId)
+      setQuestion({
+        ...question,
+        comments: newComments
+      })
+    } else {
+      setErrorMessage("error: couldn't connect to the server")
+    }
+  }
+
 
   /**
    * returns the number of likes if likes array is not empty, zero otherwise
@@ -440,7 +454,7 @@ const Question = () => {
 
                             {validator.isAuthor(user, comment) ? <ListItemSecondaryAction>
                               <IconButton edge="end" aria-label="delete"
-                                          onClick={() => alert('delete this')}>
+                                          onClick={() => handleDeleteComment(comment.id)}>
                                 <DeleteIcon/>
                               </IconButton>
                             </ListItemSecondaryAction> : ''}

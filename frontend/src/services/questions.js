@@ -40,6 +40,17 @@ const addComment = async (id, comment) => {
   }
 }
 
+const deleteComment = async (questionId, commentId) => {
+  try {
+    const response = await axios
+      .delete(baseUrl + `/questions/${questionId}/delete-comment/${commentId}`, config)
+
+    return response.status == 200
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const upvoteComment = async (questionId, commentId) => {
   try {
     const response = await axios.post(baseUrl + `/questions/${questionId}/likes/${commentId}`,{likes: 1}, config)
@@ -114,4 +125,5 @@ export default {
   downvoteQuestion,
   upvoteComment,
   downvoteComment,
+  deleteComment,
 }
