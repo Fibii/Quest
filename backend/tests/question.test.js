@@ -481,26 +481,25 @@ describe('question updation', () => {
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
         .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send({value: 1})
+        .send({likes: 1})
         .expect(200)
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send({value: 1})
+      .send({likes: 1})
       .expect(401)
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
         .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send({value: -1})
+        .send({likes: -1})
         .expect(200)
 
     await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-      .send({value: -1})
+      .send({likes: -1})
       .expect(401)
 
     const finalComment = await Comment.findById(commentResponse.body.id)
-    console.log(finalComment)
     const finalCommentLikes = finalComment.likes.map(like => like.value)
       .reduce((a, b) => a + b, 0)
 

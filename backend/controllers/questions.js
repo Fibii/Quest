@@ -270,31 +270,44 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-    if (!body.value) {
+    if (!body.likes) {
       return response.status(401)
           .json({ error: 'value must be provided as a number' })
     }
 
     const likeUsers = comment.likes.map(like => like.likedBy)
-    const currentLike = body.value >= 0 ? 1 : -1
 
     // if the user upvotes or downvotes again
     if (likeUsers.includes(user.id)) {
-      const userLike = (comment.likes.filter(like => like.likedBy == user.id)[0]).value
-      if (currentLike === userLike) {
+      const currentLike = body.likes >= 0 ? 1 : -1
+      const userLikes = comment.likes.filter(like => like.likedBy == user.id)
+      const userLike = userLikes[userLikes.length - 1].value
+      if (currentLike === userLike || currentLike * 2 == userLike) {
         return response.status(401).end()
+      } else {
+
+        const updatedComment = {
+          ...comment._doc,
+          likes: comment.likes.concat({
+            value: body.likes >= 0 ? 2 : -2,
+            likedBy: user.id
+          })
+        }
+
+        await Comment.findByIdAndUpdate(comment.id, updatedComment)
+        return response.status(200).end()
       }
     }
 
     const updatedComment = {
       ...comment._doc,
       likes: comment.likes.concat({
-        value: currentLike,
+        value: body.likes >= 0 ? 1 : -1,
         likedBy: user.id
       })
     }
 
-    await Comment.findByIdAndUpdate(commentID, updatedComment)
+    await Comment.findByIdAndUpdate(comment.id, updatedComment)
     return response.status(200).end()
 
   } catch (error) {
