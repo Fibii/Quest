@@ -93,7 +93,7 @@ const Question = () => {
   const [errorMessage, setErrorMessage] = useState('')
 
   const { id } = useParams()
-  const user = useContext(UserContext)
+  const [ user ] = useContext(UserContext)
   const history = useHistory()
 
   useEffect(() => {

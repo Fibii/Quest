@@ -30,32 +30,20 @@ const useStyles = makeStyles(theme => ({
 
 const Header = () => {
   const classes = useStyles()
-  const user = useContext(UserContext)
-
+  const [user, setUser] = useContext(UserContext)
+  console.log(user)
   return (
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
-        <Grid container justify='center' id='container'>
-          <Grid item style={{
-            position: 'absolute',
-            left: 0,
-            marginLeft: 8,
-            marginTop: 6
-          }}>
+        <Grid container justify='space-between' id='container'>
+          <Grid container justify={'center'} direction={'column'} xs={1}>
             <Link to={'/'}>
               <Button variant="outlined" size="small">
                 Home
               </Button>
             </Link>
-            { user ? <Link to={'/question/new'} style={{
-              marginLeft: 8
-            }}>
-              <Button variant="outlined" size="small">
-                New
-              </Button>
-            </Link> : '' }
           </Grid>
-          <Grid>
+          <Grid container justify={'center'} direction={'column'} xs={1}>
             <Typography
               component="h2"
               variant="h4"
@@ -67,6 +55,23 @@ const Header = () => {
             >
               QA
             </Typography>
+          </Grid>
+          <Grid container justify={'center'} direction={'column'} style={{
+            opacity: user ? '100%' : '0%'
+          }} xs={2}>
+            <Grid item>
+              <Link to={'/question/new'}>
+                <Button variant="outlined" size="small">
+                  New
+                </Button>
+              </Link>
+              <Button variant="outlined" size="small" onClick={() => setUser(null)}
+                      style={{
+                        marginLeft: 8
+                      }}>
+                Logout
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Toolbar>

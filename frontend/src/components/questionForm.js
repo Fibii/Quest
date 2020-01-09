@@ -47,7 +47,7 @@ const QuestionForm = () => {
   const [tagsHelperText, setTagsHelperText] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const user = useContext(UserContext)
+  const [ user ] = useContext(UserContext)
   const history = useHistory()
 
   const schema = Joi.object({
