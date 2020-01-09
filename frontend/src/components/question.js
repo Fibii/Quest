@@ -147,7 +147,7 @@ const Question = () => {
     }
   }
 
-  const handleUpvote = async () => {
+  const handleUpvoteQuestion = async () => {
     if (!user) {
       setErrorMessage('you must be a logged in to upvote')
       setTimeout(() => setErrorMessage(''), 5000)
@@ -176,7 +176,7 @@ const Question = () => {
     }
   }
 
-  const handleDownvote = async () => {
+  const handleDownvoteQuestion = async () => {
     if (!user) {
       setErrorMessage('you must be a logged in to downvote')
       setTimeout(() => setErrorMessage(''), 5000)
@@ -207,16 +207,17 @@ const Question = () => {
 
   /**
    * returns the number of likes if likes array is not empty, zero otherwise
-   * @return integer
+   * @param likeable, an object that has likes array
+   * @return number
    * */
-  const getQuestionLikes = () => {
-    if (question && question.likes && question.likes.length > 0) {
-      return question.likes.map(like => like.value).reduce((a,b) => a+b)
+  const getLikes = (likeable) => {
+    if (likeable && likeable.likes && likeable.likes.length > 0) {
+      return likeable.likes.map(like => like.value).reduce((a,b) => a+b)
     }
     return 0
   }
 
-  const likes = getQuestionLikes()
+  const questionLikes = getLikes(question)
 
   return (
     <div>
@@ -240,16 +241,16 @@ const Question = () => {
                     margin: '0 auto'
                   }}>
                     <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleUpvote}>
+                         className={classes.svg} onClick={handleUpvoteQuestion}>
                       <path
                         d="M17.504 26.025l.001-14.287 6.366 6.367L26 15.979 15.997 5.975 6 15.971 8.129 18.1l6.366-6.368v14.291z"/>
                     </svg>
                     <Typography variant="body1" display='block' gutterBottom
                                 className={classes.likes}>
-                      {likes}
+                      {questionLikes}
                     </Typography>
                     <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleDownvote}>
+                         className={classes.svg} onClick={handleDownvoteQuestion}>
                       <path
                         d="M14.496 5.975l-.001 14.287-6.366-6.367L6 16.021l10.003 10.004L26 16.029 23.871 13.9l-6.366 6.368V5.977z"/>
                     </svg>
@@ -338,7 +339,7 @@ const Question = () => {
                                 </svg>
                                 <Typography variant="body1" display='block' gutterBottom
                                             className={classes.likes}>
-                                  {comment.likes}
+                                  {getLikes(comment)}
                                 </Typography>
                                 <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
                                      className={classes.svg} onClick={() => alert('downvote')}>
