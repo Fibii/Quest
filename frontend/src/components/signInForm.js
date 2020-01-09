@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -44,9 +44,10 @@ const SignIn = ({ setUser }) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [redirect, setRedirect] = useState(false)
   const [rememberUser, setRememberUser] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const history = useHistory()
 
   const formHandler = async (event) => {
     event.preventDefault()
@@ -59,13 +60,12 @@ const SignIn = ({ setUser }) => {
       setTimeout(() => setErrorMessage(''), 5000)
     } else {
       setUser(user)
-      setRedirect(true)
       questionService.setToken(user.token)
       userService.setToken(user.token)
-
       if (rememberUser) {
         window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(user))
       }
+      history.push('/')
     }
   }
 
@@ -133,22 +133,13 @@ const SignIn = ({ setUser }) => {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
-                    {'Don\'t have an account? Sign Up'}
+                  <Link href="#" variant="body2" onClick={() => history.push('/register')}>
+                    {"Don\'t have an account? Sign Up"}
                   </Link>
                 </Grid>
               </Grid>
             </form>
           </div>
-          <Switch>
-            <Route exact path="/login" render={() => (
-              redirect ? (
-                <Redirect to="/"/>
-              ) : (
-                ''
-              )
-            )}/>
-          </Switch>
         </Container>
         <Copyright/>
       </div>
