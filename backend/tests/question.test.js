@@ -177,7 +177,48 @@ describe('question deletion', () => {
 
 describe('question updation', () => {
 
-  test("a question's with title and content can be updated by the author", async () => {
+  test('a question can be updated', async () => {
+    const initialQuestions = await testHelper.getQuestionsInDb()
+    const firstUserResponse = await getUserResponse()
+    const secondUserResponse = await getUserResponse(1)
+
+    const newQuestion = {
+      title: 'first question',
+      content: 'first question added for the sake of testing',
+      tags: ['testing', 'hello_world'],
+    }
+
+    const question = await api.post('/api/questions')
+      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+      .send(newQuestion)
+      .expect(201)
+
+    // edit title and content
+    const editedQuestion = {
+      title: 'this question has been edited',
+      content: 'this question has been edited',
+      tags: ['newTags'],
+    }
+
+    await api.put(`/api/questions/${question.body.id}`)
+      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+      .send(editedQuestion)
+      .expect(200)
+
+    await api.put(`/api/questions/${question.body.id}`)
+      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+      .send(editedQuestion)
+      .expect(401)
+
+    const finalQuestions = await testHelper.getQuestionsInDb()
+    const finalQuestion = finalQuestions.filter(finalQuestion => finalQuestion.id === question.body.id)[0]
+
+    expect(finalQuestion.title)
+      .toBe(editedQuestion.title)
+
+  })
+
+  test('a question\'s with title and content can be updated by the author', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
     const response = await getUserResponse()
 
