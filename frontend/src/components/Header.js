@@ -34,8 +34,10 @@ const Header = () => {
   return (
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
-        <Grid container justify='space-between' id='container'>
-          <Grid container justify={'center'} direction={'column'} xs={1} item={true}>
+        <Grid container justify={user ? 'space-between' : 'center'} id='container'>
+          <Grid container justify={'center'} direction={'column'} xs={1} item={true} style={{
+            display: user ? 'flex' : 'none'
+          }}>
             <Link to={'/'}>
               <Button variant="outlined" size="small">
                 Home
@@ -51,14 +53,14 @@ const Header = () => {
               noWrap
               className={classes.toolbarTitle}
               style={{
-                color: grey[300]
+                color: grey[600]
               }}
             >
               QA
             </Typography>
           </Grid>
           <Grid container justify={'center'} direction={'column'} style={{
-            opacity: user ? '100%' : '0%'
+            display: user ? 'flex' : 'none'
           }} xs={2} item={true}>
             <Grid item>
               <Link to={'/question/new'}>
