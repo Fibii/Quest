@@ -21,6 +21,8 @@ import Notification from './notification'
 import userService from '../services/users'
 import Header from './header'
 import validator from '../services/validator'
+import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -119,15 +121,31 @@ const InteractiveList = ({ user }) => {
                     <Grid container justify='center' direction='column' style={{
                       width: 60,
                     }}>
-                      <Box style={{
-                        padding: 0,
-                        margin: '0 auto',
-                      }}>
-                        <Typography variant='h6'>
-                          {question.likes.length == 0 ? 0 :
-                            question.likes.map(like => like.value).reduce((a,b) => a+b)}
-                        </Typography>
-                      </Box>
+                      <Grid container justify='center' direction='column'>
+                        <Box style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          overflow: 'hidden',
+                          paddingTop: 8,
+                          height: '100%',
+                          marginBottom: '4rem',
+                          padding: 0,
+                          margin: '0 auto',
+                        }}>
+                          <Typography variant='h6'>
+                            {question.likes.length == 0 ? 0 :
+                              question.likes.map(like => like.value).reduce((a,b) => a+b)}
+                          </Typography>
+                          <ThumbsUpDownIcon style={{
+                            fontSize: 16,
+                            marginTop: 4,
+                            marginLeft: 8,
+                            color: 'grey',
+                          }}/>
+                        </Box>
+                      </Grid>
                     </Grid>
 
                     <Grid item xs={10}>
@@ -137,15 +155,20 @@ const InteractiveList = ({ user }) => {
                             to={`/question/${question.id}`} style={{
                             textDecoration: 'none',
                           }}>
-                            <Typography variant='h6'>
+                            <Typography variant='h6' style={{
+                              overflowWrap: 'break-word'
+                            }}>
                               {question.title}
                             </Typography>
                           </Link>
                         }
-                        secondary={question.content.length > 100 ? question.content.substr(0, 100)
+                        secondary={question.content.length > 60 ? question.content.substr(0, 60)
                           .concat('...') : question.content}
                         display='block'
                         key={question.content}
+                        style={{
+                          overflowWrap: 'break-word'
+                        }}
                       />
                     </Grid>
 
