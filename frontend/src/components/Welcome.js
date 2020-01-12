@@ -57,7 +57,7 @@ const Welcome = () => {
         </Typography>
         <Typography variant="h5" align="center" color="textSecondary" paragraph>
           Question Answer webapp, made using react for the frontend and expressjs for the backend,
-          alongside with mongodb as a database choice, or we can just say made using mern stack :)
+          alongside mongodb as a database choice, or we can just say made using mern stack :)
         </Typography>
         <Typography variant="subtitle1" align="center" color="textSecondary">
           * you must be logged in to see how the app works, either *
