@@ -115,7 +115,12 @@ const downvoteQuestion = async (id) => {
 }
 
 const updateQuestion = async (id, updatedQuestion) => {
-
+  try {
+    const response = await axios.put(baseUrl + `/questions/${id}`, updatedQuestion, config)
+    return response.status === 200
+  } catch (error) {
+    console.log(error.response)
+  }
 }
 
 export default {

@@ -110,6 +110,7 @@ const Question = () => {
   const [editedQuestionTitle, setEditedQuestionTitle] = useState(null)
   const [editedQuestionContent, setEditedQuestionContent] = useState(null)
   const [editedQuestionTags, setEditedQuestionTags] = useState(null)
+  const [isQuestionSolved, setIsQuestionSolved] = useState(false)
   const [editedQuestionTitleHelperText, setEditedQuestionTitleHelperText] = useState('')
   const [editedQuestionContentHelperText, setEditedQuestionContentHelperText] = useState('')
   const [editedQuestionTagsHelperText, setEditedQuestionTagsHelperText] = useState('')
@@ -147,7 +148,7 @@ const Question = () => {
       }
     }
     getQuestion()
-  }, [showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags])
+  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags])
 
   const handleCommentPost = async (event) => {
     if (commentContent.length === 0) {
@@ -434,6 +435,7 @@ const Question = () => {
     const updatedQuestion = {
       title: editedQuestionTitle,
       content: editedQuestionContent,
+      solved: isQuestionSolved,
       tags: tags
     }
 
@@ -446,7 +448,7 @@ const Question = () => {
     if (error || editedQuestionTagsHelperText) {
       setErrorMessage('All fields are required, if a field is red, fix it')
     } else {
-      const response = await questionService.updateQuestion(id, updatedQuestion)
+      const response = await questionService.updateQuestion(question.id, updatedQuestion)
 
       if (!response || response.error) {
         setErrorMessage("error: could not update the question")
@@ -457,6 +459,7 @@ const Question = () => {
           content: updatedQuestion.content,
           tags: updatedQuestion.tags
         })
+        setShowEditFields(false)
       }
     }
   }
