@@ -114,6 +114,10 @@ const downvoteQuestion = async (id) => {
   }
 }
 
+const updateQuestion = async (id, updatedQuestion) => {
+
+}
+
 export default {
   getAll,
   setToken,
@@ -126,4 +130,5 @@ export default {
   upvoteComment,
   downvoteComment,
   deleteComment,
+  updateQuestion,
 }
