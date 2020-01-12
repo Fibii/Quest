@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Copyright from './copyrights'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import UserContext from './userContext'
 import questionService from '../services/questions'
 import validator from '../services/validator'
@@ -25,6 +25,8 @@ import grey from '@material-ui/core/colors/grey'
 import ShareIcon from '@material-ui/icons/Share'
 import EditIcon from '@material-ui/icons/Edit'
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline'
+import Snackbar from '@material-ui/core/Snackbar'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 const Joi = require('@hapi/joi')
 
@@ -114,6 +116,7 @@ const Question = () => {
   const [editedQuestionTitleHelperText, setEditedQuestionTitleHelperText] = useState('')
   const [editedQuestionContentHelperText, setEditedQuestionContentHelperText] = useState('')
   const [editedQuestionTagsHelperText, setEditedQuestionTagsHelperText] = useState('')
+  const [clipboardSnackbarOpen, setClipboardSnackbarOpen] = React.useState(false)
 
   const { id } = useParams()
   const [user] = useContext(UserContext)
@@ -148,7 +151,7 @@ const Question = () => {
       }
     }
     getQuestion()
-  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags])
+  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags, setClipboardSnackbarOpen])
 
   const handleCommentPost = async (event) => {
     if (commentContent.length === 0) {
@@ -464,6 +467,17 @@ const Question = () => {
     }
   }
 
+  const handleClipboardSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setClipboardSnackbarOpen(false)
+  }
+
+  const handleShareQuestion = () => {
+    setClipboardSnackbarOpen(true)
+  }
+
   return (
     <div>
       <Notification message={errorMessage}/>
@@ -523,14 +537,18 @@ const Question = () => {
                       <IconButton onClick={handleDeleteQuestion}>
                         <DeleteIcon onClick={handleDeleteQuestion}/>
                       </IconButton>
-
-                      <IconButton onClick={() => alert('share')}>
+                      <CopyToClipboard text={window.location.href}>
+                        <IconButton onClick={handleShareQuestion}>
+                          <ShareIcon/>
+                        </IconButton>
+                      </CopyToClipboard>
+                    </div>
+                    :
+                    <CopyToClipboard text={window.location.href}>
+                      <IconButton onClick={handleShareQuestion}>
                         <ShareIcon/>
                       </IconButton>
-                    </div>
-                    : <IconButton onClick={() => alert('share')}>
-                      <ShareIcon/>
-                    </IconButton>
+                    </CopyToClipboard>
                   }
                 </Grid>
 
@@ -763,6 +781,17 @@ const Question = () => {
         </div>
         <Copyright/>
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={clipboardSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClipboardSnackbar}
+        message="copied to clipboards"
+        color={grey[300]}
+      />
     </div>
   )
 }
