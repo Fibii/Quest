@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Switch, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
 import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import List from '@material-ui/core/List'
@@ -8,21 +9,14 @@ import IconButton from '@material-ui/core/IconButton'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
-
 import DeleteIcon from '@material-ui/icons/Delete'
 import Copyright from './copyrights'
-import SignIn from './signInForm'
-import SignUpForm from './signupForm'
-import Question from './question'
-import QuestionForm from './questionForm'
-import UserContext from './userContext'
-import questionService from '../services/questions'
 import Notification from './notification'
-import userService from '../services/users'
-import Header from './header'
-import validator from '../services/validator'
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown'
 
+import questionService from '../services/questions'
+import validator from '../services/validator'
+import userService from '../services/users'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,7 +55,7 @@ const useStyles = makeStyles(theme => ({
  *
  * @see validator
  * */
-const InteractiveList = ({ user }) => {
+const Questions = ({ user }) => {
   const classes = useStyles()
   const [dense, setDense] = useState(false)
   const [questions, setQuestions] = useState([])
@@ -136,7 +130,8 @@ const InteractiveList = ({ user }) => {
                         }}>
                           <Typography variant='h6'>
                             {question.likes.length == 0 ? 0 :
-                              question.likes.map(like => like.value).reduce((a,b) => a+b)}
+                              question.likes.map(like => like.value)
+                                .reduce((a, b) => a + b)}
                           </Typography>
                           <ThumbsUpDownIcon style={{
                             fontSize: 16,
@@ -194,59 +189,5 @@ const InteractiveList = ({ user }) => {
   )
 }
 
-const Welcome = () => {
 
-  return (
-    <div>
-
-      <Typography>
-        It looks like you're not logged in, to view the main app, either
-      </Typography>
-
-      <Link to={'/login'}>
-        Login
-      </Link>
-
-      <Typography>
-        or
-      </Typography>
-
-      <Link to={'/register'}>
-        Sign Up
-      </Link>
-    </div>
-  )
-}
-const MainApp = () => {
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    const loggedUser = window.localStorage.getItem('qa_userLoggedIn')
-    if (loggedUser) {
-      setUser(loggedUser)
-      questionService.setToken(loggedUser.token)
-      userService.setToken(loggedUser.token)
-    }
-  }, [])
-  return (
-    <UserContext.Provider value={[user, setUser]}>
-      <Header/>
-      <Switch>
-        <Route exact path="/" render={() => (
-          user ? (
-            <InteractiveList user={user}/>
-          ) : (
-            <Welcome/>
-          )
-        )}/>
-        <Route path='/welcome' render={() => <Welcome/>}/>
-        <Route path='/login' render={() => <SignIn setUser={setUser}/>}/>
-        <Route path='/register' component={SignUpForm}/>
-        <Route path='/question/new' exact render={() => <QuestionForm/>}/>
-        <Route path='/question/:id' exact render={() => <Question/>}/>
-      </Switch>
-    </UserContext.Provider>
-  )
-}
-
-export default MainApp
+export default Questions

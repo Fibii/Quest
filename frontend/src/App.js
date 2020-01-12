@@ -1,16 +1,12 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import Button from '@material-ui/core/Button'
-import SignUpForm from './components/signupForm'
-import SignIn from './components/signInForm'
-import MainApp from './components/questions'
+import MainApp from './components/mainApp'
+
 
 const App = () => {
   return (
     <BrowserRouter>
       <MainApp />
-
     </BrowserRouter>
   )
 }
