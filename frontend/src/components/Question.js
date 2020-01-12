@@ -13,13 +13,13 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Copyright from './copyrights'
+import Copyright from './Copyrights'
 import { useParams } from 'react-router-dom'
-import UserContext from './userContext'
+import UserContext from './UserContext'
 import questionService from '../services/questions'
 import validator from '../services/validator'
 import { useHistory } from 'react-router-dom'
-import Notification from './notification'
+import Notification from './Notification'
 import Divider from '@material-ui/core/Divider'
 import grey from '@material-ui/core/colors/grey'
 import ShareIcon from '@material-ui/icons/Share'
@@ -151,7 +151,7 @@ const Question = () => {
       }
     }
     getQuestion()
-  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags, setClipboardSnackbarOpen])
+  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags, setClipboardSnackbarOpen, id])
 
   const handleCommentPost = async (event) => {
     if (commentContent.length === 0) {
@@ -174,6 +174,7 @@ const Question = () => {
             likes: [],
           })
         })
+        setCommentContent('')
       }
     }
   }
@@ -202,7 +203,7 @@ const Question = () => {
     if (response) {
       let value = 1
       if (question.likes) {
-        const userLikes = question.likes.filter(like => like.likedBy == user.id)
+        const userLikes = question.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = 2
         }
@@ -231,7 +232,7 @@ const Question = () => {
     if (response) {
       let value = -1
       if (question.likes) {
-        const userLikes = question.likes.filter(like => like.likedBy == user.id)
+        const userLikes = question.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = -2
         }
@@ -259,7 +260,7 @@ const Question = () => {
     if (response) {
       let value = 1
       if (comment.likes) {
-        const userLikes = comment.likes.filter(like => like.likedBy == user.id)
+        const userLikes = comment.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = 2
         }
@@ -269,7 +270,7 @@ const Question = () => {
       // update the comments array
       const newComments = question.comments
       newComments.forEach(questionComment => {
-        if (questionComment.id == comment.id) {
+        if (questionComment.id === comment.id) {
           questionComment.likes.push({
             value: value,
             likedBy: user.id
@@ -299,7 +300,7 @@ const Question = () => {
     if (response) {
       let value = -1
       if (comment.likes) {
-        const userLikes = comment.likes.filter(like => like.likedBy == user.id)
+        const userLikes = comment.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already upvoted
           value = -2
         }
@@ -308,7 +309,7 @@ const Question = () => {
       // update the comments array
       const newComments = question.comments
       newComments.forEach(questionComment => {
-        if (questionComment.id == comment.id) {
+        if (questionComment.id === comment.id) {
           questionComment.likes.push({
             value: value,
             likedBy: user.id
@@ -535,7 +536,7 @@ const Question = () => {
                       </IconButton>
 
                       <IconButton onClick={handleDeleteQuestion}>
-                        <DeleteIcon onClick={handleDeleteQuestion}/>
+                        <DeleteIcon/>
                       </IconButton>
                       <CopyToClipboard text={window.location.href}>
                         <IconButton onClick={handleShareQuestion}>
@@ -656,6 +657,7 @@ const Question = () => {
                       marginBottom: 26
                     }}/>
                   :
+                  (question && question.tags && question.tags.length > 0) &&
                   <ButtonGroup size="small" aria-label="small outlined button group" style={{
                     marginBottom: 6,
                     marginLeft: 18,
@@ -667,8 +669,7 @@ const Question = () => {
                                                                                      minHeight: '20px',
                                                                                      fontSize: 10,
                                                                                    }}>{tag}</Button>)}
-                  </ButtonGroup>
-                }
+                  </ButtonGroup>}
 
                 <Typography variant='caption' style={{
                   color: 'grey',

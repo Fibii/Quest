@@ -10,8 +10,8 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Copyright from './copyrights'
-import Notification from './notification'
+import Copyright from './Copyrights'
+import Notification from './Notification'
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown'
 
 import questionService from '../services/questions'
@@ -129,7 +129,7 @@ const Questions = ({ user }) => {
                           margin: '0 auto',
                         }}>
                           <Typography variant='h6'>
-                            {question.likes.length == 0 ? 0 :
+                            {question.likes.length === 0 ? 0 :
                               question.likes.map(like => like.value)
                                 .reduce((a, b) => a + b)}
                           </Typography>

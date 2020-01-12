@@ -6,7 +6,7 @@ import grey from '@material-ui/core/colors/grey'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { Link } from 'react-router-dom'
-import UserContext from './userContext'
+import UserContext from './UserContext'
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -31,19 +31,18 @@ const useStyles = makeStyles(theme => ({
 const Header = () => {
   const classes = useStyles()
   const [user, setUser] = useContext(UserContext)
-  console.log(user)
   return (
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
         <Grid container justify='space-between' id='container'>
-          <Grid container justify={'center'} direction={'column'} xs={1}>
+          <Grid container justify={'center'} direction={'column'} xs={1} item={true}>
             <Link to={'/'}>
               <Button variant="outlined" size="small">
                 Home
               </Button>
             </Link>
           </Grid>
-          <Grid container justify={'center'} direction={'column'} xs={1}>
+          <Grid container justify={'center'} direction={'column'} xs={1} item={true}>
             <Typography
               component="h2"
               variant="h4"
@@ -51,14 +50,16 @@ const Header = () => {
               align="center"
               noWrap
               className={classes.toolbarTitle}
-              color={grey[300]}
+              style={{
+                color: grey[300]
+              }}
             >
               QA
             </Typography>
           </Grid>
           <Grid container justify={'center'} direction={'column'} style={{
             opacity: user ? '100%' : '0%'
-          }} xs={2}>
+          }} xs={2} item={true}>
             <Grid item>
               <Link to={'/question/new'}>
                 <Button variant="outlined" size="small">

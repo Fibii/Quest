@@ -4,9 +4,9 @@ import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
-import UserContext from './userContext'
-import Copyright from './copyrights'
-import Notification from './notification'
+import UserContext from './UserContext'
+import Copyright from './Copyrights'
+import Notification from './Notification'
 import questionService from '../services/questions'
 import { useHistory } from 'react-router-dom'
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-const QuestionForm = () => {
+const NewQuestionForm = () => {
   const classes = useStyles()
 
   const [questionTitle, setQuestionTitle] = useState('')
@@ -262,4 +262,4 @@ const QuestionForm = () => {
   )
 }
 
-export default QuestionForm
+export default NewQuestionForm

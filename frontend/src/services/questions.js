@@ -45,7 +45,7 @@ const deleteComment = async (questionId, commentId) => {
     const response = await axios
       .delete(baseUrl + `/questions/${questionId}/delete-comment/${commentId}`, config)
 
-    return response.status == 200
+    return response.status === 200
   } catch (error) {
     console.log(error)
   }

@@ -10,9 +10,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import Copyright from './copyrights'
-import Header from './header'
-import Notification from './notification'
+import Copyright from './Copyrights'
+import Header from './Header'
+import Notification from './Notification'
 import { useHistory } from 'react-router-dom'
 import userService from '../services/users'
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const SignUpForm = () => {
+const SignupForm = () => {
 
   const classes = useStyles()
 
@@ -309,4 +309,4 @@ const SignUpForm = () => {
   )
 
 }
-export default SignUpForm
+export default SignupForm
