@@ -1,126 +1,190 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import IconButton from '@material-ui/core/IconButton'
-import DeleteIcon from '@material-ui/icons/Delete'
-import Box from '@material-ui/core/Box'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Copyright from './Copyrights'
+import React, { useContext, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import UserContext from './UserContext'
 import questionService from '../services/questions'
-import validator from '../services/validator'
 import { useHistory } from 'react-router-dom'
-import Notification from './Notification'
-import Divider from '@material-ui/core/Divider'
-import grey from '@material-ui/core/colors/grey'
-import ShareIcon from '@material-ui/icons/Share'
-import EditIcon from '@material-ui/icons/Edit'
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline'
-import Snackbar from '@material-ui/core/Snackbar'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import questionActions from '../services/questionActions'
+import QuestionView from './QuestionView'
 
 const Joi = require('@hapi/joi')
 
-const useStyles = makeStyles(theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    position: 'relative',
-    minHeight: '100vh',
-    height: '100%',
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    overflow: 'hidden',
-    backgroundColor: grey[100],
-    paddingTop: 8,
-    height: '100%',
-    marginBottom: '4rem'
-  },
-  likeBox: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    overflow: 'hidden',
-    paddingTop: 8,
-    height: '100%',
-    marginBottom: '4rem'
-  },
-  gridList: {
-    prefWidth: 800,
-    height: '100%',
-    padding: 0
-  },
-
-  questionContent: {
-    maxWidth: 600
-  },
-
-  item: 0,
-
-  likes: {
-    padding: 0,
-    margin: '0 auto'
-  },
-
-  textArea: {
-    transition: 'none',
-  },
-
-  paper: {
-    width: 800,
-    margin: 2,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    displayDirection: 'column',
-  },
-
-  svg: {
-    '&:hover': {
-      fill: 'grey'
-    }
-  }
-
-
-}))
 
 const Question = () => {
 
-  const classes = useStyles()
+  const initialState = {
+    question: {},
+    commentContent: '',
+    errorMessage: '',
+    showEditFields: false,
+    editedQuestionTitle: null,
+    editedQuestionContent: null,
+    editedQuestionTags: null,
+    isQuestionSolved: false,
+    editedQuestionTitleHelperText: '',
+    editedQuestionContentHelperText: '',
+    editedQuestionTagsHelperText: '',
+    clipboardSnackbarOpen: false
+  }
 
-  const [dense, setDense] = useState(false)
-  const [question, setQuestion] = useState({})
-  const [commentContent, setCommentContent] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [showEditFields, setShowEditFields] = useState(false)
-  const [editedQuestionTitle, setEditedQuestionTitle] = useState(null)
-  const [editedQuestionContent, setEditedQuestionContent] = useState(null)
-  const [editedQuestionTags, setEditedQuestionTags] = useState(null)
-  const [isQuestionSolved, setIsQuestionSolved] = useState(false)
-  const [editedQuestionTitleHelperText, setEditedQuestionTitleHelperText] = useState('')
-  const [editedQuestionContentHelperText, setEditedQuestionContentHelperText] = useState('')
-  const [editedQuestionTagsHelperText, setEditedQuestionTagsHelperText] = useState('')
-  const [clipboardSnackbarOpen, setClipboardSnackbarOpen] = React.useState(false)
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case questionActions.SET_QUESTION:
+        return {
+          ...state,
+          question: action.question
+        }
+      case questionActions.SET_COMMENT_CONTENT:
+        return {
+          ...state,
+          commentContent: action.commentContent
+        }
+      case questionActions.SET_ERROR_MESSAGE:
+        return {
+          ...state,
+          errorMessage: action.errorMessage
+        }
+      case questionActions.SET_SHOW_EDIT_FIELDS:
+        return {
+          ...state,
+          showEditFields: action.showEditFields
+        }
+      case questionActions.SET_EDITED_QUESTION_TITLE:
+        return {
+          ...state,
+          editedQuestionTitle: action.editedQuestionTitle
+        }
+      case questionActions.SET_EDITED_QUESTION_CONTENT:
+        return {
+          ...state,
+          editedQuestionContent: action.editedQuestionContent
+        }
+      case questionActions.SET_EDITED_QUESTION_TAGS:
+        return {
+          ...state,
+          editedQuestionTags: action.editedQuestionTags
+        }
+      case questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT:
+        return {
+          ...state,
+          editedQuestionTitleHelperText: action.editedQuestionTitleHelperText
+        }
+      case questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT:
+        return {
+          ...state,
+          editedQuestionContentHelperText: action.editedQuestionContentHelperText
+        }
+      case questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT:
+        return {
+          ...state,
+          editedQuestionTagsHelperText: action.editedQuestionTagsHelperText
+        }
+      case questionActions.SET_IS_QUESTION_SOLVED:
+        return {
+          ...state,
+          isQuestionSolved: action.isQuestionSolved
+        }
+      case questionActions.SET_CLIPBOARD_SNACKBAR_OPEN:
+        return {
+          ...state,
+          clipboardSnackbarOpen: action.clipboardSnackbarOpen
+        }
+      default:
+        throw new Error('unknown action')
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   const { id } = useParams()
   const [user] = useContext(UserContext)
   const history = useHistory()
+
+  /**
+   * wrappers for useState setter functions
+   * */
+  const setQuestion = (question) => {
+    dispatch({
+      type: questionActions.SET_QUESTION,
+      question: question
+    })
+  }
+
+  const setErrorMessage = (errorMessage) => {
+    dispatch({
+      type: questionActions.SET_ERROR_MESSAGE,
+      errorMessage: errorMessage
+    })
+  }
+
+  const setCommentContent = (commentContent) => {
+    dispatch({
+      type: questionActions.SET_COMMENT_CONTENT,
+      commentContent: commentContent
+    })
+  }
+
+  const setShowEditFields = (showEditFields) => {
+    dispatch({
+      type: questionActions.SET_SHOW_EDIT_FIELDS,
+      showEditFields: showEditFields
+    })
+  }
+
+  const setEditedQuestionTitle = (editedQuestionTitle) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_TITLE,
+      editedQuestionTitle: editedQuestionTitle
+    })
+  }
+
+  const setEditedQuestionContent = (editedQuestionContent) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_CONTENT,
+      editedQuestionContent: editedQuestionContent
+    })
+  }
+
+  const setEditedQuestionTags = (editedQuestionTags) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_TAGS,
+      editedQuestionTags: editedQuestionTags
+    })
+  }
+
+  const setEditedQuestionTitleHelperText = (editedQuestionTitleHelperText) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT,
+      editedQuestionTitleHelperText: editedQuestionTitleHelperText
+    })
+  }
+
+  const setEditedQuestionContentHelperText = (editedQuestionContentHelperText) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT,
+      editedQuestionContentHelperText: editedQuestionContentHelperText
+    })
+  }
+
+  const setEditedQuestionTagsHelperText = (editedQuestionTagsHelperText) => {
+    dispatch({
+      type: questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT,
+      editedQuestionTagsHelperText: editedQuestionTagsHelperText
+    })
+  }
+
+  const setIsQuestionSolved = (isQuestionSolved) => {
+    dispatch({
+      type: questionActions.SET_IS_QUESTION_SOLVED,
+      isQuestionSolved: isQuestionSolved
+    })
+  }
+
+  const setClipboardSnackbarOpen = (clipboardSnackbarOpen) => {
+    dispatch({
+      type: questionActions.SET_CLIPBOARD_SNACKBAR_OPEN,
+      clipboardSnackbarOpen: clipboardSnackbarOpen
+    })
+  }
 
   /**
    * fetches the question from the backend and updates the question variable if no error,
@@ -137,28 +201,28 @@ const Question = () => {
         setErrorMessage('error: cannot connect to the server')
       } else {
         setQuestion(question)
-        if (editedQuestionTitle === null) { // if this is the first time loading the page
+        if (state.editedQuestionTitle === null) { // if this is the first time loading the page
           setEditedQuestionTitle(question.title)
         }
 
-        if (editedQuestionContent === null) {
+        if (state.editedQuestionContent === null) {
           setEditedQuestionContent(question.content)
         }
 
-        if (editedQuestionTags === null) {
+        if (state.editedQuestionTags === null) {
           setEditedQuestionTags(question.tags.join(', '))
         }
       }
     }
     getQuestion()
-  }, [question, showEditFields, editedQuestionTitle, editedQuestionContent, editedQuestionTags, setClipboardSnackbarOpen, id])
+  }, [id])
 
   const handleCommentPost = async (event) => {
-    if (commentContent.length === 0) {
+    if (state.commentContent.length === 0) {
       setErrorMessage('comment must not be empty')
     } else {
       const comment = {
-        content: commentContent,
+        content: state.commentContent,
         postedBy: user,
       }
 
@@ -167,8 +231,8 @@ const Question = () => {
         setErrorMessage('error: couldn\'t add a new comment, try again later')
       } else {
         setQuestion({
-          ...question,
-          comments: question.comments.concat({
+          ...state.question,
+          comments: state.question.comments.concat({
             ...comment,
             id: newComment.data.id,
             likes: [],
@@ -202,15 +266,15 @@ const Question = () => {
     const response = await questionService.upvoteQuestion(id)
     if (response) {
       let value = 1
-      if (question.likes) {
-        const userLikes = question.likes.filter(like => like.likedBy === user.id)
+      if (state.question.likes) {
+        const userLikes = state.question.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = 2
         }
       }
       setQuestion({
-        ...question,
-        likes: question.likes.concat({
+        ...state.question,
+        likes: state.question.likes.concat({
           value: value,
           likedBy: user.id
         })
@@ -231,15 +295,15 @@ const Question = () => {
     const response = await questionService.downvoteQuestion(id)
     if (response) {
       let value = -1
-      if (question.likes) {
-        const userLikes = question.likes.filter(like => like.likedBy === user.id)
+      if (state.question.likes) {
+        const userLikes = state.question.likes.filter(like => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = -2
         }
       }
       setQuestion({
-        ...question,
-        likes: question.likes.concat({
+        ...state.question,
+        likes: state.question.likes.concat({
           value: value,
           likedBy: user.id
         })
@@ -266,9 +330,9 @@ const Question = () => {
         }
       }
 
-      console.log(question.comments)
+      console.log(state.question.comments)
       // update the comments array
-      const newComments = question.comments
+      const newComments = state.question.comments
       newComments.forEach(questionComment => {
         if (questionComment.id === comment.id) {
           questionComment.likes.push({
@@ -279,7 +343,7 @@ const Question = () => {
       })
 
       setQuestion({
-        ...question,
+        ...state.question,
         comments: newComments
       })
 
@@ -307,7 +371,7 @@ const Question = () => {
       }
 
       // update the comments array
-      const newComments = question.comments
+      const newComments = state.question.comments
       newComments.forEach(questionComment => {
         if (questionComment.id === comment.id) {
           questionComment.likes.push({
@@ -318,7 +382,7 @@ const Question = () => {
       })
 
       setQuestion({
-        ...question,
+        ...state.question,
         comments: newComments
       })
 
@@ -332,9 +396,9 @@ const Question = () => {
     // todo: add confirmation window (material ui's not the browser's)
     const response = await questionService.deleteComment(id, commentId)
     if (response) {
-      const newComments = question.comments.filter(comment => comment.id !== commentId)
+      const newComments = state.question.comments.filter(comment => comment.id !== commentId)
       setQuestion({
-        ...question,
+        ...state.question,
         comments: newComments
       })
     } else {
@@ -343,20 +407,6 @@ const Question = () => {
   }
 
 
-  /**
-   * returns the number of likes if likes array is not empty, zero otherwise
-   * @param likeable, an object that has likes array
-   * @return number
-   * */
-  const getLikes = (likeable) => {
-    if (likeable && likeable.likes && likeable.likes.length > 0) {
-      return likeable.likes.map(like => like.value)
-        .reduce((a, b) => a + b)
-    }
-    return 0
-  }
-
-  const questionLikes = getLikes(question)
 
   const schema = Joi.object({
     title: Joi.string()
@@ -381,7 +431,7 @@ const Question = () => {
     setEditedQuestionTitleHelperText('')
 
     const { error } = schema.validate({
-      title: editedQuestionTitle
+      title: state.editedQuestionTitle
     })
 
     if (error) {
@@ -401,7 +451,7 @@ const Question = () => {
     setEditedQuestionContentHelperText('')
 
     const { error } = schema.validate({
-      content: editedQuestionContent
+      content: state.editedQuestionContent
     })
 
     if (error) {
@@ -432,33 +482,33 @@ const Question = () => {
 
   const handleQuestionUpdate = async () => {
 
-    const tags = editedQuestionTags.split(',')
+    const tags = state.editedQuestionTags.split(',')
       .map(tag => tag.replace(/^\s+|\s+$/gm, ''))
       .filter(tag => tag.length > 0)
 
     const updatedQuestion = {
-      title: editedQuestionTitle,
-      content: editedQuestionContent,
-      solved: isQuestionSolved,
+      title: state.editedQuestionTitle,
+      content: state.editedQuestionContent,
+      solved: state.isQuestionSolved,
       tags: tags
     }
 
     // validating only these two to allow empty tags, maybe refactor this later
     const { error } = schema.validate({
-      title: editedQuestionTitle,
-      content: editedQuestionContent,
+      title: state.editedQuestionTitle,
+      content: state.editedQuestionContent,
     })
 
-    if (error || editedQuestionTagsHelperText) {
+    if (error || state.editedQuestionTagsHelperText) {
       setErrorMessage('All fields are required, if a field is red, fix it')
     } else {
-      const response = await questionService.updateQuestion(question.id, updatedQuestion)
+      const response = await questionService.updateQuestion(state.question.id, updatedQuestion)
 
       if (!response || response.error) {
-        setErrorMessage("error: could not update the question")
+        setErrorMessage('error: could not update the question')
       } else {
         setQuestion({
-          ...question,
+          ...state.question,
           title: updatedQuestion.title,
           content: updatedQuestion.content,
           tags: updatedQuestion.tags
@@ -480,320 +530,24 @@ const Question = () => {
   }
 
   return (
-    <div>
-      <Notification message={errorMessage}/>
-      <div className={classes.container}>
-        <div className={classes.root} style={{
-          paddingBottom: '3 rem'
-        }}>
-          <CssBaseline/>
-          <Paper className={classes.paper} elevation={2} style={{
-            marginBottom: 32,
-            marginTop: 0
-          }}>
-            <Grid container justify='space-between' direction='column'>
-              <Grid container justify='space-between'>
-                {showEditFields ?
-                  <TextField
-                    helperText={editedQuestionTitleHelperText}
-                    error={editedQuestionTitleHelperText.length > 0}
-                    id="editedQuestionTitle"
-                    label="Title"
-                    variant="outlined"
-                    value={editedQuestionTitle}
-                    onChange={handleEditedTitle}
-                    style={{
-                      width: 560,
-                      margin: 8
-                    }}/>
-                  :
-                  <Grid container justify={'center'} direction={'column'} style={{
-                    marginLeft: 20,
-                    width: 600
-                  }}>
-                    <Typography variant="h5" align={'left'} style={{
-                      width: 600,
-                      overflowWrap: 'break-word',
-                    }}>
-                      {question.title}
-                    </Typography>
-                  </Grid>
-                }
-                <Grid item style={{
-                  marginRight: 16,
-                  marginTop: 8
-                }}>
-                  {validator.isAuthor(user, question) ?
-                    <div edge="end" aria-label="icons">
-
-                      {showEditFields &&
-                      <IconButton onClick={handleQuestionUpdate}>
-                        <CheckCircleOutlineIcon/>
-                      </IconButton>}
-
-                      <IconButton onClick={() => setShowEditFields(!showEditFields)}>
-                        <EditIcon/>
-                      </IconButton>
-
-                      <IconButton onClick={handleDeleteQuestion}>
-                        <DeleteIcon/>
-                      </IconButton>
-                      <CopyToClipboard text={window.location.href}>
-                        <IconButton onClick={handleShareQuestion}>
-                          <ShareIcon/>
-                        </IconButton>
-                      </CopyToClipboard>
-                    </div>
-                    :
-                    <CopyToClipboard text={window.location.href}>
-                      <IconButton onClick={handleShareQuestion}>
-                        <ShareIcon/>
-                      </IconButton>
-                    </CopyToClipboard>
-                  }
-                </Grid>
-
-              </Grid>
-              <Divider style={{
-                width: 760,
-                margin: '0 auto',
-                marginTop: 8,
-                marginBottom: showEditFields ? 20 : 8
-              }}/>
-              <Grid container>
-                <Grid container justify='center' direction='column' style={{
-                  width: 40,
-                  display: showEditFields ? 'none' : 'flex'
-                }}>
-                  <Box className={classes.likeBox} mr={2} id='likesBox' style={{
-                    padding: 0,
-                    margin: '0 auto',
-                  }}>
-                    <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleUpvoteQuestion}>
-                      <path
-                        d="M17.504 26.025l.001-14.287 6.366 6.367L26 15.979 15.997 5.975 6 15.971 8.129 18.1l6.366-6.368v14.291z"/>
-                    </svg>
-                    <Typography variant="body1" display='block' gutterBottom
-                                className={classes.likes}>
-                      {questionLikes}
-                    </Typography>
-                    <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleDownvoteQuestion}>
-                      <path
-                        d="M14.496 5.975l-.001 14.287-6.366-6.367L6 16.021l10.003 10.004L26 16.029 23.871 13.9l-6.366 6.368V5.977z"/>
-                    </svg>
-                  </Box>
-                </Grid>
-                <Grid item style={{
-                  marginRight: 8
-                }}>
-                  {showEditFields ?
-                    <TextField
-                      helperText={editedQuestionContentHelperText}
-                      error={editedQuestionContentHelperText.length > 0}
-                      id="editedQuestionContent"
-                      label="Content"
-                      variant="outlined"
-                      value={editedQuestionContent}
-                      multiline={true}
-                      rows={3}
-                      rowsMax={8}
-                      fullWidth
-                      onChange={handleEditedContent}
-                      style={{
-                        width: 740,
-                        marginLeft: 8
-                      }}
-                    />
-                    :
-                    <Grid item>
-                      <Typography
-                        variant="body1"
-                        className={classes.questionContent}
-                        display='block'
-                        paragraph={true}
-                        key={question.content}
-                        gutterBottom
-                        align={'left'}
-                        style={{
-                          overflowWrap: 'break-word'
-                        }}
-                      >
-                        {question.content}
-                      </Typography>
-
-                    </Grid>
-                  }
-
-                </Grid>
-
-                <Grid item style={{
-                  position: 'relative',
-                  top: '50%',
-                  marginRight: 16
-                }}>
-
-                </Grid>
-
-              </Grid>
-
-              <Grid item style={{
-                position: 'relative',
-                marginTop: 16
-              }}>
-                {showEditFields ?
-                  <TextField
-                    helperText={editedQuestionTagsHelperText}
-                    error={editedQuestionTagsHelperText.length > 0}
-                    id="editedQuestionTags"
-                    label="Tags"
-                    variant="outlined"
-                    value={editedQuestionTags}
-                    onChange={handleEditedTags}
-                    style={{
-                      width: 740,
-                      margin: 8,
-                      marginBottom: 26
-                    }}/>
-                  :
-                  (question && question.tags && question.tags.length > 0) &&
-                  <ButtonGroup size="small" aria-label="small outlined button group" style={{
-                    marginBottom: 6,
-                    marginLeft: 18,
-                  }}>
-                    {question && question.tags && question.tags.map(tag => <Button key={tag}
-                                                                                   style={{
-                                                                                     maxHeight: '20px',
-                                                                                     minWidth: '60px',
-                                                                                     minHeight: '20px',
-                                                                                     fontSize: 10,
-                                                                                   }}>{tag}</Button>)}
-                  </ButtonGroup>}
-
-                <Typography variant='caption' style={{
-                  color: 'grey',
-                  marginRight: 8,
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0,
-                  marginBottom: 2,
-                }}>
-                  posted by: {question && question.postedBy && question.postedBy.username}
-                </Typography>
-              </Grid>
-
-            </Grid>
-          </Paper>
-          <Grid container justify='center' direction='column'>
-            <Grid item>
-              <List dense={dense} className={classes.gridList}>
-                {question && question.comments && question.comments.map(comment =>
-                  <Paper className={classes.paper} key={comment.content + comment.likes} style={{
-                    marginTop: 8
-                  }}>
-                    <Grid container justify='space-between' direction='column'>
-
-                      <Grid container>
-                        <ListItem key={comment.content} alignItems='center' disableGutters>
-                          <Grid container justify='center' direction='column' style={{
-                            width: 40,
-                            height: '100%',
-                            marginRight: 8,
-                          }}>
-                            <Box className={classes.likeBox} mr={2} id='likesBox' style={{
-                              padding: 0,
-                              margin: '0 auto',
-                              float: 'top'
-                            }}>
-                              <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                                   className={classes.svg}
-                                   onClick={() => handleUpvoteComment(comment)}>
-                                <path
-                                  d="M17.504 26.025l.001-14.287 6.366 6.367L26 15.979 15.997 5.975 6 15.971 8.129 18.1l6.366-6.368v14.291z"/>
-                              </svg>
-                              <Typography variant="body1" display='block' gutterBottom
-                                          className={classes.likes}>
-                                {getLikes(comment)}
-                              </Typography>
-                              <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                                   className={classes.svg}
-                                   onClick={() => handleDownvoteComment(comment)}>
-                                <path
-                                  d="M14.496 5.975l-.001 14.287-6.366-6.367L6 16.021l10.003 10.004L26 16.029 23.871 13.9l-6.366 6.368V5.977z"/>
-                              </svg>
-                            </Box>
-                          </Grid>
-
-                          <Grid item>
-                            <Typography variant={'subtitle1'} style={{
-                              width: 700
-                            }}>
-                              {comment.content}
-                            </Typography>
-
-                            {validator.isAuthor(user, comment) ? <ListItemSecondaryAction>
-                              <IconButton edge="end" aria-label="delete"
-                                          onClick={() => handleDeleteComment(comment.id)}>
-                                <DeleteIcon/>
-                              </IconButton>
-                            </ListItemSecondaryAction> : ''}
-                          </Grid>
-
-                        </ListItem>
-                      </Grid>
-
-                      <Grid item>
-                        <Typography variant='caption' style={{
-                          float: 'right',
-                          marginRight: 8,
-                          marginBottom: 2,
-                          color: 'grey'
-                        }}>
-                          posted by: {comment.postedBy.username}
-                        </Typography>
-                      </Grid>
-
-                    </Grid>
-
-
-                  </Paper>
-                )
-                }
-                {user ? <ListItem>
-                  <TextField
-                    placeholder="Add a comment"
-                    multiline={true}
-                    rows={3}
-                    rowsMax={8}
-                    fullWidth
-                    variant="outlined"
-                    onChange={(event) => setCommentContent(event.target.value)}
-                  />
-                  <Button
-                    variant="outlined"
-                    onClick={handleCommentPost}>
-                    submit
-                  </Button>
-                </ListItem> : ''}
-              </List>
-            </Grid>
-          </Grid>
-        </div>
-        <Copyright/>
-      </div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={clipboardSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleClipboardSnackbar}
-        message="copied to clipboards"
-        color={grey[300]}
-      />
-    </div>
+    <QuestionView
+      user={user}
+      state={state}
+      dispatch={dispatch}
+      handleUpvoteQuestion={handleUpvoteQuestion}
+      handleShareQuestion={handleShareQuestion}
+      handleQuestionUpdate={handleQuestionUpdate}
+      handleEditedTitle={handleEditedTitle}
+      handleEditedTags={handleEditedTags}
+      handleEditedContent={handleEditedContent}
+      handleDownvoteQuestion={handleDownvoteQuestion}
+      handleDeleteQuestion={handleDeleteQuestion}
+      handleCommentPost={handleCommentPost}
+      handleClipboardSnackbar={handleClipboardSnackbar}
+      handleDeleteComment={handleDeleteComment}
+      handleDownvoteComment={handleDownvoteComment}
+      handleUpvoteComment={handleUpvoteComment}
+    />
   )
 }
 
