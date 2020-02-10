@@ -25,7 +25,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import grey from '@material-ui/core/colors/grey'
 
 import validator from '../services/validator'
-import questionActions from '../services/questionActions'
+import questionActions from '../actions/questionAction'
 
 
 const useStyles = makeStyles(theme => ({

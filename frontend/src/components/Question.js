@@ -3,188 +3,32 @@ import { useParams } from 'react-router-dom'
 import UserContext from './UserContext'
 import questionService from '../services/questions'
 import { useHistory } from 'react-router-dom'
-import questionActions from '../services/questionActions'
 import QuestionView from './QuestionView'
+import { questionReducer, initialState } from '../reducers/QuestionReducer'
+import {
+  setQuestion,
+  setEditedQuestionTagsHelperText,
+  setEditedQuestionContentHelperText,
+  setEditedQuestionContent,
+  setEditedQuestionTags,
+  setEditedQuestionTitle,
+  setEditedQuestionTitleHelperText,
+  setShowEditFields,
+  setClipboardSnackbarOpen,
+  setCommentContent,
+  setErrorMessage
+} from '../actions/questionActions'
 
 const Joi = require('@hapi/joi')
 
 
 const Question = () => {
 
-  const initialState = {
-    question: {},
-    commentContent: '',
-    errorMessage: '',
-    showEditFields: false,
-    editedQuestionTitle: null,
-    editedQuestionContent: null,
-    editedQuestionTags: null,
-    isQuestionSolved: false,
-    editedQuestionTitleHelperText: '',
-    editedQuestionContentHelperText: '',
-    editedQuestionTagsHelperText: '',
-    clipboardSnackbarOpen: false
-  }
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case questionActions.SET_QUESTION:
-        return {
-          ...state,
-          question: action.question
-        }
-      case questionActions.SET_COMMENT_CONTENT:
-        return {
-          ...state,
-          commentContent: action.commentContent
-        }
-      case questionActions.SET_ERROR_MESSAGE:
-        return {
-          ...state,
-          errorMessage: action.errorMessage
-        }
-      case questionActions.SET_SHOW_EDIT_FIELDS:
-        return {
-          ...state,
-          showEditFields: action.showEditFields
-        }
-      case questionActions.SET_EDITED_QUESTION_TITLE:
-        return {
-          ...state,
-          editedQuestionTitle: action.editedQuestionTitle
-        }
-      case questionActions.SET_EDITED_QUESTION_CONTENT:
-        return {
-          ...state,
-          editedQuestionContent: action.editedQuestionContent
-        }
-      case questionActions.SET_EDITED_QUESTION_TAGS:
-        return {
-          ...state,
-          editedQuestionTags: action.editedQuestionTags
-        }
-      case questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT:
-        return {
-          ...state,
-          editedQuestionTitleHelperText: action.editedQuestionTitleHelperText
-        }
-      case questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT:
-        return {
-          ...state,
-          editedQuestionContentHelperText: action.editedQuestionContentHelperText
-        }
-      case questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT:
-        return {
-          ...state,
-          editedQuestionTagsHelperText: action.editedQuestionTagsHelperText
-        }
-      case questionActions.SET_IS_QUESTION_SOLVED:
-        return {
-          ...state,
-          isQuestionSolved: action.isQuestionSolved
-        }
-      case questionActions.SET_CLIPBOARD_SNACKBAR_OPEN:
-        return {
-          ...state,
-          clipboardSnackbarOpen: action.clipboardSnackbarOpen
-        }
-      default:
-        throw new Error('unknown action')
-    }
-  }
-
-  const [state, dispatch] = useReducer(reducer, initialState)
-
+  const [state, dispatch] = useReducer(questionReducer, initialState)
   const { id } = useParams()
   const [user] = useContext(UserContext)
   const history = useHistory()
 
-  /**
-   * wrappers for useState setter functions
-   * */
-  const setQuestion = (question) => {
-    dispatch({
-      type: questionActions.SET_QUESTION,
-      question: question
-    })
-  }
-
-  const setErrorMessage = (errorMessage) => {
-    dispatch({
-      type: questionActions.SET_ERROR_MESSAGE,
-      errorMessage: errorMessage
-    })
-  }
-
-  const setCommentContent = (commentContent) => {
-    dispatch({
-      type: questionActions.SET_COMMENT_CONTENT,
-      commentContent: commentContent
-    })
-  }
-
-  const setShowEditFields = (showEditFields) => {
-    dispatch({
-      type: questionActions.SET_SHOW_EDIT_FIELDS,
-      showEditFields: showEditFields
-    })
-  }
-
-  const setEditedQuestionTitle = (editedQuestionTitle) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_TITLE,
-      editedQuestionTitle: editedQuestionTitle
-    })
-  }
-
-  const setEditedQuestionContent = (editedQuestionContent) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_CONTENT,
-      editedQuestionContent: editedQuestionContent
-    })
-  }
-
-  const setEditedQuestionTags = (editedQuestionTags) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_TAGS,
-      editedQuestionTags: editedQuestionTags
-    })
-  }
-
-  const setEditedQuestionTitleHelperText = (editedQuestionTitleHelperText) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT,
-      editedQuestionTitleHelperText: editedQuestionTitleHelperText
-    })
-  }
-
-  const setEditedQuestionContentHelperText = (editedQuestionContentHelperText) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT,
-      editedQuestionContentHelperText: editedQuestionContentHelperText
-    })
-  }
-
-  const setEditedQuestionTagsHelperText = (editedQuestionTagsHelperText) => {
-    dispatch({
-      type: questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT,
-      editedQuestionTagsHelperText: editedQuestionTagsHelperText
-    })
-  }
-
-  const setIsQuestionSolved = (isQuestionSolved) => {
-    dispatch({
-      type: questionActions.SET_IS_QUESTION_SOLVED,
-      isQuestionSolved: isQuestionSolved
-    })
-  }
-
-  const setClipboardSnackbarOpen = (clipboardSnackbarOpen) => {
-    dispatch({
-      type: questionActions.SET_CLIPBOARD_SNACKBAR_OPEN,
-      clipboardSnackbarOpen: clipboardSnackbarOpen
-    })
-  }
 
   /**
    * fetches the question from the backend and updates the question variable if no error,
@@ -198,19 +42,19 @@ const Question = () => {
     const getQuestion = async () => {
       const question = await questionService.get(id)
       if (!question || question.error) {
-        setErrorMessage('error: cannot connect to the server')
+        dispatch(setErrorMessage('error: cannot connect to the server'))
       } else {
-        setQuestion(question)
+        dispatch(setQuestion(question))
         if (state.editedQuestionTitle === null) { // if this is the first time loading the page
-          setEditedQuestionTitle(question.title)
+          dispatch(setEditedQuestionTitle(question.title))
         }
 
         if (state.editedQuestionContent === null) {
-          setEditedQuestionContent(question.content)
+          dispatch(setEditedQuestionContent(question.content))
         }
 
         if (state.editedQuestionTags === null) {
-          setEditedQuestionTags(question.tags.join(', '))
+          dispatch(setEditedQuestionTags(question.tags.join(', ')))
         }
       }
     }
@@ -219,7 +63,7 @@ const Question = () => {
 
   const handleCommentPost = async (event) => {
     if (state.commentContent.length === 0) {
-      setErrorMessage('comment must not be empty')
+      dispatch(setErrorMessage('comment must not be empty'))
     } else {
       const comment = {
         content: state.commentContent,
@@ -228,17 +72,17 @@ const Question = () => {
 
       const newComment = await questionService.addComment(id, comment)
       if (!newComment || newComment.error) {
-        setErrorMessage('error: couldn\'t add a new comment, try again later')
+        dispatch(setErrorMessage('error: couldn\'t add a new comment, try again later'))
       } else {
-        setQuestion({
+        dispatch(setQuestion({
           ...state.question,
           comments: state.question.comments.concat({
             ...comment,
             id: newComment.data.id,
             likes: [],
           })
-        })
-        setCommentContent('')
+        }))
+        dispatch(setCommentContent(''))
       }
     }
   }
@@ -251,14 +95,14 @@ const Question = () => {
     if (response) {
       history.push('/')
     } else {
-      setErrorMessage('error: couldn\'t delete the question')
+      dispatch(setErrorMessage('error: couldn\'t delete the question'))
       setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteQuestion = async () => {
     if (!user) {
-      setErrorMessage('you must be a logged in to upvote')
+      dispatch(setErrorMessage('you must be a logged in to upvote'))
       setTimeout(() => setErrorMessage(''), 5000)
       return
     }
@@ -272,22 +116,22 @@ const Question = () => {
           value = 2
         }
       }
-      setQuestion({
+      dispatch(setQuestion({
         ...state.question,
         likes: state.question.likes.concat({
           value: value,
           likedBy: user.id
         })
-      })
+      }))
     } else {
-      setErrorMessage('error: could not upvote')
+      dispatch(setErrorMessage('error: could not upvote'))
       setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteQuestion = async () => {
     if (!user) {
-      setErrorMessage('you must be a logged in to downvote')
+      dispatch(setErrorMessage('you must be a logged in to downvote'))
       setTimeout(() => setErrorMessage(''), 5000)
       return
     }
@@ -301,22 +145,22 @@ const Question = () => {
           value = -2
         }
       }
-      setQuestion({
+      dispatch(setQuestion({
         ...state.question,
         likes: state.question.likes.concat({
           value: value,
           likedBy: user.id
         })
-      })
+      }))
     } else {
-      setErrorMessage('error: could not downvote')
+      dispatch(setErrorMessage('error: could not downvote'))
       setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteComment = async (comment) => {
     if (!user) {
-      setErrorMessage('you must be a logged in to upvote')
+      dispatch(setErrorMessage('you must be a logged in to upvote'))
       setTimeout(() => setErrorMessage(''), 5000)
       return
     }
@@ -342,20 +186,20 @@ const Question = () => {
         }
       })
 
-      setQuestion({
+      dispatch(setQuestion({
         ...state.question,
         comments: newComments
-      })
+      }))
 
     } else {
-      setErrorMessage('error: could not upvote')
+      dispatch(setErrorMessage('error: could not upvote'))
       setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteComment = async (comment) => {
     if (!user) {
-      setErrorMessage('you must be a logged in to downvote')
+      dispatch(setErrorMessage('you must be a logged in to downvote'))
       setTimeout(() => setErrorMessage(''), 5000)
       return
     }
@@ -381,13 +225,13 @@ const Question = () => {
         }
       })
 
-      setQuestion({
+      dispatch(setQuestion({
         ...state.question,
         comments: newComments
-      })
+      }))
 
     } else {
-      setErrorMessage('error: could not downvote')
+      dispatch(setErrorMessage('error: could not downvote'))
       setTimeout(() => setErrorMessage(''), 5000)
     }
   }
@@ -397,15 +241,14 @@ const Question = () => {
     const response = await questionService.deleteComment(id, commentId)
     if (response) {
       const newComments = state.question.comments.filter(comment => comment.id !== commentId)
-      setQuestion({
+      dispatch(setQuestion({
         ...state.question,
         comments: newComments
-      })
+      }))
     } else {
-      setErrorMessage('error: couldn\'t connect to the server')
+      dispatch(setErrorMessage('error: couldn\'t connect to the server'))
     }
   }
-
 
 
   const schema = Joi.object({
@@ -427,15 +270,15 @@ const Question = () => {
    * @param event, react onChange event used to get the value of the textfield
    * */
   const handleEditedTitle = (event) => {
-    setEditedQuestionTitle(event.target.value)
-    setEditedQuestionTitleHelperText('')
+    dispatch(setEditedQuestionTitle(event.target.value))
+    dispatch(setEditedQuestionTitleHelperText(''))
 
     const { error } = schema.validate({
       title: state.editedQuestionTitle
     })
 
     if (error) {
-      setEditedQuestionTitleHelperText('title must be 6 characters long at least and 64 at most')
+      dispatch(setEditedQuestionTitleHelperText('title must be 6 characters long at least and 64 at most'))
     }
 
   }
@@ -447,15 +290,15 @@ const Question = () => {
    * @param event, react onChange event used to get the value of the textfield
    * */
   const handleEditedContent = (event) => {
-    setEditedQuestionContent(event.target.value)
-    setEditedQuestionContentHelperText('')
+    dispatch(setEditedQuestionContent(event.target.value))
+    dispatch(setEditedQuestionContentHelperText(''))
 
     const { error } = schema.validate({
       content: state.editedQuestionContent
     })
 
     if (error) {
-      setEditedQuestionContentHelperText('content must be at least 8 characters long')
+      dispatch(setEditedQuestionContentHelperText('content must be at least 8 characters long'))
     }
 
   }
@@ -468,15 +311,15 @@ const Question = () => {
    * */
   const handleEditedTags = (event) => {
     const tags = event.target.value
-    setEditedQuestionTags(tags)
-    setEditedQuestionTagsHelperText('')
+    dispatch(setEditedQuestionTags(tags))
+    dispatch(setEditedQuestionTagsHelperText(''))
 
     const { error } = schema.validate({
       tags: tags
     })
 
     if (error) {
-      setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"')
+      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"'))
     }
   }
 
@@ -500,20 +343,20 @@ const Question = () => {
     })
 
     if (error || state.editedQuestionTagsHelperText) {
-      setErrorMessage('All fields are required, if a field is red, fix it')
+      dispatch(setErrorMessage('All fields are required, if a field is red, fix it'))
     } else {
       const response = await questionService.updateQuestion(state.question.id, updatedQuestion)
 
       if (!response || response.error) {
-        setErrorMessage('error: could not update the question')
+        dispatch(setErrorMessage('error: could not update the question'))
       } else {
-        setQuestion({
+        dispatch(setQuestion({
           ...state.question,
           title: updatedQuestion.title,
           content: updatedQuestion.content,
           tags: updatedQuestion.tags
-        })
-        setShowEditFields(false)
+        }))
+        dispatch(setShowEditFields(false))
       }
     }
   }
@@ -522,11 +365,11 @@ const Question = () => {
     if (reason === 'clickaway') {
       return
     }
-    setClipboardSnackbarOpen(false)
+    dispatch(setClipboardSnackbarOpen(false))
   }
 
   const handleShareQuestion = () => {
-    setClipboardSnackbarOpen(true)
+    dispatch(setClipboardSnackbarOpen(true))
   }
 
   return (
