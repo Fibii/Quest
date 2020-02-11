@@ -7,14 +7,10 @@ import QuestionView from './QuestionView'
 import { questionReducer, initialState } from '../reducers/QuestionReducer'
 import {
   setQuestion,
-  setEditedQuestionTagsHelperText,
-  setEditedQuestionContentHelperText,
   setEditedQuestionContent,
   setEditedQuestionTags,
   setEditedQuestionTitle,
-  setEditedQuestionTitleHelperText,
   setShowEditFields,
-  setClipboardSnackbarOpen,
   setCommentContent,
   setErrorMessage
 } from '../actions/questionActions'
@@ -249,57 +245,6 @@ const Question = () => {
     }
   }
 
-
-
-
-  /**
-   * Updates editedQuestionTitle to user input, validates the title
-   * Updates editedTitleHelperText to an error message if validation fails, otherwise it will be an empty string
-   *
-   * @param event, react onChange event used to get the value of the textfield
-   * */
-  const handleEditedTitle = (event) => {
-    dispatch(setEditedQuestionTitle(event.target.value))
-    dispatch(setEditedQuestionTitleHelperText(''))
-
-    if (!validator.questionValidator({ title: state.editedQuestionTitle })) {
-      dispatch(setEditedQuestionTitleHelperText('title must be 6 characters long at least and 64 at most'))
-    }
-
-  }
-
-  /**
-   * Updates editedQuestionContent to user input, validates the title
-   * Updates editedQuestionContentHelperText to an error message if validation fails, otherwise it will be an empty string
-   *
-   * @param event, react onChange event used to get the value of the textfield
-   * */
-  const handleEditedContent = (event) => {
-    dispatch(setEditedQuestionContent(event.target.value))
-    dispatch(setEditedQuestionContentHelperText(''))
-
-    if (!validator.questionValidator({ content: state.editedQuestionContent })) {
-      dispatch(setEditedQuestionContentHelperText('content must be at least 8 characters long'))
-    }
-
-  }
-
-  /**
-   * Updates editedQuestionTags to user input, validates the title
-   * Updates editedQuestionTagsHelperText to an error message if validation fails, otherwise it will be an empty string
-   *
-   * @param event, react onChange event used to get the value of the textfield
-   * */
-  const handleEditedTags = (event) => {
-    const tags = event.target.value
-    dispatch(setEditedQuestionTags(tags))
-    dispatch(setEditedQuestionTagsHelperText(''))
-
-    if (!validator.questionValidator({ tags: tags })) {
-      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"'))
-    }
-  }
-
   const handleQuestionUpdate = async () => {
 
     const tags = state.editedQuestionTags.split(',')
@@ -332,32 +277,16 @@ const Question = () => {
     }
   }
 
-  const handleClipboardSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    dispatch(setClipboardSnackbarOpen(false))
-  }
-
-  const handleShareQuestion = () => {
-    dispatch(setClipboardSnackbarOpen(true))
-  }
-
   return (
     <QuestionView
       user={user}
       state={state}
       dispatch={dispatch}
       handleUpvoteQuestion={handleUpvoteQuestion}
-      handleShareQuestion={handleShareQuestion}
       handleQuestionUpdate={handleQuestionUpdate}
-      handleEditedTitle={handleEditedTitle}
-      handleEditedTags={handleEditedTags}
-      handleEditedContent={handleEditedContent}
       handleDownvoteQuestion={handleDownvoteQuestion}
       handleDeleteQuestion={handleDeleteQuestion}
       handleCommentPost={handleCommentPost}
-      handleClipboardSnackbar={handleClipboardSnackbar}
       handleDeleteComment={handleDeleteComment}
       handleDownvoteComment={handleDownvoteComment}
       handleUpvoteComment={handleUpvoteComment}
