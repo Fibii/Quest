@@ -18,8 +18,7 @@ import {
   setCommentContent,
   setErrorMessage
 } from '../actions/questionActions'
-
-const Joi = require('@hapi/joi')
+import validator from '../services/validator'
 
 
 const Question = () => {
@@ -251,17 +250,7 @@ const Question = () => {
   }
 
 
-  const schema = Joi.object({
-    title: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z0-9_." "-]*'))
-      .min(6)
-      .max(64),
-    content: Joi.string()
-      .min(8),
-    tags: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
-  })
-    .or('title', 'content', 'tags')
+
 
   /**
    * Updates editedQuestionTitle to user input, validates the title
@@ -273,11 +262,7 @@ const Question = () => {
     dispatch(setEditedQuestionTitle(event.target.value))
     dispatch(setEditedQuestionTitleHelperText(''))
 
-    const { error } = schema.validate({
-      title: state.editedQuestionTitle
-    })
-
-    if (error) {
+    if (!validator.questionValidator({ title: state.editedQuestionTitle })) {
       dispatch(setEditedQuestionTitleHelperText('title must be 6 characters long at least and 64 at most'))
     }
 
@@ -293,11 +278,7 @@ const Question = () => {
     dispatch(setEditedQuestionContent(event.target.value))
     dispatch(setEditedQuestionContentHelperText(''))
 
-    const { error } = schema.validate({
-      content: state.editedQuestionContent
-    })
-
-    if (error) {
+    if (!validator.questionValidator({ content: state.editedQuestionContent })) {
       dispatch(setEditedQuestionContentHelperText('content must be at least 8 characters long'))
     }
 
@@ -314,11 +295,7 @@ const Question = () => {
     dispatch(setEditedQuestionTags(tags))
     dispatch(setEditedQuestionTagsHelperText(''))
 
-    const { error } = schema.validate({
-      tags: tags
-    })
-
-    if (error) {
+    if (!validator.questionValidator({ tags: tags })) {
       dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"'))
     }
   }
@@ -336,13 +313,7 @@ const Question = () => {
       tags: tags
     }
 
-    // validating only these two to allow empty tags, maybe refactor this later
-    const { error } = schema.validate({
-      title: state.editedQuestionTitle,
-      content: state.editedQuestionContent,
-    })
-
-    if (error || state.editedQuestionTagsHelperText) {
+    if (!validator.questionValidator({ title: state.editedQuestionTitle }) || !validator.questionValidator({ content: state.editedQuestionContent }) || state.editedQuestionTagsHelperText) {
       dispatch(setErrorMessage('All fields are required, if a field is red, fix it'))
     } else {
       const response = await questionService.updateQuestion(state.question.id, updatedQuestion)

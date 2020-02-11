@@ -5,18 +5,16 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Copyright from './Copyrights'
-import Header from './Header'
 import Notification from './Notification'
 import { useHistory } from 'react-router-dom'
 import userService from '../services/users'
 
-const Joi = require('@hapi/joi')
+import validator from '../services/validator'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -56,34 +54,11 @@ const SignupForm = () => {
 
   const history = useHistory()
 
-  const schema = Joi.object({
-    fullname: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z ]*$'))
-      .min(3)
-      .max(32),
-    username: Joi.string()
-      .alphanum()
-      .min(3)
-      .max(32),
-    email: Joi.string()
-      .email({ tlds: false }),
-
-    password: Joi.string()
-      .pattern(new RegExp('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).{8,32}$')),
-    dateOfBirth: Joi.date()
-      .less('2018-1-1')
-      .greater('1900-1-1')
-
-  })
-    .or('fullname', 'username', 'password', 'email', 'dateOfBirth')
 
   const fullNameOnChange = (event) => {
     const fullName = event.target.value
-    const { error } = schema.validate({
-      fullname: fullName
-    })
     setFullName(fullName)
-    if (error) {
+    if (!validator.signupFormValidator({ fullname: fullName })) {
       setFullNameHelperText('only characters are allowed\nlength must be between 3 and 32')
     } else {
       setFullNameHelperText('')
@@ -92,11 +67,8 @@ const SignupForm = () => {
 
   const userNameOnChange = (event) => {
     const username = event.target.value
-    const { error } = schema.validate({
-      username: username
-    })
     setUsername(username)
-    if (error) {
+    if (!validator.signupFormValidator({ username: username })) {
       setUserNameHelperText('only alphanumerics are allowed\nlength must be between 3 and 32')
     } else {
       setUserNameHelperText('')
@@ -105,11 +77,8 @@ const SignupForm = () => {
 
   const emailOnChange = (event) => {
     const email = event.target.value
-    const { error } = schema.validate({
-      email: email
-    })
     setEmail(email)
-    if (error) {
+    if (!validator.signupFormValidator({ email: email })) {
       setEmailHelperText('invalid email')
     } else {
       setEmailHelperText('')
@@ -118,11 +87,8 @@ const SignupForm = () => {
 
   const passwordOnChange = (event) => {
     const password = event.target.value
-    const { error } = schema.validate({
-      password: password
-    })
     setPassword(password)
-    if (error) {
+    if (!validator.signupFormValidator({ password: password })) {
       setPasswordHelperText('must be between 8 to 32 characters long, must include one lowercase letter, one uppercase letter and no spaces')
     } else {
       setPasswordHelperText('')
@@ -131,11 +97,8 @@ const SignupForm = () => {
 
   const dateOfBirthOnChange = (event) => {
     const dateOfBirth = event.target.value
-    const { error } = schema.validate({
-      dateOfBirth: dateOfBirth
-    })
     setDateOfBirth(dateOfBirth)
-    if (error) {
+    if (!validator.signupFormValidator({ dateOfBirth: dateOfBirth })) {
       setDateOfBirthHelperText('Birthday must be between 1900 and 2018')
     } else {
       setDateOfBirthHelperText('')
@@ -160,24 +123,18 @@ const SignupForm = () => {
       dateOfBirth: new Date(dateOfBirth)
     }
 
-    const { error } = schema.validate(user)
-
-    if (error) {
-      console.log(error)
+    if (!validator.signupFormValidator(user)) {
       setErrorMessage('All fields are required, if a field is red, then fix it, make sure dob is valid')
     } else {
 
       const newUser = await userService.createUser(user)
       if (!newUser || newUser.error) {
-        setErrorMessage("error: couldn't connect to the server")
+        setErrorMessage('error: couldn\'t connect to the server')
       } else {
         history.push('/login')
       }
-
     }
-
   }
-
 
   return (
     <div style={{

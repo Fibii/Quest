@@ -9,8 +9,7 @@ import Copyright from './Copyrights'
 import Notification from './Notification'
 import questionService from '../services/questions'
 import { useHistory } from 'react-router-dom'
-
-const Joi = require('@hapi/joi')
+import validator from '../services/validator'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,17 +49,6 @@ const NewQuestionForm = () => {
   const [ user ] = useContext(UserContext)
   const history = useHistory()
 
-  const schema = Joi.object({
-    title: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z0-9_." "-]*'))
-      .min(6)
-      .max(64),
-    content: Joi.string()
-      .min(8),
-    tags: Joi.string()
-      .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
-  })
-    .or('title', 'content', 'tags')
 
   /**
    * Updates questionTitle to user input, validates the title
@@ -72,11 +60,7 @@ const NewQuestionForm = () => {
     setQuestionTitle(event.target.value)
     setTitleHelperText('')
 
-    const { error } = schema.validate({
-      title: questionTitle
-    })
-
-    if (error) {
+    if (!validator.questionFormValidator({ title: questionTitle })) {
       setTitleHelperText('title must be 6 characters long at least and 64 at most')
     }
 
@@ -92,11 +76,7 @@ const NewQuestionForm = () => {
     setQuestionContent(event.target.value)
     setContentHelperText('')
 
-    const { error } = schema.validate({
-      content: questionContent
-    })
-
-    if (error) {
+    if (!validator.questionFormValidator({ content: questionContent })) {
       setContentHelperText('content must be at least 8 characters long')
     }
 
@@ -113,11 +93,7 @@ const NewQuestionForm = () => {
     setQuestionTags(tags)
     setTagsHelperText('')
 
-    const { error } = schema.validate({
-      tags: tags
-    })
-
-    if (error) {
+    if (!validator.questionFormValidator({ tags: tags })) {
       setTagsHelperText('tags must be words, separated by commas, such "hello, world"')
     }
   }
@@ -142,18 +118,18 @@ const NewQuestionForm = () => {
     }
 
     // validating only these two to allow empty tags, maybe refactor this later
-    const { error } = schema.validate({
+    const valid = validator.questionFormValidator({
       title: questionTitle,
       content: questionContent,
     })
 
-    if (error || tagsHelperText) {
+    if (!valid || tagsHelperText) {
       setErrorMessage('All fields are required, if a field is red, fix it')
     } else {
       const newQuestion = await questionService.addQuestion(question)
 
       if (!newQuestion || newQuestion.error) {
-        setErrorMessage("error: could not create a new question")
+        setErrorMessage('error: could not create a new question')
       } else {
         history.push(`/question/${newQuestion.id}`)
       }
@@ -167,6 +143,9 @@ const NewQuestionForm = () => {
     setQuestionContent('')
     setQuestionTitle('')
     setQuestionTags('')
+    setTitleHelperText('')
+    setContentHelperText('')
+    setTagsHelperText('')
   }
 
   /**
