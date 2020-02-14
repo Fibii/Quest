@@ -17,6 +17,7 @@ import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown'
 import questionService from '../services/questions'
 import validator from '../services/validator'
 import userService from '../services/users'
+import AlertWindow from './AlertWindow'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,6 +62,7 @@ const Questions = ({ user }) => {
   const [questions, setQuestions] = useState([])
   const [error, setError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [openAlertWindow, setOpenAlertWindow] = useState(false)
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -169,10 +171,20 @@ const Questions = ({ user }) => {
 
                     <Grid item>
                       {validator.isAuthor(user, question) ?
-                        <IconButton edge="end" aria-label="delete"
-                                    onClick={() => handleDeleteQuestion(question.id)}>
-                          <DeleteIcon/>
-                        </IconButton>
+                        <div>
+                          <IconButton edge="end" aria-label="delete"
+                                      onClick={() => setOpenAlertWindow(true)}>
+                            <DeleteIcon/>
+                          </IconButton>
+                          <AlertWindow
+                            title={'Confirm Deletion'}
+                            content={'Are you sure you want to delete this question?'}
+                            cancelButton={'NO'}
+                            confirmButton={'YES'}
+                            callback={() => handleDeleteQuestion(question.id)}
+                            open={openAlertWindow}
+                            setOpen={setOpenAlertWindow}/>
+                        </div>
                         : null}
                     </Grid>
                   </Grid>

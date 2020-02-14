@@ -35,6 +35,7 @@ import {
   setEditedQuestionTitle,
   setEditedQuestionTitleHelperText
 } from '../actions/questionActions'
+import AlertWindow from './AlertWindow'
 
 
 const useStyles = makeStyles(theme => ({
@@ -110,6 +111,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
   const classes = useStyles()
   const [dense, setDense] = useState(false)
   const { question, editedQuestionTags, editedQuestionContent, editedQuestionTitle, errorMessage, showEditFields, clipboardSnackbarOpen, editedQuestionContentHelperText, editedQuestionTagsHelperText, editedQuestionTitleHelperText } = state
+  const [openAlertWindow, setOpenAlertWindow] = useState(false)
   /**
    * wrappers for useState setter functions
    * */
@@ -199,7 +201,6 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
     dispatch(setClipboardSnackbarOpen(true))
   }
 
-
   const questionLikes = getLikes(question)
 
   return (
@@ -258,18 +259,27 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                         <EditIcon/>
                       </IconButton>
 
-                      <IconButton onClick={handleDeleteQuestion}>
+                      <IconButton onClick={() => setOpenAlertWindow(true)}>
                         <DeleteIcon/>
                       </IconButton>
+                      <AlertWindow
+                        title={'Confirm Deletion'}
+                        content={'Are you sure you want to delete this question?'}
+                        cancelButton={'NO'}
+                        confirmButton={'YES'}
+                        callback={() => handleDeleteQuestion(question.id)}
+                        open={openAlertWindow}
+                        setOpen={setOpenAlertWindow}/>
+
                       <CopyToClipboard text={window.location.href}>
-                        <IconButton onClick={handleShareQuestion}>
+                        <IconButton onClick={() => handleShareQuestion(question.id)}>
                           <ShareIcon/>
                         </IconButton>
                       </CopyToClipboard>
                     </div>
                     :
                     <CopyToClipboard text={window.location.href}>
-                      <IconButton onClick={handleShareQuestion}>
+                      <IconButton onClick={() => handleShareQuestion(question.id)}>
                         <ShareIcon/>
                       </IconButton>
                     </CopyToClipboard>
@@ -293,7 +303,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                     margin: '0 auto',
                   }}>
                     <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleUpvoteQuestion}>
+                         className={classes.svg} onClick={() => handleUpvoteQuestion(question.id)}>
                       <path
                         d="M17.504 26.025l.001-14.287 6.366 6.367L26 15.979 15.997 5.975 6 15.971 8.129 18.1l6.366-6.368v14.291z"/>
                     </svg>
@@ -302,7 +312,8 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                       {questionLikes}
                     </Typography>
                     <svg height='24' width='24' viewBox="0 0 32 32" aria-hidden="true"
-                         className={classes.svg} onClick={handleDownvoteQuestion}>
+                         className={classes.svg}
+                         onClick={() => handleDownvoteQuestion(question.id)}>
                       <path
                         d="M14.496 5.975l-.001 14.287-6.366-6.367L6 16.021l10.003 10.004L26 16.029 23.871 13.9l-6.366 6.368V5.977z"/>
                     </svg>
@@ -457,10 +468,18 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
 
                             {validator.isAuthor(user, comment) ? <ListItemSecondaryAction>
                               <IconButton edge="end" aria-label="delete"
-                                          onClick={() => handleDeleteComment(comment.id)}>
+                                          onClick={() => setOpenAlertWindow(true)}>
                                 <DeleteIcon/>
                               </IconButton>
                             </ListItemSecondaryAction> : ''}
+                            <AlertWindow
+                              title={'Confirm Deletion'}
+                              content={'Are you sure you want to delete this question?'}
+                              cancelButton={'NO'}
+                              confirmButton={'YES'}
+                              callback={() => handleDeleteComment(comment.id)}
+                              open={openAlertWindow}
+                              setOpen={setOpenAlertWindow}/>
                           </Grid>
 
                         </ListItem>
@@ -491,6 +510,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                     rowsMax={8}
                     fullWidth
                     variant="outlined"
+                    // todo: make a function for this, so that you clear the text when the comment is posted
                     onChange={(event) => setCommentContent(event.target.value)}
                   />
                   <Button
