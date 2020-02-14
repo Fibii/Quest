@@ -1,17 +1,5 @@
 const Joi = require('@hapi/joi')
 
-const questionSchema = Joi.object({
-  title: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9_." "-]*'))
-    .min(6)
-    .max(64),
-  content: Joi.string()
-    .min(8),
-  tags: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
-})
-  .or('title', 'content', 'tags')
-
 const signupFromSchema = Joi.object({
   fullname: Joi.string()
     .pattern(new RegExp('^[a-zA-Z ]*$'))
@@ -66,28 +54,13 @@ const isAuthor = (user, deletable) => {
 }
 
 /**
- * Validates value based on questionSchema
- * returns false if there's a validation error, true otherwise
- * @param value: the object to be validated
- * @return boolean
- * */
-const questionValidator = value => {
-  const { error } = questionSchema.validate({
-    value
-  })
-  return error ? false : true
-}
-
-/**
  * Validates value based on signupFromSchema
  * returns false if there's a validation error, true otherwise
  * @param value: the object to be validated
  * @return boolean
  * */
 const signupFormValidator = value => {
-  const { error } = signupFromSchema.validate({
-    value
-  })
+  const { error } = signupFromSchema.validate(value)
   return error ? false : true
 }
 
@@ -98,15 +71,12 @@ const signupFormValidator = value => {
  * @return boolean
  * */
 const questionFormValidator = value => {
-  const { error } = questionFormSchema.validate({
-    value
-  })
+  const { error } = questionFormSchema.validate(value)
   return error ? false : true
 }
 
 export default {
   isAuthor,
-  questionValidator,
   signupFormValidator,
   questionFormValidator
 }
