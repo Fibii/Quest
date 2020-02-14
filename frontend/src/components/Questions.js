@@ -80,7 +80,7 @@ const Questions = ({ user }) => {
 
   if (error) {
     return (
-      <Notification message={'error: cannot connect to the server'}/>
+      <Notification title={'Error'} message={'Cannot connect to the server'} severity={'error'}/>
     )
   }
 
@@ -101,7 +101,7 @@ const Questions = ({ user }) => {
 
   return (
     <div>
-      <Notification message={errorMessage}/>
+      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
       <div className={classes.root}>
         <Grid item xs={12} md={6} style={{
           paddingBottom: '3 rem'

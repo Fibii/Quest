@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-
+//todo:dont show this if user is not logged in
 const NewQuestionForm = () => {
   const classes = useStyles()
 
@@ -157,7 +157,7 @@ const NewQuestionForm = () => {
 
   if (!user) {
     return (
-      <Notification message={'you must be logged in'} />
+      <Notification title={'Error'} message={'you must be logged in'} severity={'error'}/>
     )
   }
 
@@ -167,7 +167,7 @@ const NewQuestionForm = () => {
       minHeight: '100vh'
     }}
     >
-      <Notification message={errorMessage} />
+      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',

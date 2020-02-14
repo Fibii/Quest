@@ -141,7 +141,7 @@ const SignupForm = () => {
       position: 'relative',
       minHeight: '100vh'
     }}>
-      <Notification message={errorMessage} />
+      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
       <Container component="main" maxWidth="xs" style={{
         paddingBottom: '3 rem'
       }}>

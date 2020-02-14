@@ -1,26 +1,44 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
-import red from '@material-ui/core/colors/red'
+import { makeStyles } from '@material-ui/core/styles'
+import { Alert, AlertTitle } from '@material-ui/lab'
 
-const errorCSS = {
-  color: 'red',
-  background: red[100],
-  border: `1px solid ${red[400]}`,
-  margin: 8,
-  minHeight: '10vh',
-  fontSize: '26px',
-  textAlign: 'center',
-}
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
+}))
 
-const Notification = ({ message }) => {
+/**
+ * Renders an Alert, used for notifications
+ * @param title: title of alert
+ * @param message: message to be displayed in alert
+ * @param severity: icon to be displayed in alert, one of:
+ *    - error
+ *    - warning
+ *    - info
+ *    - success
+ * */
+const Notification = ({ title, message, severity }) => {
+  const classes = useStyles()
+
   if (!message) {
     return null
   }
 
   return (
-    <Paper style={errorCSS}>
-      {message}
-    </Paper>
+    <div className={classes.root}>
+      <Alert severity={severity} variant="filled" style={{
+        minWidth: '90%'
+      }}>
+        <AlertTitle>{title}</AlertTitle>
+        {message}
+      </Alert>
+    </div>
   )
 }
 

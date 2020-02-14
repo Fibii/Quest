@@ -205,7 +205,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
 
   return (
     <div>
-      <Notification message={errorMessage}/>
+      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
       <div className={classes.container}>
         <div className={classes.root} style={{
           paddingBottom: '3 rem'

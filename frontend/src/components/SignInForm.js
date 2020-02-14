@@ -69,7 +69,7 @@ const SignIn = ({ setUser }) => {
 
   return (
     <div>
-      <Notification message={errorMessage}/>
+      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
       <div style={{
         position: 'relative',
         minHeight: '80vh'
