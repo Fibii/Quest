@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleUpdate }) => {
+const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleUpdate, handleUpvote, handleDownVote }) => {
   const classes = useStyles()
 
   const getLikes = (likeable) => {
@@ -45,7 +45,11 @@ const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleU
   return (
     <Paper>
       <Grid container justify={'flex-start'}>
-        <UpvoteBox likes={getLikes(comment.likes)}/>
+        <UpvoteBox
+          likes={getLikes(comment)}
+          handleUpvote={handleUpvote}
+          handleDownvote={handleDownVote}
+        />
         <Grid item xs={10} className={classes.grid}>
           <Typography className={classes.likes}>
             {comment.content}

@@ -427,7 +427,9 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                 <Comment
                   user={user}
                   comment={comment}
-                  handleDelete={handleDeleteComment}
+                  handleUpvote={() => handleUpvoteComment(comment)}
+                  handleDownVote={() => handleDownvoteComment(comment)}
+                  handleDelete={() => handleDeleteComment(comment.id)}
                 />
               </div>
             )
