@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
+const fs = require('fs')
 const logger = require('morgan')
 const middleware = require('./utils/middleware')
 
@@ -12,8 +13,10 @@ const loginRouter = require('./controllers/login')
 const mongoose = require('mongoose')
 const cors = require('cors')
 
-const app = express();
+const app = express()
 app.use(logger('dev'))
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+app.use(logger('combined', { stream: accessLogStream }))
 
 const DB = process.env.DB
 console.log(DB)
@@ -23,7 +26,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/qaTEST', {
   useUnifiedTopology: true,
   useCreateIndex: true
 })
-    .then(() => {
+  .then(() => {
       console.log("connected to db")
     })
     .catch(error => {
