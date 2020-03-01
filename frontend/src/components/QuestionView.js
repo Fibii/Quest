@@ -424,8 +424,11 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
               <div style={{
                 marginTop: 8
               }} key={comment.content}>
-                <Comment content={comment.content} likes={getLikes(comment.likes)}
-                         postedBy={comment.postedBy.username}/>
+                <Comment
+                  user={user}
+                  comment={comment}
+                  handleDelete={handleDeleteComment}
+                />
               </div>
             )
             }

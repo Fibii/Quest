@@ -4,6 +4,8 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import UpvoteBox from './UpvoteBox'
+import QuestionIcons from './QuestionIcons'
+import validator from '../../services/validator'
 
 const useStyles = makeStyles(theme => ({
   likes: {
@@ -29,16 +31,36 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-const Comment = ({ content, likes, postedBy }) => {
+const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleUpdate }) => {
   const classes = useStyles()
+
+  const getLikes = (likeable) => {
+    if (likeable && likeable.likes && likeable.likes.length > 0) {
+      return likeable.likes.map(like => like.value)
+        .reduce((a, b) => a + b)
+    }
+    return 0
+  }
+
   return (
     <Paper>
       <Grid container justify={'flex-start'}>
-        <UpvoteBox likes={likes}/>
+        <UpvoteBox likes={getLikes(comment.likes)}/>
         <Grid item xs={10} className={classes.grid}>
           <Typography className={classes.likes}>
-            {content}
+            {comment.content}
           </Typography>
+        </Grid>
+        <Grid item>
+          {validator.isAuthor(user, comment) ?
+            <QuestionIcons
+              handleUpdate={handleUpdate}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+              handleShare={handleShare}
+            />
+            : null
+          }
         </Grid>
       </Grid>
       <Grid container justify={'flex-end'}>
@@ -46,7 +68,7 @@ const Comment = ({ content, likes, postedBy }) => {
           marginRight: 8,
           color: 'grey'
         }}>
-          posted by: {postedBy}
+          posted by: {comment.postedBy.username}
         </Typography>
       </Grid>
     </Paper>
