@@ -17,7 +17,7 @@ const MainApp = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const loggedUser = window.localStorage.getItem('qa_userLoggedIn')
+    const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
     if (loggedUser) {
       setUser(loggedUser)
       questionService.setToken(loggedUser.token)
