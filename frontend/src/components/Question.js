@@ -258,7 +258,7 @@ const Question = () => {
       tags: tags
     }
 
-    if (!validator.questionValidator({ title: state.editedQuestionTitle }) || !validator.questionValidator({ content: state.editedQuestionContent }) || state.editedQuestionTagsHelperText) {
+    if (!validator.questionFormValidator({ title: state.editedQuestionTitle }) || !validator.questionFormValidator({ content: state.editedQuestionContent }) || state.editedQuestionTagsHelperText) {
       dispatch(setErrorMessage('All fields are required, if a field is red, fix it'))
     } else {
       const response = await questionService.updateQuestion(state.question.id, updatedQuestion)
