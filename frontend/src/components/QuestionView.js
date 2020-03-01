@@ -287,7 +287,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                 />}
                 <Grid item style={{
                   marginRight: 8,
-                  width: isMobile ? (showEditFields ? '100%' : '80%') : (isLowResolution ? '80%' : '90%'),
+                  width: isMobile ? (showEditFields ? '100%' : '78%') : (isLowResolution ? '78%' : '90%'),
                 }}>
                   {showEditFields ?
                     <TextField

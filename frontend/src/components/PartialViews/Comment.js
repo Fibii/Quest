@@ -20,14 +20,17 @@ const useStyles = makeStyles(theme => ({
       fontSize: '0.8rem',
       width: '90%'
     },
-    [theme.breakpoints.down('300')]: {
+    [theme.breakpoints.down('330')]: {
       fontSize: '0.6rem',
     }
   },
   grid: {
     marginTop: 8,
-    marginBottom: 8
-  }
+    marginBottom: 8,
+    [theme.breakpoints.down('xs')]: {
+      maxWidth: '80%',
+    }
+  },
 }))
 
 
