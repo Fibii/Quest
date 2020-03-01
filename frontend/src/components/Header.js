@@ -31,6 +31,11 @@ const useStyles = makeStyles(theme => ({
 const Header = () => {
   const classes = useStyles()
   const [user, setUser] = useContext(UserContext)
+
+  const handleLogout = () => {
+    setUser(null)
+    window.localStorage.removeItem('qa_userLoggedIn')
+  }
   return (
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
@@ -68,7 +73,7 @@ const Header = () => {
                   New
                 </Button>
               </Link>
-              <Button variant="outlined" size="small" onClick={() => setUser(null)}
+              <Button variant="outlined" size="small" onClick={handleLogout}
                       style={{
                         marginLeft: 8
                       }}>
