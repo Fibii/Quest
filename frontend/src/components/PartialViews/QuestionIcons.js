@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -7,6 +7,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline'
 import AlertWindow from '../AlertWindow'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Snackbar from '@material-ui/core/Snackbar'
+import grey from '@material-ui/core/colors/grey'
 
 /**
  *
@@ -14,10 +16,27 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
  * @param alert*, handle*: callbacks for IconButton onClick
  * @return clickable icons, an icon is returned if its callback is truthy
  * */
-const QuestionIcons = ({ direction, handleUpdate, handleEdit, handleDelete, handleShare, alertCallback, alertOpen, alertSetOpen }) => {
+const QuestionIcons = ({ direction, handleUpdate, handleEdit, handleDelete, path, alertCallback, alertOpen, alertSetOpen }) => {
+
+  const [clipboardSnackbarOpen, setClipboardSnackbarOpen] = useState(false)
+
+  // the width of this component depending on the rendered icons
+  const width = [path, handleDelete, handleUpdate, handleEdit].filter(handler => handler).length * 1.9
+
+  const handleClipboardSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setClipboardSnackbarOpen(false)
+  }
+
+  const handleShareButton = () => {
+    setClipboardSnackbarOpen(true)
+  }
+
   return (
     <Grid container justify={'flex-start'} direction={direction} style={{
-      width: direction === 'row' ? '7.5rem' : '2rem'
+      width: direction === 'row' ? `${width}rem` : '2rem'
     }}>
       {handleUpdate && <IconButton onClick={handleUpdate} size={'small'}>
         <CheckCircleOutlineIcon/>
@@ -39,11 +58,24 @@ const QuestionIcons = ({ direction, handleUpdate, handleEdit, handleDelete, hand
         open={alertOpen}
         setOpen={alertSetOpen}/>
 
-      {handleShare && <CopyToClipboard text={window.location.href}>
-        <IconButton onClick={handleShare} size={'small'}>
+      {path &&
+      <CopyToClipboard text={path ? `${window.location.origin}/${path}` : window.location.href}>
+        <IconButton onClick={handleShareButton} size={'small'}>
           <ShareIcon/>
         </IconButton>
       </CopyToClipboard>}
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={clipboardSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClipboardSnackbar}
+        message="copied to clipboards"
+        color={grey[300]}
+      />
     </Grid>
   )
 }

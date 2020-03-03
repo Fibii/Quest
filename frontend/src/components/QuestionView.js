@@ -13,7 +13,6 @@ import Copyright from './Copyrights'
 import Notification from './Notification'
 import Divider from '@material-ui/core/Divider'
 import ShareIcon from '@material-ui/icons/Share'
-import Snackbar from '@material-ui/core/Snackbar'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { makeStyles } from '@material-ui/core/styles'
 import grey from '@material-ui/core/colors/grey'
@@ -22,7 +21,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import validator from '../services/validator'
 import questionActions from '../actions/questionAction'
 import {
-  setClipboardSnackbarOpen,
   setEditedQuestionContent,
   setEditedQuestionContentHelperText,
   setEditedQuestionTags,
@@ -33,7 +31,7 @@ import {
 import Comment from './PartialViews/Comment'
 import QuestionIcons from './PartialViews/QuestionIcons'
 import UpvoteBox from './PartialViews/UpvoteBox'
-
+import { getLikes } from '../services/utils'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -112,19 +110,6 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
   }
 
   /**
-   * returns the number of likes if likes array is not empty, zero otherwise
-   * @param likeable, an object that has likes array
-   * @return number
-   * */
-  const getLikes = (likeable) => {
-    if (likeable && likeable.likes && likeable.likes.length > 0) {
-      return likeable.likes.map(like => like.value)
-        .reduce((a, b) => a + b)
-    }
-    return 0
-  }
-
-  /**
    * Updates editedQuestionTitle to user input, validates the title
    * Updates editedTitleHelperText to an error message if validation fails, otherwise it will be an empty string
    *
@@ -172,17 +157,6 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
     }
   }
 
-  const handleClipboardSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    dispatch(setClipboardSnackbarOpen(false))
-  }
-
-  const handleShareQuestion = () => {
-    dispatch(setClipboardSnackbarOpen(true))
-  }
-
   const questionLikes = getLikes(question)
 
   return (
@@ -217,11 +191,11 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                       direction={'row'}
                       handleDelete={() => setOpenAlertWindow(true)}
                       handleEdit={() => setShowEditFields(!showEditFields)}
-                      handleShare={() => handleShareQuestion(question.id)}
                       handleUpdate={handleQuestionUpdate}
                       alertCallback={() => handleDeleteQuestion(question.id)}
                       alertOpen={openAlertWindow}
                       alertSetOpen={setOpenAlertWindow}
+                      path={`question/${question.id}`}
                     /> : ''}
                   </Grid>
                   :
@@ -247,11 +221,11 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                           direction={'row'}
                           handleDelete={() => setOpenAlertWindow(true)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
-                          handleShare={() => handleShareQuestion(question.id)}
                           handleUpdate={handleQuestionUpdate}
                           alertCallback={() => handleDeleteQuestion(question.id)}
                           alertOpen={openAlertWindow}
                           alertSetOpen={setOpenAlertWindow}
+                          path={`question/${question.id}`}
                         />
                         : (!isMobile ? <div edge="end" aria-label="icons" style={{
                           width: '100%',
@@ -260,8 +234,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                           flexDirection: isMobile ? 'column' : 'row',
                         }}>
                           <CopyToClipboard text={window.location.href}>
-                            <IconButton onClick={() => handleShareQuestion(question.id)}
-                                        size={'small'}>
+                            <IconButton size={'small'}>
                               <ShareIcon/>
                             </IconButton>
                           </CopyToClipboard>
@@ -367,11 +340,11 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                       direction={'row'}
                       handleDelete={() => setOpenAlertWindow(true)}
                       handleEdit={() => setShowEditFields(!showEditFields)}
-                      handleShare={() => handleShareQuestion(question.id)}
                       handleUpdate={handleQuestionUpdate}
                       alertCallback={() => handleDeleteQuestion(question.id)}
                       alertOpen={openAlertWindow}
                       alertSetOpen={setOpenAlertWindow}
+                      path={`question/${question.id}`}
                     />
                     : <div edge="end" aria-label="icons" style={{
                       width: '100%',
@@ -380,7 +353,7 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                       backgroundColor: grey[200],
                     }}>
                       <CopyToClipboard text={window.location.href}>
-                        <IconButton onClick={() => handleShareQuestion(question.id)} size={'small'}>
+                        <IconButton size={'small'}>
                           <ShareIcon/>
                         </IconButton>
                       </CopyToClipboard>
@@ -473,17 +446,6 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
         </div>
         <Copyright/>
       </div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={clipboardSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleClipboardSnackbar}
-        message="copied to clipboards"
-        color={grey[300]}
-      />
     </div>
   )
 }

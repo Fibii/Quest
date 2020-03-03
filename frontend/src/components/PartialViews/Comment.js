@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import UpvoteBox from './UpvoteBox'
 import QuestionIcons from './QuestionIcons'
 import validator from '../../services/validator'
+import { getLikes } from '../../services/utils'
 
 const useStyles = makeStyles(theme => ({
   likes: {
@@ -36,14 +37,6 @@ const useStyles = makeStyles(theme => ({
 
 const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleUpdate, handleUpvote, handleDownVote }) => {
   const classes = useStyles()
-
-  const getLikes = (likeable) => {
-    if (likeable && likeable.likes && likeable.likes.length > 0) {
-      return likeable.likes.map(like => like.value)
-        .reduce((a, b) => a + b)
-    }
-    return 0
-  }
 
   return (
     <Paper>
