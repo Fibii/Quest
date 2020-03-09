@@ -25,13 +25,21 @@ const useStyles = makeStyles(theme => ({
       fontSize: '0.6rem',
     }
   },
-  grid: {
-    marginTop: 8,
-    marginBottom: 8,
+
+  icons: {
+    marginLeft: 20,
     [theme.breakpoints.down('xs')]: {
-      maxWidth: '80%',
+      marginLeft: 12,
     }
   },
+
+  grid: {
+    width: '90%',
+    [theme.breakpoints.down('xs')]: {
+      width: '80%',
+    }
+  }
+
 }))
 
 
@@ -46,26 +54,28 @@ const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleU
           handleUpvote={handleUpvote}
           handleDownvote={handleDownVote}
         />
-        <Grid item xs={10} className={classes.grid}>
+        <Grid item className={classes.grid}>
           <Typography className={classes.likes}>
             {comment.content}
           </Typography>
         </Grid>
-        <Grid item>
+      </Grid>
+      <Grid container justify={'space-between'}>
+        <Grid item className={classes.icons}>
           {validator.isAuthor(user, comment) ?
             <QuestionIcons
               handleUpdate={handleUpdate}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
               handleShare={handleShare}
+              direction={'row'}
             />
             : null
           }
         </Grid>
-      </Grid>
-      <Grid container justify={'flex-end'}>
         <Typography variant='caption' style={{
           marginRight: 8,
+          marginTop: 8,
           color: 'grey'
         }}>
           posted by: {comment.postedBy.username}
