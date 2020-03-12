@@ -12,6 +12,7 @@ import Questions from './Questions'
 
 import questionService from '../services/questions'
 import userService from '../services/users'
+import grey from '@material-ui/core/colors/grey'
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
@@ -26,23 +27,25 @@ const MainApp = () => {
   }, [])
 
   return (
-    <UserContext.Provider value={[user, setUser]}>
-      <Header/>
-      <Switch>
-        <Route exact path="/" render={() => (
-          user ? (
-            <Questions user={user}/>
-          ) : (
-            <Welcome/>
-          )
-        )}/>
-        <Route path='/welcome' render={() => <Welcome/>}/>
-        <Route path='/login' render={() => <SignIn setUser={setUser}/>}/>
-        <Route path='/register' component={SignupForm}/>
-        <Route path='/question/new' exact render={() => <NewQuestionForm/>}/>
-        <Route path='/question/:id' exact render={() => <Question/>}/>
-      </Switch>
-    </UserContext.Provider>
+    <div style={{ backgroundColor: grey[100] }}>
+      <UserContext.Provider value={[user, setUser]}>
+        <Header/>
+        <Switch>
+          <Route exact path="/" render={() => (
+            user ? (
+              <Questions user={user}/>
+            ) : (
+              <Welcome/>
+            )
+          )}/>
+          <Route path='/welcome' render={() => <Welcome/>}/>
+          <Route path='/login' render={() => <SignIn setUser={setUser}/>}/>
+          <Route path='/register' component={SignupForm}/>
+          <Route path='/question/new' exact render={() => <NewQuestionForm/>}/>
+          <Route path='/question/:id' exact render={() => <Question/>}/>
+        </Switch>
+      </UserContext.Provider>
+    </div>
   )
 }
 
