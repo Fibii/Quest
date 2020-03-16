@@ -13,16 +13,21 @@ import Questions from './Questions'
 import questionService from '../services/questions'
 import userService from '../services/users'
 import grey from '@material-ui/core/colors/grey'
+import { setErrorMessage } from '../actions/questionActions'
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
-    if (loggedUser) {
-      setUser(loggedUser)
-      questionService.setToken(loggedUser.token)
-      userService.setToken(loggedUser.token)
+    try {
+      const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
+      if (loggedUser) {
+        setUser(loggedUser)
+        questionService.setToken(loggedUser.token)
+        userService.setToken(loggedUser.token)
+      }
+    } catch (error) {
+      setErrorMessage('error while loading the saved in user')
     }
   }, [])
 
