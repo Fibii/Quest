@@ -20,6 +20,14 @@ router.post('/', async (request, response, next) => {
         false : await bcrypt.compare(password, user.passwordHash)
 
     if (isPasswordCorrect) {
+
+      // update lastSignedInDate
+      const updatedUser = {
+        ...user._doc,
+        lastSignedInDate: new Date()
+      }
+      await User.findByIdAndUpdate(user.id, updatedUser)
+
       const userTokenObj = {
         username: username,
         id: user.id
@@ -28,7 +36,11 @@ router.post('/', async (request, response, next) => {
       const token = jwt.sign(userTokenObj, process.env.SECRET)
 
       return response.status(200)
-          .json({username, token, id: user._id})
+        .json({
+          username,
+          token,
+          id: user._id
+        })
 
     } else {
       return response.status(401)

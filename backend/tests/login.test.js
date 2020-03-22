@@ -21,14 +21,27 @@ describe('auth', () => {
 
     // register the user
     await api.post('/api/users')
-        .send(usersInDb[0])
+      .send(usersInDb[0])
 
     // login
     const response = await api.post('/api/login')
-        .send(user)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
+    const loggedUser = await User.findById(response.body.id)
+    const lastSignedInDate = new Date(loggedUser.lastSignedInDate)
+    const now = new Date()
+
+    // compare by error margin of ~60 minutes
+    expect(lastSignedInDate.getDate())
+      .toBe(now.getDate())
+    expect(lastSignedInDate.getMonth())
+      .toBe(now.getMonth())
+    expect(lastSignedInDate.getFullYear())
+      .toBe(now.getFullYear())
+    expect(lastSignedInDate.getHours())
+      .toBe(now.getHours())
   })
 
   test('a user with incorrect password cannot login', async () => {
