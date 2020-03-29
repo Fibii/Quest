@@ -164,7 +164,8 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link className={classes.link}
+                                                to={`/user/${user.id}`}>Profile</Link></MenuItem>
       <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
     </Menu>
   )
@@ -195,7 +196,7 @@ const Header = () => {
         >
           <AccountCircle/>
         </IconButton>
-        <p>Profile</p>
+        <Link className={classes.link} to={`/user/${user.id}`}>Profile</Link>
       </MenuItem>
     </Menu>
   )
