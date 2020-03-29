@@ -14,6 +14,7 @@ import questionService from '../services/questions'
 import userService from '../services/users'
 import grey from '@material-ui/core/colors/grey'
 import { setErrorMessage } from '../actions/questionActions'
+import Profile from './Profile'
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
@@ -32,7 +33,10 @@ const MainApp = () => {
   }, [])
 
   return (
-    <div style={{ backgroundColor: grey[100] }}>
+    <div style={{
+      backgroundColor: grey[100],
+      height: '100vh'
+    }}>
       <UserContext.Provider value={[user, setUser]}>
         <Header/>
         <Switch>
@@ -48,6 +52,7 @@ const MainApp = () => {
           <Route path='/register' component={SignupForm}/>
           <Route path='/question/new' exact render={() => <NewQuestionForm/>}/>
           <Route path='/question/:id' exact render={() => <Question/>}/>
+          <Route path='/user/:id' exact render={() => <Profile/>}/>
         </Switch>
       </UserContext.Provider>
     </div>
