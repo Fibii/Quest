@@ -25,8 +25,18 @@ const createUser = async (user) => {
   }
 }
 
+const getUser = async (userId) => {
+  try {
+    const response = await axios.get(baseUrl + `/users/${userId}`)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export default {
   login,
   setToken,
-  createUser
+  createUser,
+  getUser
 }
