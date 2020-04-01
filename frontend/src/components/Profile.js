@@ -16,13 +16,41 @@ import { Link } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
   container: {
     width: '60%',
+    [theme.breakpoints.up('xs')]: {
+      width: '90%',
+    }
+
   },
   questionList: {
+    marginTop: 16,
+    marginBottom: 16,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   nested: {
     paddingLeft: theme.spacing(4),
+  },
+  fullname: {
+    fontSize: '3rem',
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '2rem',
+    }
+  },
+  username: {
+    fontSize: '2rem',
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '1rem',
+    }
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit',
+    outline: 'none',
+  },
+  date: {
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '12px',
+    }
   }
 }))
 
@@ -36,7 +64,6 @@ const Profile = () => {
     const getUser = async () => {
       const user = await users.getUser(id)
       if (user) {
-        console.log('user', user)
         setUser(user)
       } else {
         setError('Couldn\'t get this user')
@@ -56,13 +83,14 @@ const Profile = () => {
   return (
     <Grid container justify={'center'}>
       <Grid container direction={'column'} alignItems={'center'} className={classes.container}>
-        <Typography>{user.fullname}</Typography>
-        <Typography>@({user.username})</Typography>
-        <Typography>{user.location &&
+        <Typography className={classes.fullname}>{user.fullname}</Typography>
+        <Typography className={classes.username}>@({user.username})</Typography>
+        <Typography variant={'h6'}>{user.location &&
         <IconButton><LocationOn/>{user.location}</IconButton>}</Typography>
         <Grid container direction={'row'} justify={'space-between'}>
-          <Typography>Joined: {formateDate(user.registerDate)}</Typography>
-          <Typography>Last Seen: {formateDate(user.lastSignedInDate)}</Typography>
+          <Typography className={classes.date}>Joined: {formateDate(user.registerDate)}</Typography>
+          <Typography className={classes.date}>Last
+            Seen: {formateDate(user.lastSignedInDate)}</Typography>
         </Grid>
         <List
           component="nav"
@@ -75,7 +103,8 @@ const Profile = () => {
           className={classes.questionList}
         >
           {user.questions && user.questions.map(question => <ListItem button key={question.id}>
-            <Link to={`/question/${question.id}`}><ListItemText primary={question.title}/></Link>
+            <Link to={`/question/${question.id}`} className={classes.link}><ListItemText
+              primary={question.title}/></Link>
           </ListItem>)}
         </List>
       </Grid>
