@@ -66,6 +66,8 @@ router.post('/', async(request, response, next) => {
       email: body.email,
       dateOfBirth: body.dateOfBirth,
       registerDate: new Date(),
+      fullname: body.fullname,
+      location: body.location,
     })
 
     await newUser.save()

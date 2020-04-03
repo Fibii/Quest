@@ -7,12 +7,12 @@ const testHelper = require('../utils/testHelper')
 
 beforeEach(async () => {
 
-  // clear the database 
+  // clear the database
   await User.deleteMany({})
 
-  // add initial users to the db 
+  // add initial users to the db
   const users = testHelper.getInitialUsers()
-  
+
   const promiseArray = users.map(user => api.post('/api/users').send(user))
   await Promise.all(promiseArray)
 
@@ -22,7 +22,7 @@ describe('user crud', () => {
 
   test("all users are returned", async() => {
     const initialUsers = await testHelper.getUsersInDb()
-    
+
     const response = await api.get("/api/users")
     .expect(200)
 
@@ -34,9 +34,11 @@ describe('user crud', () => {
         id: user.id,
         registerDate: new Date(user.registerDate),
         dateOfBirth: new Date(user.dateOfBirth),
+        fullname: user.fullname,
+        location: user.location,
       }
       return userObj
-    }) 
+    })
 
     expect(finalUsers.sort()).toEqual(initialUsers.sort())
 
@@ -180,7 +182,7 @@ describe('user crud', () => {
     const initialUsers = await testHelper.getUsersInDb()
     const response = await api.get(`/api/users/${initialUsers[0].id}`)
     .expect(200)
-    
+
     const user = JSON.parse(response.text)
     const finalUser = {
       username: user.username,
@@ -189,6 +191,8 @@ describe('user crud', () => {
       id: user.id,
       registerDate: new Date(user.registerDate),
       dateOfBirth: new Date(user.dateOfBirth),
+      fullname: user.fullname,
+      location: user.location,
     }
 
     expect(finalUser).toEqual(initialUsers[0])
