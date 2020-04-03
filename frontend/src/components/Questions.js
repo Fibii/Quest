@@ -74,6 +74,7 @@ const Questions = ({ user }) => {
               user={user}
               question={question}
               handleDelete={() => handleDeleteQuestion(question.id)}
+              key={question.id}
             />
           )
           }
