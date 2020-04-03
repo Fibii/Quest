@@ -81,6 +81,7 @@ const useStyles = makeStyles(theme => ({
   },
   icons: {
     color: lightBlue[800],
+    marginRight: 16,
   }
 
 }))
@@ -265,18 +266,18 @@ const Header = () => {
         <List>
           <Link to={'/'} className={classes.link}>
             <ListItem button key={'home'}>
-              <ListItemIcon> <HomeIcon className={classes.icons}/> </ListItemIcon>
+              <HomeIcon className={classes.icons}/>
               <ListItemText primary={'Home'}/>
             </ListItem>
           </Link>
           <Link to={'/question/new'} className={classes.link}>
             <ListItem button key={'newQuestion'}>
-              <ListItemIcon> <AddBoxIcon className={classes.icons}/> </ListItemIcon>
+              <AddBoxIcon className={classes.icons}/>
               <ListItemText primary={'New Question'}/>
             </ListItem>
           </Link>
           <ListItem button key={'logout'} onClick={() => handleLogout()}>
-            <ListItemIcon> <ExitToAppIcon className={classes.icons}/> </ListItemIcon>
+            <ExitToAppIcon className={classes.icons}/>
             <ListItemText primary={'Logout'}/>
           </ListItem>
         </List>
