@@ -32,13 +32,13 @@ const useStyles = makeStyles(theme => ({
   },
   fullname: {
     fontSize: '3rem',
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '2rem',
     }
   },
   username: {
     fontSize: '2rem',
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '1rem',
     }
   },
@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     outline: 'none',
   },
   date: {
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       fontSize: '12px',
     }
   }
