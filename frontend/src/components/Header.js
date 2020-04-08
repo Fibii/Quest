@@ -197,7 +197,7 @@ const Header = () => {
         >
           <AccountCircle/>
         </IconButton>
-        <Link className={classes.link} to={`/user/${user.id}`}>Profile</Link>
+        Profile
       </MenuItem>
     </Menu>
   )
