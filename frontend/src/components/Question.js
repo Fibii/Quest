@@ -58,6 +58,7 @@ const Question = () => {
 
   const handleCommentPost = async (event) => {
     if (state.commentContent.length === 0) {
+      setTimeout(() => dispatch(setErrorMessage('')), 3000)
       dispatch(setErrorMessage('comment must not be empty'))
     } else {
       const comment = {
@@ -90,15 +91,15 @@ const Question = () => {
     if (response) {
       history.push('/')
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: couldn\'t delete the question'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteQuestion = async () => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -119,15 +120,15 @@ const Question = () => {
         })
       }))
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteQuestion = async () => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -148,15 +149,15 @@ const Question = () => {
         })
       }))
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteComment = async (comment) => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
     const response = await questionService.upvoteComment(id, comment.id)
@@ -187,15 +188,15 @@ const Question = () => {
       }))
 
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteComment = async (comment) => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -226,8 +227,8 @@ const Question = () => {
       }))
 
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
