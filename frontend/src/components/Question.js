@@ -233,7 +233,6 @@ const Question = () => {
   }
 
   const handleDeleteComment = async (commentId) => {
-    // todo: add confirmation window (material ui's not the browser's)
     const response = await questionService.deleteComment(id, commentId)
     if (response) {
       const newComments = state.question.comments.filter(comment => comment.id !== commentId)

@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-//todo:dont show this if user is not logged in
+
 const NewQuestionForm = () => {
   const classes = useStyles()
 

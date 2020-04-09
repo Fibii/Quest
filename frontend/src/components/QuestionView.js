@@ -419,7 +419,6 @@ const QuestionView = ({ user, state, dispatch, handleDeleteQuestion, handleQuest
                   fullWidth
                   variant="outlined"
                   value={commentContent}
-                  // todo: make a function for this, so that you clear the text when the comment is posted
                   onChange={(event) => setCommentContent(event.target.value)}
                 />
                 <Grid container justify={'flex-end'} style={{
