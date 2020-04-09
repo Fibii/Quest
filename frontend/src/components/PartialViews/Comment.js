@@ -78,7 +78,7 @@ const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleU
           marginTop: 8,
           color: 'grey'
         }}>
-          posted by: {comment.postedBy.username}
+          posted by: {comment.postedBy && comment.postedBy.username}
         </Typography>
       </Grid>
     </Paper>
