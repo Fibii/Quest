@@ -5,28 +5,29 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import grey from '@material-ui/core/colors/grey'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   copyright: {
     paddingBottom: '2.5 rem',
     background: grey[400],
     bottom: 0,
     position: 'absolute',
-    width: '100%'
-  }
+    width: '100%',
+  },
 }))
 
 const Copyright = () => {
   const classes = useStyles()
 
   return (
-    <Grid container justify='center' className={classes.copyright}>
+    <Grid container justify="center" className={classes.copyright}>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
-        <Link color="inherit" href="#">
+        <Link color="inherit" href="/">
           QA
-        </Link>{' '}
+        </Link>
+        {' '}
         {new Date().getFullYear()}
-        {'.'}
+        .
       </Typography>
     </Grid>
   )

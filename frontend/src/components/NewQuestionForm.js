@@ -4,19 +4,19 @@ import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
+import { useHistory } from 'react-router-dom'
 import UserContext from './UserContext'
 import Copyright from './Copyrights'
 import Notification from './Notification'
 import questionService from '../services/questions'
-import { useHistory } from 'react-router-dom'
 import validator from '../services/validator'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: 600,
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
-    paddingBottom: 24
+    paddingBottom: 24,
   },
 
   paper: {
@@ -30,8 +30,8 @@ const useStyles = makeStyles(theme => ({
   },
 
   item: {
-    marginTop: 8
-  }
+    marginTop: 8,
+  },
 }))
 
 
@@ -46,13 +46,14 @@ const NewQuestionForm = () => {
   const [tagsHelperText, setTagsHelperText] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const [ user ] = useContext(UserContext)
+  const [user] = useContext(UserContext)
   const history = useHistory()
 
 
   /**
    * Updates questionTitle to user input, validates the title
-   * Updates tagsHelperText to an error message if validation fails, otherwise it will be an empty string
+   * Updates tagsHelperText to an error message if validation fails,
+   * otherwise it will be an empty string
    *
    * @param event, react onChange event used to get the value of the textfield
    * */
@@ -63,12 +64,12 @@ const NewQuestionForm = () => {
     if (!validator.questionFormValidator({ title: questionTitle })) {
       setTitleHelperText('title must be 6 characters long at least and 64 at most')
     }
-
   }
 
   /**
    * Updates questionContent to user input, validates the title
-   * Updates contentHelperText to an error message if validation fails, otherwise it will be an empty string
+   * Updates contentHelperText to an error message if validation fails,
+   * otherwise it will be an empty string
    *
    * @param event, react onChange event used to get the value of the textfield
    * */
@@ -79,12 +80,12 @@ const NewQuestionForm = () => {
     if (!validator.questionFormValidator({ content: questionContent })) {
       setContentHelperText('content must be at least 8 characters long')
     }
-
   }
 
   /**
    * Updates questionTags to user input, validates the title
-   * Updates tagsHelperText to an error message if validation fails, otherwise it will be an empty string
+   * Updates tagsHelperText to an error message if validation fails,
+   * otherwise it will be an empty string
    *
    * @param event, react onChange event used to get the value of the textfield
    * */
@@ -93,7 +94,7 @@ const NewQuestionForm = () => {
     setQuestionTags(tags)
     setTagsHelperText('')
 
-    if (!validator.questionFormValidator({ tags: tags })) {
+    if (!validator.questionFormValidator({ tags })) {
       setTagsHelperText('tags must be words, separated by commas, such "hello, world"')
     }
   }
@@ -108,13 +109,13 @@ const NewQuestionForm = () => {
    * */
   const handleQuestionPost = async () => {
     const tags = questionTags.split(',')
-      .map(tag => tag.replace(/^\s+|\s+$/gm, ''))
-      .filter(tag => tag.length > 0)
+      .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
+      .filter((tag) => tag.length > 0)
 
     const question = {
       title: questionTitle,
       content: questionContent,
-      tags: tags
+      tags,
     }
 
     // validating only these two to allow empty tags, maybe refactor this later
@@ -157,31 +158,34 @@ const NewQuestionForm = () => {
 
   if (!user) {
     return (
-      <Notification title={'Error'} message={'you must be logged in'} severity={'error'}/>
+      <Notification title="Error" message="you must be logged in" severity="error" />
     )
   }
 
   return (
-    <div id='container' style={{
-      position: 'relative',
-      minHeight: '100vh'
-    }}
+    <div
+      id="container"
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+      }}
     >
-      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
+      <Notification title="Error" message={errorMessage} severity="error" />
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        paddingBotton: '3.5 rem'
-      }}>
+        paddingBotton: '3.5 rem',
+      }}
+      >
         <Paper className={classes.paper}>
-          <Grid container justify='flex-start' direction='column' className={classes.root}>
+          <Grid container justify="flex-start" direction="column" className={classes.root}>
             <Grid item className={classes.item}>
               <TextField
                 error={titleHelperText.length > 0}
                 helperText={titleHelperText}
                 placeholder="Title"
-                multiline={true}
+                multiline
                 fullWidth
                 variant="outlined"
                 value={questionTitle}
@@ -193,7 +197,7 @@ const NewQuestionForm = () => {
                 error={contentHelperText.length > 0}
                 helperText={contentHelperText}
                 placeholder="Content"
-                multiline={true}
+                multiline
                 rows={3}
                 rowsMax={8}
                 fullWidth
@@ -207,27 +211,29 @@ const NewQuestionForm = () => {
                 error={tagsHelperText.length > 0}
                 helperText={tagsHelperText}
                 placeholder="Tags"
-                multiline={true}
+                multiline
                 fullWidth
                 variant="outlined"
                 value={questionTags}
                 onChange={tagsOnChange}
               />
             </Grid>
-            <Grid container justify='flex-end' className={classes.item}>
+            <Grid container justify="flex-end" className={classes.item}>
               <Button
                 variant="outlined"
                 color="secondary"
                 onClick={handleClearButton}
                 style={{
-                  marginRight: 8
-                }}>
+                  marginRight: 8,
+                }}
+              >
                 clear
               </Button>
               <Button
                 variant="outlined"
-                color='primary'
-                onClick={handleQuestionPost}>
+                color="primary"
+                onClick={handleQuestionPost}
+              >
                 submit
               </Button>
             </Grid>
@@ -235,7 +241,7 @@ const NewQuestionForm = () => {
         </Paper>
 
       </div>
-      <Copyright/>
+      <Copyright />
 
     </div>
   )

@@ -15,7 +15,7 @@ const signupFromSchema = Joi.object({
     .pattern(new RegExp('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).{8,32}$')),
   dateOfBirth: Joi.date()
     .less('2018-1-1')
-    .greater('1900-1-1')
+    .greater('1900-1-1'),
 })
   .or('fullname', 'username', 'password', 'email', 'dateOfBirth')
 
@@ -27,7 +27,7 @@ const questionFormSchema = Joi.object({
   content: Joi.string()
     .min(8),
   tags: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$'))
+    .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$')),
 })
   .or('title', 'content', 'tags')
 
@@ -59,9 +59,9 @@ const isAuthor = (user, deletable) => {
  * @param value: the object to be validated
  * @return boolean
  * */
-const signupFormValidator = value => {
+const signupFormValidator = (value) => {
   const { error } = signupFromSchema.validate(value)
-  return error ? false : true
+  return !error
 }
 
 /**
@@ -70,13 +70,13 @@ const signupFormValidator = value => {
  * @param value: the object to be validated
  * @return boolean
  * */
-const questionFormValidator = value => {
+const questionFormValidator = (value) => {
   const { error } = questionFormSchema.validate(value)
-  return error ? false : true
+  return !error
 }
 
 export default {
   isAuthor,
   signupFormValidator,
-  questionFormValidator
+  questionFormValidator,
 }

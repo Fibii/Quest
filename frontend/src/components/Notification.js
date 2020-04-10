@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Alert, AlertTitle } from '@material-ui/lab'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
@@ -32,9 +32,13 @@ const Notification = ({ title, message, severity }) => {
 
   return (
     <div className={classes.root}>
-      <Alert severity={severity} variant="filled" style={{
-        minWidth: '90%'
-      }}>
+      <Alert
+        severity={severity}
+        variant="filled"
+        style={{
+          minWidth: '90%',
+        }}
+      >
         <AlertTitle>{title}</AlertTitle>
         {message}
       </Alert>

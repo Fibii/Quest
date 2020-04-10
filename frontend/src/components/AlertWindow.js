@@ -15,8 +15,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
  * @param callback: function to be executed if the alert is confirmed
  *
  */
-const AlertWindow = ({ open, setOpen, title, content, cancelButton, confirmButton, callback }) => {
-
+const AlertWindow = ({
+  open, setOpen, title, content, cancelButton, confirmButton, callback,
+}) => {
   let isMounted = false
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const AlertWindow = ({ open, setOpen, title, content, cancelButton, confirmButto
   return (
     <div>
       <Dialog
-        open={open ? open : false}
+        open={open || false}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

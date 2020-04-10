@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
+import grey from '@material-ui/core/colors/grey'
 import Copyright from './Copyrights'
 import Notification from './Notification'
 import questionService from '../services/questions'
-import validator from '../services/validator'
 import QPaper from './PartialViews/QPaper'
-import grey from '@material-ui/core/colors/grey'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   container: {
     position: 'relative',
     minHeight: '100vh',
     height: '100%',
     backgroundColor: grey[100],
-  }
+  },
 }))
 
 /**
@@ -23,7 +22,7 @@ const useStyles = makeStyles(theme => ({
  * @see validator
  * */
 const Questions = ({ user }) => {
-  const [dense, setDense] = useState(false)
+  const [dense] = useState(false)
   const [questions, setQuestions] = useState([])
   const [error, setError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -40,23 +39,22 @@ const Questions = ({ user }) => {
       }
     }
     getQuestions()
-
   }, [])
 
   if (error) {
     return (
-      <Notification title={'Error'} message={'Cannot connect to the server'} severity={'error'}/>
+      <Notification title="Error" message="Cannot connect to the server" severity="error" />
     )
   }
 
   /**
    * deletes a question form the database
-   * @param int: the id of the question to be deleted
+   * @param id: id of the question to be deleted
    * */
   const handleDeleteQuestion = async (id) => {
     const response = await questionService.deleteQuestion(id)
     if (response) {
-      const newQuestion = questions.filter(question => question.id !== id)
+      const newQuestion = questions.filter((question) => question.id !== id)
       setQuestions(newQuestion)
     } else {
       setErrorMessage('error: couldn\'t delete the question')
@@ -66,20 +64,19 @@ const Questions = ({ user }) => {
 
   return (
     <div className={classes.container}>
-      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
+      <Notification title="Error" message={errorMessage} severity="error" />
       <div>
         <List dense={dense}>
-          {questions.map(question =>
+          {questions.map((question) => (
             <QPaper
               user={user}
               question={question}
               handleDelete={() => handleDeleteQuestion(question.id)}
               key={question.id}
             />
-          )
-          }
+          ))}
         </List>
-        <Copyright/>
+        <Copyright />
       </div>
     </div>
   )

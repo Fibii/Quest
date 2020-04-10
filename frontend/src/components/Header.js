@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -8,30 +8,29 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import { useTheme } from '@material-ui/core/styles'
+
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import HomeIcon from '@material-ui/icons/Home'
-import SearchBar from './PartialViews/SearchBar'
 import { Link } from 'react-router-dom'
-import UserContext from './UserContext'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import { grey, lightBlue } from '@material-ui/core/colors'
+import UserContext from './UserContext'
+import SearchBar from './PartialViews/SearchBar'
 
 const drawerWidth = 240
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
-    backgroundColor: 'red'
+    backgroundColor: 'red',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -61,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
   },
   drawerHeader: {
     display: 'flex',
@@ -69,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
     justifyContent: 'center',
-    color: lightBlue[600]
+    color: lightBlue[600],
   },
   link: {
     textDecoration: 'none',
@@ -82,7 +81,7 @@ const useStyles = makeStyles(theme => ({
   icons: {
     color: lightBlue[800],
     marginRight: 16,
-  }
+  },
 
 }))
 
@@ -99,7 +98,7 @@ const Header = () => {
       <div className={classes.grow}>
         <AppBar position="relative" style={{ marginBottom: '5%' }}>
           <Toolbar className={classes.toolbar}>
-            <Link to={'/'} className={classes.link}>
+            <Link to="/" className={classes.link}>
               <Typography variant="h5" noWrap>
                 Quest
               </Typography>
@@ -126,7 +125,7 @@ const Header = () => {
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
-  const handleProfileMenuOpen = event => {
+  const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -139,7 +138,7 @@ const Header = () => {
     handleMobileMenuClose()
   }
 
-  const handleMobileMenuOpen = event => {
+  const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
 
@@ -154,19 +153,25 @@ const Header = () => {
       anchorEl={anchorEl}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}><Link className={classes.link}
-                                                to={`/user/${user.id}`}>Profile</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          className={classes.link}
+          to={`/user/${user.id}`}
+        >
+          Profile
+        </Link>
+      </MenuItem>
       <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
     </Menu>
   )
@@ -177,13 +182,13 @@ const Header = () => {
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
@@ -195,7 +200,7 @@ const Header = () => {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle/>
+          <AccountCircle />
         </IconButton>
         Profile
       </MenuItem>
@@ -213,15 +218,15 @@ const Header = () => {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
           >
-            <MenuIcon/>
+            <MenuIcon />
           </IconButton>
-          <Link to={'/'} className={classes.link}>
+          <Link to="/" className={classes.link}>
             <Typography className={classes.title} variant="h6" noWrap>
               Quest
             </Typography>
           </Link>
-          <SearchBar/>
-          <div className={classes.grow}/>
+          <SearchBar />
+          <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
               edge="end"
@@ -231,7 +236,7 @@ const Header = () => {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle/>
+              <AccountCircle />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -242,7 +247,7 @@ const Header = () => {
               onClick={handleMobileMenuOpen}
               color="inherit"
             >
-              <MoreIcon/>
+              <MoreIcon />
             </IconButton>
           </div>
         </Toolbar>
@@ -257,28 +262,28 @@ const Header = () => {
         }}
       >
         <div className={classes.drawerHeader}>
-          <Typography variant={'h4'}>Quest</Typography>
+          <Typography variant="h4">Quest</Typography>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
-        <Divider/>
+        <Divider />
         <List>
-          <Link to={'/'} className={classes.link}>
-            <ListItem button key={'home'}>
-              <HomeIcon className={classes.icons}/>
-              <ListItemText primary={'Home'}/>
+          <Link to="/" className={classes.link}>
+            <ListItem button key="home">
+              <HomeIcon className={classes.icons} />
+              <ListItemText primary="Home" />
             </ListItem>
           </Link>
-          <Link to={'/question/new'} className={classes.link}>
-            <ListItem button key={'newQuestion'}>
-              <AddBoxIcon className={classes.icons}/>
-              <ListItemText primary={'New Question'}/>
+          <Link to="/question/new" className={classes.link}>
+            <ListItem button key="newQuestion">
+              <AddBoxIcon className={classes.icons} />
+              <ListItemText primary="New Question" />
             </ListItem>
           </Link>
-          <ListItem button key={'logout'} onClick={() => handleLogout()}>
-            <ExitToAppIcon className={classes.icons}/>
-            <ListItemText primary={'Logout'}/>
+          <ListItem button key="logout" onClick={() => handleLogout()}>
+            <ExitToAppIcon className={classes.icons} />
+            <ListItemText primary="Logout" />
           </ListItem>
         </List>
       </Drawer>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import UserContext from './UserContext'
 import { Route, Switch } from 'react-router-dom'
+import grey from '@material-ui/core/colors/grey'
+import UserContext from './UserContext'
 
 import Header from './Header'
 import Welcome from './Welcome'
@@ -12,7 +13,6 @@ import Questions from './Questions'
 
 import questionService from '../services/questions'
 import userService from '../services/users'
-import grey from '@material-ui/core/colors/grey'
 import { setErrorMessage } from '../actions/questionActions'
 import Profile from './Profile'
 
@@ -35,24 +35,29 @@ const MainApp = () => {
   return (
     <div style={{
       backgroundColor: grey[100],
-      height: '100vh'
-    }}>
+      height: '100vh',
+    }}
+    >
       <UserContext.Provider value={[user, setUser]}>
-        <Header/>
+        <Header />
         <Switch>
-          <Route exact path="/" render={() => (
-            user ? (
-              <Questions user={user}/>
-            ) : (
-              <Welcome/>
-            )
-          )}/>
-          <Route path='/welcome' render={() => <Welcome/>}/>
-          <Route path='/login' render={() => <SignIn setUser={setUser}/>}/>
-          <Route path='/register' component={SignupForm}/>
-          <Route path='/question/new' exact render={() => <NewQuestionForm/>}/>
-          <Route path='/question/:id' exact render={() => <Question/>}/>
-          <Route path='/user/:id' exact render={() => <Profile/>}/>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              user ? (
+                <Questions user={user} />
+              ) : (
+                <Welcome />
+              )
+            )}
+          />
+          <Route path="/welcome" render={() => <Welcome />} />
+          <Route path="/login" render={() => <SignIn setUser={setUser} />} />
+          <Route path="/register" component={SignupForm} />
+          <Route path="/question/new" exact render={() => <NewQuestionForm />} />
+          <Route path="/question/:id" exact render={() => <Question />} />
+          <Route path="/user/:id" exact render={() => <Profile />} />
         </Switch>
       </UserContext.Provider>
     </div>

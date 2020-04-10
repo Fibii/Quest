@@ -3,20 +3,19 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import { useHistory, Link } from 'react-router-dom'
 import Copyright from './Copyrights'
 import Notification from './Notification'
-import { useHistory } from 'react-router-dom'
 import userService from '../services/users'
 
 import validator from '../services/validator'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -37,7 +36,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const SignupForm = () => {
-
   const classes = useStyles()
 
   const [fullName, setFullName] = useState('')
@@ -68,7 +66,7 @@ const SignupForm = () => {
   const userNameOnChange = (event) => {
     const username = event.target.value
     setUsername(username)
-    if (!validator.signupFormValidator({ username: username })) {
+    if (!validator.signupFormValidator({ username })) {
       setUserNameHelperText('only alphanumerics are allowed\nlength must be between 3 and 32')
     } else {
       setUserNameHelperText('')
@@ -78,7 +76,7 @@ const SignupForm = () => {
   const emailOnChange = (event) => {
     const email = event.target.value
     setEmail(email)
-    if (!validator.signupFormValidator({ email: email })) {
+    if (!validator.signupFormValidator({ email })) {
       setEmailHelperText('invalid email')
     } else {
       setEmailHelperText('')
@@ -88,7 +86,7 @@ const SignupForm = () => {
   const passwordOnChange = (event) => {
     const password = event.target.value
     setPassword(password)
-    if (!validator.signupFormValidator({ password: password })) {
+    if (!validator.signupFormValidator({ password })) {
       setPasswordHelperText('must be between 8 to 32 characters long, must include one lowercase letter, one uppercase letter and no spaces')
     } else {
       setPasswordHelperText('')
@@ -98,7 +96,7 @@ const SignupForm = () => {
   const dateOfBirthOnChange = (event) => {
     const dateOfBirth = event.target.value
     setDateOfBirth(dateOfBirth)
-    if (!validator.signupFormValidator({ dateOfBirth: dateOfBirth })) {
+    if (!validator.signupFormValidator({ dateOfBirth })) {
       setDateOfBirthHelperText('Birthday must be between 1900 and 2018')
     } else {
       setDateOfBirthHelperText('')
@@ -117,16 +115,15 @@ const SignupForm = () => {
 
     const user = {
       fullname: fullName,
-      username: username,
-      password: password,
-      email: email,
-      dateOfBirth: new Date(dateOfBirth)
+      username,
+      password,
+      email,
+      dateOfBirth: new Date(dateOfBirth),
     }
 
     if (!validator.signupFormValidator(user)) {
       setErrorMessage('All fields are required, if a field is red, then fix it, make sure dob is valid')
     } else {
-
       const newUser = await userService.createUser(user)
       if (!newUser || newUser.error) {
         setErrorMessage('error: couldn\'t connect to the server')
@@ -139,17 +136,22 @@ const SignupForm = () => {
   return (
     <div style={{
       position: 'relative',
-      minHeight: '100vh'
-    }}>
-      <Notification title={'Error'} message={errorMessage} severity={'error'}/>
-      <Container component="main" maxWidth="xs" style={{
-        paddingBottom: '3 rem'
-      }}>
-        <CssBaseline/>
+      minHeight: '100vh',
+    }}
+    >
+      <Notification title="Error" message={errorMessage} severity="error" />
+      <Container
+        component="main"
+        maxWidth="xs"
+        style={{
+          paddingBottom: '3 rem',
+        }}
+      >
+        <CssBaseline />
         <div className={classes.paper}>
 
           <Avatar className={classes.avatar}>
-            <LockOutlinedIcon/>
+            <LockOutlinedIcon />
           </Avatar>
 
           <Typography component="h1" variant="h5">
@@ -251,7 +253,7 @@ const SignupForm = () => {
 
             <Grid container justify="flex-end">
               <Grid item>
-                <Link variant="body2" onClick={() => history.push('/login')}>
+                <Link to="/login">
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -260,10 +262,9 @@ const SignupForm = () => {
           </form>
         </div>
       </Container>
-      <Copyright/>
+      <Copyright />
     </div>
 
   )
-
 }
 export default SignupForm
