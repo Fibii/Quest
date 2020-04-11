@@ -17,11 +17,11 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1rem',
       width: '3rem',
     },
-    [theme.breakpoints.down('300')]: {
+    [theme.breakpoints.down(300)]: {
       fontSize: '1rem',
       width: '2rem',
     },
-    [theme.breakpoints.down('200')]: {
+    [theme.breakpoints.down(200)]: {
       fontSize: '0.4rem',
       width: '1rem',
     },
