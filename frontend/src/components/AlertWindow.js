@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -15,7 +15,20 @@ import DialogTitle from '@material-ui/core/DialogTitle'
  * @param callback: function to be executed if the alert is confirmed
  *
  */
-const AlertWindow = ({ open, setOpen, title, content, cancelButton, confirmButton, callback }) => {
+const AlertWindow = ({
+  open, setOpen, title, content, cancelButton, confirmButton, callback,
+}) => {
+  let isMounted = false
+
+  useEffect(() => {
+    // componentDidMount
+    isMounted = true // used to prevent a memory leak after the component is unmounted
+
+    // componentWillUnmount
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const handleClose = () => {
     setOpen(false)
@@ -23,13 +36,15 @@ const AlertWindow = ({ open, setOpen, title, content, cancelButton, confirmButto
 
   const onClick = async () => {
     await callback()
-    setOpen(false)
+    if (isMounted && setOpen) {
+      setOpen(false)
+    }
   }
 
   return (
     <div>
       <Dialog
-        open={open}
+        open={open || false}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

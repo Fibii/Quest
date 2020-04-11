@@ -6,51 +6,53 @@ import { makeStyles } from '@material-ui/core/styles'
 import UpvoteBox from './UpvoteBox'
 import QuestionIcons from './QuestionIcons'
 import validator from '../../services/validator'
-import { getLikes } from '../../services/utils'
+import utils from '../../services/utils'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   likes: {
     [theme.breakpoints.up('xs')]: {
       backgroundColor: theme.palette.primary1Color,
-      fontSize: '1rem'
+      fontSize: '1rem',
     },
     [theme.breakpoints.between('lg', 'xl')]: {
-      fontSize: '1.2rem'
+      fontSize: '1.2rem',
     },
     [theme.breakpoints.down('xs')]: {
       fontSize: '0.8rem',
-      width: '90%'
+      width: '90%',
     },
-    [theme.breakpoints.down('330')]: {
+    [theme.breakpoints.down(330)]: {
       fontSize: '0.6rem',
-    }
+    },
   },
 
   icons: {
     marginLeft: 20,
     [theme.breakpoints.down('xs')]: {
       marginLeft: 12,
-    }
+    },
   },
 
   grid: {
     width: '90%',
     [theme.breakpoints.down('xs')]: {
       width: '80%',
-    }
-  }
+    },
+  },
 
 }))
 
 
-const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleUpdate, handleUpvote, handleDownVote }) => {
+const Comment = ({
+  user, comment, handleEdit, handleDelete, handleShare, handleUpdate, handleUpvote, handleDownVote,
+}) => {
   const classes = useStyles()
 
   return (
     <Paper>
-      <Grid container justify={'flex-start'}>
+      <Grid container justify="flex-start">
         <UpvoteBox
-          likes={getLikes(comment)}
+          likes={utils.getLikes(comment)}
           handleUpvote={handleUpvote}
           handleDownvote={handleDownVote}
         />
@@ -60,25 +62,31 @@ const Comment = ({ user, comment, handleEdit, handleDelete, handleShare, handleU
           </Typography>
         </Grid>
       </Grid>
-      <Grid container justify={'space-between'}>
+      <Grid container justify="space-between">
         <Grid item className={classes.icons}>
-          {validator.isAuthor(user, comment) ?
-            <QuestionIcons
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-              handleShare={handleShare}
-              direction={'row'}
-            />
-            : null
-          }
+          {validator.isAuthor(user, comment)
+            ? (
+              <QuestionIcons
+                handleUpdate={handleUpdate}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                handleShare={handleShare}
+                direction="row"
+              />
+            )
+            : null}
         </Grid>
-        <Typography variant='caption' style={{
-          marginRight: 8,
-          marginTop: 8,
-          color: 'grey'
-        }}>
-          posted by: {comment.postedBy.username}
+        <Typography
+          variant="caption"
+          style={{
+            marginRight: 8,
+            marginTop: 8,
+            color: 'grey',
+          }}
+        >
+          posted by:
+          {' '}
+          {comment.postedBy && comment.postedBy.username}
         </Typography>
       </Grid>
     </Paper>

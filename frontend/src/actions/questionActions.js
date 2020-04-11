@@ -1,85 +1,61 @@
 import questionActions from './questionAction'
 
-export const setQuestion = (question) => {
-  return {
-    type: questionActions.SET_QUESTION,
-    question: question
-  }
-}
+export const setQuestion = (question) => ({
+  type: questionActions.SET_QUESTION,
+  question,
+})
 
-export const setErrorMessage = (errorMessage) => {
-  return {
-    type: questionActions.SET_ERROR_MESSAGE,
-    errorMessage: errorMessage
-  }
-}
+export const setErrorMessage = (errorMessage) => ({
+  type: questionActions.SET_ERROR_MESSAGE,
+  errorMessage,
+})
 
-export const setCommentContent = (commentContent) => {
-  return {
-    type: questionActions.SET_COMMENT_CONTENT,
-    commentContent: commentContent
-  }
-}
+export const setCommentContent = (commentContent) => ({
+  type: questionActions.SET_COMMENT_CONTENT,
+  commentContent,
+})
 
-export const setShowEditFields = (showEditFields) => {
-  return {
-    type: questionActions.SET_SHOW_EDIT_FIELDS,
-    showEditFields: showEditFields
-  }
-}
+export const setShowEditFields = (showEditFields) => ({
+  type: questionActions.SET_SHOW_EDIT_FIELDS,
+  showEditFields,
+})
 
-export const setEditedQuestionTitle = (editedQuestionTitle) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_TITLE,
-    editedQuestionTitle: editedQuestionTitle
-  }
-}
+export const setEditedQuestionTitle = (editedQuestionTitle) => ({
+  type: questionActions.SET_EDITED_QUESTION_TITLE,
+  editedQuestionTitle,
+})
 
-export const setEditedQuestionContent = (editedQuestionContent) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_CONTENT,
-    editedQuestionContent: editedQuestionContent
-  }
-}
+export const setEditedQuestionContent = (editedQuestionContent) => ({
+  type: questionActions.SET_EDITED_QUESTION_CONTENT,
+  editedQuestionContent,
+})
 
-export const setEditedQuestionTags = (editedQuestionTags) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_TAGS,
-    editedQuestionTags: editedQuestionTags
-  }
-}
+export const setEditedQuestionTags = (editedQuestionTags) => ({
+  type: questionActions.SET_EDITED_QUESTION_TAGS,
+  editedQuestionTags,
+})
 
-export const setEditedQuestionTitleHelperText = (editedQuestionTitleHelperText) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT,
-    editedQuestionTitleHelperText: editedQuestionTitleHelperText
-  }
-}
+export const setEditedQuestionTitleHelperText = (editedQuestionTitleHelperText) => ({
+  type: questionActions.SET_EDITED_QUESTION_TITLE_HELPER_TEXT,
+  editedQuestionTitleHelperText,
+})
 
-export const setEditedQuestionContentHelperText = (editedQuestionContentHelperText) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT,
-    editedQuestionContentHelperText: editedQuestionContentHelperText
-  }
-}
+export const setEditedQuestionContentHelperText = (editedQuestionContentHelperText) => ({
+  type: questionActions.SET_EDITED_QUESTION_CONTENT_HELPER_TEXT,
+  editedQuestionContentHelperText,
+})
 
-export const setEditedQuestionTagsHelperText = (editedQuestionTagsHelperText) => {
-  return {
-    type: questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT,
-    editedQuestionTagsHelperText: editedQuestionTagsHelperText
-  }
-}
+export const setEditedQuestionTagsHelperText = (editedQuestionTagsHelperText) => ({
+  type: questionActions.SET_EDITED_QUESTION_TAGS_HELPER_TEXT,
+  editedQuestionTagsHelperText,
+})
 
-export const setIsQuestionSolved = (isQuestionSolved) => {
-  return {
-    type: questionActions.SET_IS_QUESTION_SOLVED,
-    isQuestionSolved: isQuestionSolved
-  }
-}
+export const setIsQuestionSolved = (isQuestionSolved) => ({
+  type: questionActions.SET_IS_QUESTION_SOLVED,
+  isQuestionSolved,
+})
 
-export const setClipboardSnackbarOpen = (clipboardSnackbarOpen) => {
-  return {
-    type: questionActions.SET_CLIPBOARD_SNACKBAR_OPEN,
-    clipboardSnackbarOpen: clipboardSnackbarOpen
-  }
-}
+export const setClipboardSnackbarOpen = (clipboardSnackbarOpen) => ({
+  type: questionActions.SET_CLIPBOARD_SNACKBAR_OPEN,
+  clipboardSnackbarOpen,
+})

@@ -9,7 +9,7 @@ import Container from '@material-ui/core/Container'
 import grey from '@material-ui/core/colors/grey'
 import Copyright from './Copyrights'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
   },
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(4),
   },
   buttons: {
-    backgroundColor: grey[600]
+    backgroundColor: grey[600],
   },
   cardGrid: {
     paddingTop: theme.spacing(8),
@@ -50,9 +50,15 @@ const Welcome = () => {
   return (
     <div className={classes.heroContent}>
       <Container maxWidth="sm">
-        <Typography component="h1" variant="h2" align="center" gutterBottom style={{
-          color: grey[800]
-        }}>
+        <Typography
+          component="h1"
+          variant="h2"
+          align="center"
+          gutterBottom
+          style={{
+            color: grey[800],
+          }}
+        >
           Welcome to QA
         </Typography>
         <Typography variant="h5" align="center" color="textSecondary" paragraph>
@@ -65,8 +71,12 @@ const Welcome = () => {
         <div className={classes.heroButtons}>
           <Grid container spacing={2} justify="center">
             <Grid item>
-              <Button variant="contained" color="primary" className={classes.buttons}
-                      onClick={() => history.push('/register')}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.buttons}
+                onClick={() => history.push('/register')}
+              >
                 SignUp
               </Button>
             </Grid>
@@ -78,7 +88,7 @@ const Welcome = () => {
           </Grid>
         </div>
       </Container>
-      <Copyright/>
+      <Copyright />
     </div>
   )
 }

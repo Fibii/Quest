@@ -8,12 +8,12 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { Link } from 'react-router-dom'
-import questionService from '../../services/questions'
 import grey from '@material-ui/core/colors/grey'
+import questionService from '../../services/questions'
 
 const drawerWidth = '80%'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 
   search: {
     position: 'relative',
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     marginTop: 80,
     margin: '0 auto',
-    background: grey[100]
+    background: grey[100],
   },
 
   drawerHeader: {
@@ -77,8 +77,8 @@ const useStyles = makeStyles(theme => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
-    outline: 'none'
-  }
+    outline: 'none',
+  },
 
 }))
 
@@ -98,7 +98,6 @@ const SearchBar = () => {
       }
     }
     getQuestions()
-
   }, [])
 
   const handleInput = (event) => {
@@ -113,7 +112,7 @@ const SearchBar = () => {
   return (
     <div className={classes.search}>
       <div className={classes.searchIcon}>
-        <SearchIcon/>
+        <SearchIcon />
       </div>
       <InputBase
         placeholder="Search…"
@@ -137,10 +136,14 @@ const SearchBar = () => {
         >
 
           <List>
-            {questions && questions.filter(question => question.title.startsWith(searchInput))
-              .map(question => (
-                <Link to={`/question/${question.id}`} className={classes.link}
-                      onClick={() => setOpen(false)} key={question.id}>
+            {questions && questions.filter((question) => question.title.startsWith(searchInput))
+              .map((question) => (
+                <Link
+                  to={`/question/${question.id}`}
+                  className={classes.link}
+                  onClick={() => setOpen(false)}
+                  key={question.id}
+                >
                   <ListItem button><ListItemText>{question.title}</ListItemText></ListItem>
                 </Link>
               ))}
@@ -149,7 +152,6 @@ const SearchBar = () => {
       </ClickAwayListener>
     </div>
   )
-
 }
 
 export default SearchBar

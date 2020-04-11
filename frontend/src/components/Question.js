@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useReducer } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import UserContext from './UserContext'
 import questionService from '../services/questions'
-import { useHistory } from 'react-router-dom'
+
 import QuestionView from './QuestionView'
 import { questionReducer, initialState } from '../reducers/QuestionReducer'
 import {
@@ -12,13 +12,12 @@ import {
   setEditedQuestionTitle,
   setShowEditFields,
   setCommentContent,
-  setErrorMessage
+  setErrorMessage,
 } from '../actions/questionActions'
 import validator from '../services/validator'
 
 
 const Question = () => {
-
   const [state, dispatch] = useReducer(questionReducer, initialState)
   const { id } = useParams()
   const [user] = useContext(UserContext)
@@ -33,7 +32,6 @@ const Question = () => {
    * of changing the state of those when the client edits one of them
    * */
   useEffect(() => {
-
     const getQuestion = async () => {
       const question = await questionService.get(id)
       if (!question || question.error) {
@@ -56,8 +54,9 @@ const Question = () => {
     getQuestion()
   }, [id])
 
-  const handleCommentPost = async (event) => {
+  const handleCommentPost = async () => {
     if (state.commentContent.length === 0) {
+      setTimeout(() => dispatch(setErrorMessage('')), 3000)
       dispatch(setErrorMessage('comment must not be empty'))
     } else {
       const comment = {
@@ -75,7 +74,7 @@ const Question = () => {
             ...comment,
             id: newComment.data.id,
             likes: [],
-          })
+          }),
         }))
         dispatch(setCommentContent(''))
       }
@@ -90,15 +89,15 @@ const Question = () => {
     if (response) {
       history.push('/')
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: couldn\'t delete the question'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteQuestion = async () => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -106,7 +105,7 @@ const Question = () => {
     if (response) {
       let value = 1
       if (state.question.likes) {
-        const userLikes = state.question.likes.filter(like => like.likedBy === user.id)
+        const userLikes = state.question.likes.filter((like) => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = 2
         }
@@ -114,20 +113,20 @@ const Question = () => {
       dispatch(setQuestion({
         ...state.question,
         likes: state.question.likes.concat({
-          value: value,
-          likedBy: user.id
-        })
+          value,
+          likedBy: user.id,
+        }),
       }))
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteQuestion = async () => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -135,7 +134,7 @@ const Question = () => {
     if (response) {
       let value = -1
       if (state.question.likes) {
-        const userLikes = state.question.likes.filter(like => like.likedBy === user.id)
+        const userLikes = state.question.likes.filter((like) => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = -2
         }
@@ -143,27 +142,27 @@ const Question = () => {
       dispatch(setQuestion({
         ...state.question,
         likes: state.question.likes.concat({
-          value: value,
-          likedBy: user.id
-        })
+          value,
+          likedBy: user.id,
+        }),
       }))
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleUpvoteComment = async (comment) => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
     const response = await questionService.upvoteComment(id, comment.id)
     if (response) {
       let value = 1
       if (comment.likes) {
-        const userLikes = comment.likes.filter(like => like.likedBy === user.id)
+        const userLikes = comment.likes.filter((like) => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already downvoted
           value = 2
         }
@@ -172,30 +171,29 @@ const Question = () => {
       console.log(state.question.comments)
       // update the comments array
       const newComments = state.question.comments
-      newComments.forEach(questionComment => {
+      newComments.forEach((questionComment) => {
         if (questionComment.id === comment.id) {
           questionComment.likes.push({
-            value: value,
-            likedBy: user.id
+            value,
+            likedBy: user.id,
           })
         }
       })
 
       dispatch(setQuestion({
         ...state.question,
-        comments: newComments
+        comments: newComments,
       }))
-
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not upvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDownvoteComment = async (comment) => {
     if (!user) {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('you must be a logged in to downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
       return
     }
 
@@ -203,7 +201,7 @@ const Question = () => {
     if (response) {
       let value = -1
       if (comment.likes) {
-        const userLikes = comment.likes.filter(like => like.likedBy === user.id)
+        const userLikes = comment.likes.filter((like) => like.likedBy === user.id)
         if (userLikes.length > 0) { // user already upvoted
           value = -2
         }
@@ -211,34 +209,32 @@ const Question = () => {
 
       // update the comments array
       const newComments = state.question.comments
-      newComments.forEach(questionComment => {
+      newComments.forEach((questionComment) => {
         if (questionComment.id === comment.id) {
           questionComment.likes.push({
-            value: value,
-            likedBy: user.id
+            value,
+            likedBy: user.id,
           })
         }
       })
 
       dispatch(setQuestion({
         ...state.question,
-        comments: newComments
+        comments: newComments,
       }))
-
     } else {
+      setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: could not downvote'))
-      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
   const handleDeleteComment = async (commentId) => {
-    // todo: add confirmation window (material ui's not the browser's)
     const response = await questionService.deleteComment(id, commentId)
     if (response) {
-      const newComments = state.question.comments.filter(comment => comment.id !== commentId)
+      const newComments = state.question.comments.filter((comment) => comment.id !== commentId)
       dispatch(setQuestion({
         ...state.question,
-        comments: newComments
+        comments: newComments,
       }))
     } else {
       dispatch(setErrorMessage('error: couldn\'t connect to the server'))
@@ -246,19 +242,20 @@ const Question = () => {
   }
 
   const handleQuestionUpdate = async () => {
-
     const tags = state.editedQuestionTags.split(',')
-      .map(tag => tag.replace(/^\s+|\s+$/gm, ''))
-      .filter(tag => tag.length > 0)
+      .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
+      .filter((tag) => tag.length > 0)
 
     const updatedQuestion = {
       title: state.editedQuestionTitle,
       content: state.editedQuestionContent,
       solved: state.isQuestionSolved,
-      tags: tags
+      tags,
     }
 
-    if (!validator.questionFormValidator({ title: state.editedQuestionTitle }) || !validator.questionFormValidator({ content: state.editedQuestionContent }) || state.editedQuestionTagsHelperText) {
+    if (!validator.questionFormValidator({ title: state.editedQuestionTitle })
+      || !validator.questionFormValidator({ content: state.editedQuestionContent })
+      || state.editedQuestionTagsHelperText) {
       dispatch(setErrorMessage('All fields are required, if a field is red, fix it'))
     } else {
       const response = await questionService.updateQuestion(state.question.id, updatedQuestion)
@@ -270,7 +267,7 @@ const Question = () => {
           ...state.question,
           title: updatedQuestion.title,
           content: updatedQuestion.content,
-          tags: updatedQuestion.tags
+          tags: updatedQuestion.tags,
         }))
         dispatch(setShowEditFields(false))
       }

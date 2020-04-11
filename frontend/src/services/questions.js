@@ -4,78 +4,83 @@ const baseUrl = 'http://localhost:3001/api'
 let token = null
 let config = null
 
-const setToken = newToken => {
+const setToken = (newToken) => {
   token = `bearer ${newToken}`
   config = {
-    headers: {'Authorization': token}
+    headers: { Authorization: token },
   }
 }
 
 const getAll = async () => {
   try {
-    const result = await axios.get(baseUrl + '/questions/')
+    const result = await axios.get(`${baseUrl}/questions/`)
     return result.data
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const get = async (id) => {
   try {
-    const result = await axios.get(baseUrl + `/questions/${id}`)
+    const result = await axios.get(`${baseUrl}/questions/${id}`)
     return result.data
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const addComment = async (id, comment) => {
   try {
     const response = await axios
-      .post(baseUrl + `/questions/${id}/new-comment`, comment, config)
-
+      .post(`${baseUrl}/questions/${id}/new-comment`, comment, config)
     return response
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const deleteComment = async (questionId, commentId) => {
   try {
     const response = await axios
-      .delete(baseUrl + `/questions/${questionId}/delete-comment/${commentId}`, config)
-
+      .delete(`${baseUrl}/questions/${questionId}/delete-comment/${commentId}`, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const upvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(baseUrl + `/questions/${questionId}/likes/${commentId}`,{likes: 1}, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: 1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const downvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(baseUrl + `/questions/${questionId}/likes/${commentId}`,{likes: -1}, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: -1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const addQuestion = async (question) => {
   try {
-    const response = await axios.post(baseUrl + '/questions', question, config)
+    const response = await axios.post(`${baseUrl}/questions`, question, config)
     return response.data
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 /**
@@ -86,41 +91,45 @@ const addQuestion = async (question) => {
  * */
 const deleteQuestion = async (id) => {
   try {
-    const response = await axios.delete(baseUrl + `/questions/${id}`, config)
+    const response = await axios.delete(`${baseUrl}/questions/${id}`, config)
     console.log(response)
     return response.status === 204
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const upvoteQuestion = async (id) => {
   try {
-    const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: 1}, config)
+    const response = await axios.post(`${baseUrl}/questions/${id}/likes`, { likes: 1 }, config)
     console.log(response)
     return response.status === 200
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const downvoteQuestion = async (id) => {
   try {
-    const response = await axios.post(baseUrl + `/questions/${id}/likes`,{likes: -1}, config)
+    const response = await axios.post(`${baseUrl}/questions/${id}/likes`, { likes: -1 }, config)
     console.log(response)
     return response.status === 200
   } catch (error) {
     console.log(error)
   }
+  return false
 }
 
 const updateQuestion = async (id, updatedQuestion) => {
   try {
-    const response = await axios.put(baseUrl + `/questions/${id}`, updatedQuestion, config)
+    const response = await axios.put(`${baseUrl}/questions/${id}`, updatedQuestion, config)
     return response.status === 200
   } catch (error) {
     console.log(error.response)
   }
+  return false
 }
 
 export default {

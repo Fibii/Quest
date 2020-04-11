@@ -1,24 +1,24 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography'
-import users from '../services/users'
-import Notification from './Notification'
 import IconButton from '@material-ui/core/IconButton'
 import { LocationOn } from '@material-ui/icons'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { Link } from 'react-router-dom'
+import Notification from './Notification'
+import users from '../services/users'
 
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles((theme) => ({
   container: {
     width: '60%',
     [theme.breakpoints.up('xs')]: {
       width: '90%',
-    }
+    },
 
   },
   questionList: {
@@ -34,13 +34,13 @@ const useStyles = makeStyles(theme => ({
     fontSize: '3rem',
     [theme.breakpoints.down('xs')]: {
       fontSize: '2rem',
-    }
+    },
   },
   username: {
     fontSize: '2rem',
     [theme.breakpoints.down('xs')]: {
       fontSize: '1rem',
-    }
+    },
   },
   link: {
     textDecoration: 'none',
@@ -50,8 +50,8 @@ const useStyles = makeStyles(theme => ({
   date: {
     [theme.breakpoints.down('xs')]: {
       fontSize: '12px',
-    }
-  }
+    },
+  },
 }))
 
 const Profile = () => {
@@ -73,39 +73,63 @@ const Profile = () => {
   }, [])
 
   if (error) {
-    return <Notification severity={'error'} title={'Error'} message={error}/>
+    return <Notification severity="error" title="Error" message={error} />
   }
 
   const formateDate = (date) => {
     const dateObj = new Date(date)
-    return dateObj.getDate() + '/' + (dateObj.getMonth() + 1) + '/' + dateObj.getFullYear()
+    return `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`
   }
   return (
-    <Grid container justify={'center'}>
-      <Grid container direction={'column'} alignItems={'center'} className={classes.container}>
+    <Grid container justify="center">
+      <Grid container direction="column" alignItems="center" className={classes.container}>
         <Typography className={classes.fullname}>{user.fullname}</Typography>
-        <Typography className={classes.username}>@({user.username})</Typography>
-        <Typography variant={'h6'}>{user.location &&
-        <IconButton><LocationOn/>{user.location}</IconButton>}</Typography>
-        <Grid container direction={'row'} justify={'space-between'}>
-          <Typography className={classes.date}>Joined: {formateDate(user.registerDate)}</Typography>
-          <Typography className={classes.date}>Last
-            Seen: {formateDate(user.lastSignedInDate)}</Typography>
+        <Typography className={classes.username}>
+          @(
+          {user.username}
+          )
+        </Typography>
+        <Typography variant="h6">
+          {user.location
+          && (
+            <IconButton>
+              <LocationOn />
+              {user.location}
+            </IconButton>
+          )}
+        </Typography>
+        <Grid container direction="row" justify="space-between">
+          <Typography className={classes.date}>
+            Joined:
+            {formateDate(user.registerDate)}
+          </Typography>
+          <Typography className={classes.date}>
+            Last
+            Seen:
+            {formateDate(user.lastSignedInDate)}
+          </Typography>
         </Grid>
         <List
           component="nav"
           aria-labelledby="nested-list-subheader"
-          subheader={
+          subheader={(
             <ListSubheader component="div" id="nested-list-subheader">
-              Posted Questions ({user.questions && user.questions.length}):
+              Posted Questions (
+              {user.questions && user.questions.length}
+              ):
             </ListSubheader>
-          }
+          )}
           className={classes.questionList}
         >
-          {user.questions && user.questions.map(question => <ListItem button key={question.id}>
-            <Link to={`/question/${question.id}`} className={classes.link}><ListItemText
-              primary={question.title}/></Link>
-          </ListItem>)}
+          {user.questions && user.questions.map((question) => (
+            <ListItem button key={question.id}>
+              <Link to={`/question/${question.id}`} className={classes.link}>
+                <ListItemText
+                  primary={question.title}
+                />
+              </Link>
+            </ListItem>
+          ))}
         </List>
       </Grid>
     </Grid>

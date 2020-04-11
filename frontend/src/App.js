@@ -3,12 +3,10 @@ import { BrowserRouter } from 'react-router-dom'
 import MainApp from './components/MainApp'
 
 
-const App = () => {
-  return (
-    <BrowserRouter>
-      <MainApp />
-    </BrowserRouter>
-  )
-}
+const App = () => (
+  <BrowserRouter>
+    <MainApp />
+  </BrowserRouter>
+)
 
 export default App
