@@ -11,6 +11,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Notification from './Notification'
 import users from '../services/users'
+import utils from '../services/utils'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -76,10 +77,6 @@ const Profile = () => {
     return <Notification severity="error" title="Error" message={error} />
   }
 
-  const formateDate = (date) => {
-    const dateObj = new Date(date)
-    return `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`
-  }
   return (
     <Grid container justify="center">
       <Grid container direction="column" alignItems="center" className={classes.container}>
@@ -101,12 +98,12 @@ const Profile = () => {
         <Grid container direction="row" justify="space-between">
           <Typography className={classes.date}>
             Joined:
-            {formateDate(user.registerDate)}
+            {utils.formatDate(user.registerDate)}
           </Typography>
           <Typography className={classes.date}>
             Last
             Seen:
-            {formateDate(user.lastSignedInDate)}
+            {utils.formatDate(user.lastSignedInDate)}
           </Typography>
         </Grid>
         <List
