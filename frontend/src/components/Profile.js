@@ -74,9 +74,7 @@ const Profile = () => {
 
   if (error) {
     return (
-      <div data-testid="error">
         <Notification severity="error" title="Error" message={error} />
-      </div>
     )
   }
 

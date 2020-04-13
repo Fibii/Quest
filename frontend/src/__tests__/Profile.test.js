@@ -30,7 +30,7 @@ describe('user tests', () => {
     )
 
     await waitForElement(() => getByTestId('profile-container'))
-    expect(getByTestId('error').textContent).toContain("Couldn't get this user")
+    expect(getByTestId('notification').textContent).toContain("Couldn't get this user")
   })
 
   test('loads and displays a user profile', async () => {
