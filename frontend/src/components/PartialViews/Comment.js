@@ -57,7 +57,7 @@ const Comment = ({
           handleDownvote={handleDownVote}
         />
         <Grid item className={classes.grid}>
-          <Typography className={classes.likes}>
+          <Typography className={classes.likes} data-testid="comment-content">
             {comment.content}
           </Typography>
         </Grid>

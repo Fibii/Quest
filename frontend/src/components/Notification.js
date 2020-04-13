@@ -31,7 +31,7 @@ const Notification = ({ title, message, severity }) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} data-testid="notification">
       <Alert
         severity={severity}
         variant="filled"

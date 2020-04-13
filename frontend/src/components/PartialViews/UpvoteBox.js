@@ -41,7 +41,7 @@ const UpvoteBox = ({ likes, handleUpvote, handleDownvote }) => {
       <IconButton onClick={handleUpvote} size="small">
         <ArrowUpwardRoundedIcon className={classes.upvoteBox} />
       </IconButton>
-      <Typography className={classes.likes}>{likes}</Typography>
+      <Typography className={classes.likes} data-testid="upvoteBox-likes">{likes}</Typography>
       <IconButton onClick={handleDownvote} size="small">
         <ArrowDownwardRoundedIcon className={classes.upvoteBox} />
       </IconButton>

@@ -169,7 +169,7 @@ const QuestionView = ({
   const questionLikes = utils.getLikes(question)
 
   return (
-    <div className={classes.mainContainer}>
+    <div className={classes.mainContainer} data-testid="question-container">
       <Notification title="Error" message={errorMessage} severity="error" />
       <div className={classes.container}>
         <div
@@ -238,6 +238,7 @@ const QuestionView = ({
                             width: '80%',
                             overflowWrap: 'break-word',
                           }}
+                          data-testid="title"
                         >
                           {question.title}
                         </Typography>
@@ -343,6 +344,7 @@ const QuestionView = ({
                             overflowWrap: 'break-word',
                             width: '100%',
                           }}
+                          data-testid="content"
                         >
                           {question.content}
                         </Typography>
