@@ -42,24 +42,24 @@ const AlertWindow = ({
   }
 
   return (
-    <div>
+    <div data-testid="alert-container">
       <Dialog
         open={open || false}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title" data-testid="title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-dsescription">
+          <DialogContentText id="alert-dialog-dsescription" data-testid="content">
             {content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="primary" data-testid="cancel-button">
             {cancelButton}
           </Button>
-          <Button onClick={onClick} color="primary" autoFocus>
+          <Button onClick={onClick} color="primary" autoFocus data-testid="confirm-button">
             {confirmButton}
           </Button>
         </DialogActions>
