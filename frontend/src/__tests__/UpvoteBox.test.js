@@ -14,7 +14,7 @@ describe('UpvoteBox tests', () => {
       likes -= 1
     }
 
-    const { getByTestId, rerender } = render(
+    const { getByTestId } = render(
       <UpvoteBox
         likes={likes}
         handleUpvote={() => upvote()}
