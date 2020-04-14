@@ -37,12 +37,13 @@ const UpvoteBox = ({ likes, handleUpvote, handleDownvote }) => {
       justify="flex-start"
       alignItems="center"
       className={classes.upvoteBox}
+      data-testid="upvoteBox-container"
     >
-      <IconButton onClick={handleUpvote} size="small">
+      <IconButton onClick={handleUpvote} size="small" data-testid="upvote-button">
         <ArrowUpwardRoundedIcon className={classes.upvoteBox} />
       </IconButton>
       <Typography className={classes.likes} data-testid="upvoteBox-likes">{likes}</Typography>
-      <IconButton onClick={handleDownvote} size="small">
+      <IconButton onClick={handleDownvote} size="small" data-testid="downvote-button">
         <ArrowDownwardRoundedIcon className={classes.upvoteBox} />
       </IconButton>
     </Grid>
