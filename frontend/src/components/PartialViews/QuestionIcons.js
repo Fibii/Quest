@@ -9,6 +9,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from '@material-ui/core/Snackbar'
 import grey from '@material-ui/core/colors/grey'
 import AlertWindow from '../AlertWindow'
+import utils from '../../services/utils'
 
 /**
  *
@@ -17,9 +18,12 @@ import AlertWindow from '../AlertWindow'
  * @return clickable icons, an icon is returned if its callback is truthy
  * */
 const QuestionIcons = ({
-  direction, handleUpdate, handleEdit, handleDelete, path, alertCallback, alertOpen, alertSetOpen,
+  direction, handleUpdate, handleEdit, handleDelete, path, alertOpen, alertSetOpen,
 }) => {
   const [clipboardSnackbarOpen, setClipboardSnackbarOpen] = useState(false)
+  const [currentMode, setCurrentMode] = useState('NONE')
+  const UPDATE = 'UPDATE'
+  const DELETE = 'DELETE'
 
   // the width of this component depending on the rendered icons
   const width = [path, handleDelete, handleUpdate, handleEdit]
@@ -36,6 +40,16 @@ const QuestionIcons = ({
     setClipboardSnackbarOpen(true)
   }
 
+  const handleUpdateButton = () => {
+    alertSetOpen(true)
+    setCurrentMode(UPDATE)
+  }
+
+  const handleDeleteButton = () => {
+    alertSetOpen(true)
+    setCurrentMode(DELETE)
+  }
+
   return (
     <Grid
       container
@@ -44,21 +58,22 @@ const QuestionIcons = ({
       style={{
         width: direction === 'row' ? `${width}rem` : '2rem',
       }}
+      data-testid="questionIcons-container"
     >
       {handleUpdate && (
-        <IconButton onClick={handleUpdate} size="small">
+        <IconButton onClick={handleUpdateButton} size="small" data-testid="update-button">
           <CheckCircleOutlineIcon />
         </IconButton>
       )}
 
       {handleEdit && (
-        <IconButton onClick={handleEdit} size="small">
+        <IconButton onClick={handleEdit} size="small" data-testid="edit-button">
           <EditIcon />
         </IconButton>
       )}
 
       {handleDelete && (
-        <IconButton onClick={handleDelete} size="small">
+        <IconButton onClick={handleDeleteButton} size="small" data-testid="delete-button">
           <DeleteIcon />
         </IconButton>
       )}
@@ -67,7 +82,7 @@ const QuestionIcons = ({
         content="Are you sure you want to delete this question?"
         cancelButton="NO"
         confirmButton="YES"
-        callback={alertCallback}
+        callback={utils.iff(currentMode === UPDATE, handleUpdate, handleDelete)}
         open={alertOpen}
         setOpen={alertSetOpen}
       />
@@ -75,7 +90,7 @@ const QuestionIcons = ({
       {path
       && (
         <CopyToClipboard text={path ? `${window.location.origin}/${path}` : window.location.href}>
-          <IconButton onClick={handleShareButton} size="small">
+          <IconButton onClick={handleShareButton} size="small" data-testid="share-button">
             <ShareIcon />
           </IconButton>
         </CopyToClipboard>
@@ -91,6 +106,7 @@ const QuestionIcons = ({
         onClose={handleClipboardSnackbar}
         message="copied to clipboards"
         color={grey[300]}
+        data-testid="snackbar"
       />
     </Grid>
   )
