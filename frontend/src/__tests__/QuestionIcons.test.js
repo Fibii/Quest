@@ -13,13 +13,9 @@ describe('QuestionIcons tests', () => {
     const DELETED = 'DELETED'
     const UPDATED = 'UPDATED'
     const path = '/tests/question/icons'
-    let alertOpen = false
     // jsdom doesn't implement window.prompt, implement it as an empty object
     // so jsdom doesn't throw an error
     window.prompt = () => {}
-    const alertSetOpen = (value) => {
-      alertOpen = value
-    }
 
     /**
      * Function that gets called when one of the question is clicked, used to
@@ -41,19 +37,14 @@ describe('QuestionIcons tests', () => {
         handleDelete={() => update(DELETED)}
         handleEdit={() => update(EDITED)}
         path={path}
-        alertOpen={alertOpen}
-        alertSetOpen={alertSetOpen}
-        alertCallback={() => update(DELETED)}
       />,
     )
 
     fireEvent.click(getByTestId('edit-button'))
     expect(state).toBe(EDITED)
-    expect(alertOpen).toBeFalsy()
     // click the update button
     fireEvent.click(getByTestId('update-button'))
     // expect alertWindow to be open
-    expect(alertOpen).toBeTruthy()
     expect(state).toBe(EDITED)
     // rerender to get get the opened alertWindow into the dom
     rerender(
@@ -63,9 +54,6 @@ describe('QuestionIcons tests', () => {
         handleDelete={() => update(DELETED)}
         handleEdit={() => update(EDITED)}
         path={path}
-        alertOpen={alertOpen}
-        alertSetOpen={alertSetOpen}
-        alertCallback={() => update(DELETED)}
       />,
     )
     // click confirm button on alertWindow
@@ -75,7 +63,6 @@ describe('QuestionIcons tests', () => {
     // click the delete button
     fireEvent.click(getByTestId('delete-button'))
     // expect alertWindow to be open
-    expect(alertOpen).toBeTruthy()
     expect(state).toBe(UPDATED)
     // click confirm button on alertWindow
     rerender(
@@ -85,9 +72,6 @@ describe('QuestionIcons tests', () => {
         handleDelete={() => update(DELETED)}
         handleEdit={() => update(EDITED)}
         path={path}
-        alertOpen={alertOpen}
-        alertSetOpen={alertSetOpen}
-        alertCallback={() => update(DELETED)}
       />,
     )
     fireEvent.click(getByTestId('confirm-button'))
@@ -99,9 +83,6 @@ describe('QuestionIcons tests', () => {
         handleDelete={() => update(DELETED)}
         handleEdit={() => update(EDITED)}
         path={path}
-        alertOpen={alertOpen}
-        alertSetOpen={alertSetOpen}
-        alertCallback={() => update(DELETED)}
       />,
     )
     fireEvent.click(getByTestId('share-button'))

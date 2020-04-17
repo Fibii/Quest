@@ -18,10 +18,12 @@ import utils from '../../services/utils'
  * @return clickable icons, an icon is returned if its callback is truthy
  * */
 const QuestionIcons = ({
-  direction, handleUpdate, handleEdit, handleDelete, path, alertOpen, alertSetOpen,
+  direction, handleUpdate, handleEdit, handleDelete, path,
 }) => {
   const [clipboardSnackbarOpen, setClipboardSnackbarOpen] = useState(false)
   const [currentMode, setCurrentMode] = useState('NONE')
+  const [openAlertWindow, setOpenAlertWindow] = useState(false)
+
   const UPDATE = 'UPDATE'
   const DELETE = 'DELETE'
 
@@ -41,12 +43,12 @@ const QuestionIcons = ({
   }
 
   const handleUpdateButton = () => {
-    alertSetOpen(true)
+    setOpenAlertWindow(true)
     setCurrentMode(UPDATE)
   }
 
   const handleDeleteButton = () => {
-    alertSetOpen(true)
+    setOpenAlertWindow(true)
     setCurrentMode(DELETE)
   }
 
@@ -78,13 +80,13 @@ const QuestionIcons = ({
         </IconButton>
       )}
       <AlertWindow
-        title="Confirm Deletion"
-        content="Are you sure you want to delete this question?"
+        title={`Confirm ${utils.iff(currentMode === DELETE, 'Delete', 'Update')}`}
+        content={`Are you sure you want to ${utils.iff(currentMode === DELETE, 'delete', 'update')} this question?`}
         cancelButton="NO"
         confirmButton="YES"
         callback={utils.iff(currentMode === UPDATE, handleUpdate, handleDelete)}
-        open={alertOpen}
-        setOpen={alertSetOpen}
+        open={openAlertWindow}
+        setOpen={setOpenAlertWindow}
       />
 
       {path

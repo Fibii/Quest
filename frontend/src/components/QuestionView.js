@@ -96,7 +96,6 @@ const QuestionView = ({
     editedQuestionTagsHelperText, editedQuestionTitleHelperText,
     commentContent,
   } = state
-  const [openAlertWindow, setOpenAlertWindow] = useState(false)
   const isMobile = useMediaQuery('(max-width:600px)')
   const isLowResolution = useMediaQuery('(max-width:800px)')
 
@@ -208,12 +207,9 @@ const QuestionView = ({
                       {!isMobile ? (
                         <QuestionIcons
                           direction="row"
-                          handleDelete={() => setOpenAlertWindow(true)}
+                          handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
                           handleUpdate={handleQuestionUpdate}
-                          alertCallback={() => handleDeleteQuestion(question.id)}
-                          alertOpen={openAlertWindow}
-                          alertSetOpen={setOpenAlertWindow}
                           path={`question/${question.id}`}
                         />
                       ) : ''}
@@ -253,12 +249,9 @@ const QuestionView = ({
                       >
                         {utils.iff(validator.isAuthor(user, question) && !isMobile, <QuestionIcons
                           direction="row"
-                          handleDelete={() => setOpenAlertWindow(true)}
+                          handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
                           handleUpdate={handleQuestionUpdate}
-                          alertCallback={() => handleDeleteQuestion(question.id)}
-                          alertOpen={openAlertWindow}
-                          alertSetOpen={setOpenAlertWindow}
                           path={`question/${question.id}`}
                         />, utils.iff(!isMobile,
                           <div
@@ -394,12 +387,9 @@ const QuestionView = ({
                 {utils.iff(isMobile, utils.iff(validator.isAuthor(user, question),
                   <QuestionIcons
                     direction="row"
-                    handleDelete={() => setOpenAlertWindow(true)}
+                    handleDelete={() => handleDeleteQuestion(question.id)}
                     handleEdit={() => setShowEditFields(!showEditFields)}
                     handleUpdate={handleQuestionUpdate}
-                    alertCallback={() => handleDeleteQuestion(question.id)}
-                    alertOpen={openAlertWindow}
-                    alertSetOpen={setOpenAlertWindow}
                     path={`question/${question.id}`}
                   />,
                   <div
