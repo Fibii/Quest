@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 
 const QPaper = ({ user, question, handleDelete }) => {
   const classes = useStyles()
-  const [openAlertWindow, setOpenAlertWindow] = useState(false)
   const path = `question/${question.id}`
 
   return (
@@ -97,12 +96,9 @@ const QPaper = ({ user, question, handleDelete }) => {
               {validator.isAuthor(user, question)
                 ? (
                   <QuestionIcons
-                    handleDelete={() => setOpenAlertWindow(true)}
+                    handleDelete={handleDelete}
                     path={path}
                     direction="row"
-                    alertCallback={handleDelete}
-                    alertOpen={openAlertWindow}
-                    alertSetOpen={setOpenAlertWindow}
                   />
                 )
                 : (
