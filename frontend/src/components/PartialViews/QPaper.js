@@ -62,7 +62,7 @@ const QPaper = ({ user, question, handleDelete }) => {
   const path = `question/${question.id}`
 
   return (
-    <Grid container justify="center">
+    <Grid container justify="center" data-testid="qpaper-container">
       <Paper className={classes.paper}>
         <Grid
           container
@@ -103,7 +103,7 @@ const QPaper = ({ user, question, handleDelete }) => {
                 )
                 : (
                   <CopyToClipboard text={`${window.location.origin}/${path}`}>
-                    <IconButton size="small">
+                    <IconButton size="small" data-testid="share-button">
                       <ShareIcon />
                     </IconButton>
                   </CopyToClipboard>
