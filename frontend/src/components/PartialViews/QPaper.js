@@ -9,9 +9,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import grey from '@material-ui/core/colors/grey'
 import { Link } from 'react-router-dom'
-import IconButton from '@material-ui/core/IconButton'
-import ShareIcon from '@material-ui/icons/Share'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import validator from '../../services/validator'
 import utils from '../../services/utils'
 import QuestionIcons from './QuestionIcons'
@@ -93,22 +90,16 @@ const QPaper = ({ user, question, handleDelete }) => {
               </Typography>
             </Link>
             <Grid item>
-              {validator.isAuthor(user, question)
-                ? (
-                  <QuestionIcons
-                    handleDelete={handleDelete}
-                    path={path}
-                    direction="row"
-                  />
-                )
-                : (
-                  <CopyToClipboard text={`${window.location.origin}/${path}`}>
-                    <IconButton size="small" data-testid="share-button">
-                      <ShareIcon />
-                    </IconButton>
-                  </CopyToClipboard>
-                )}
-
+              {utils.iff(validator.isAuthor(user, question),
+                <QuestionIcons
+                  handleDelete={handleDelete}
+                  path={path}
+                  direction="row"
+                />,
+                <QuestionIcons
+                  path={path}
+                  direction="row"
+                />)}
             </Grid>
           </Grid>
         </Grid>
