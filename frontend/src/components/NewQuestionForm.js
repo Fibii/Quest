@@ -169,8 +169,9 @@ const NewQuestionForm = () => {
         position: 'relative',
         minHeight: '100vh',
       }}
+      data-testid="questionForm-container"
     >
-      <Notification title="Error" message={errorMessage} severity="error" />
+      <Notification title="Error" message={errorMessage} severity="error" data-testid="error-message" />
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -190,6 +191,9 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 value={questionTitle}
                 onChange={titleOnChange}
+                inputProps={{
+                  'data-testid': 'title-input',
+                }}
               />
             </Grid>
             <Grid item className={classes.item}>
@@ -204,6 +208,9 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 value={questionContent}
                 onChange={contentOnChange}
+                inputProps={{
+                  'data-testid': 'content-input',
+                }}
               />
             </Grid>
             <Grid item className={classes.item}>
@@ -216,6 +223,9 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 value={questionTags}
                 onChange={tagsOnChange}
+                inputProps={{
+                  'data-testid': 'tags-input',
+                }}
               />
             </Grid>
             <Grid container justify="flex-end" className={classes.item}>
@@ -226,6 +236,7 @@ const NewQuestionForm = () => {
                 style={{
                   marginRight: 8,
                 }}
+                data-testid="clear-button"
               >
                 clear
               </Button>
@@ -233,6 +244,7 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 color="primary"
                 onClick={handleQuestionPost}
+                data-testid="submit-button"
               >
                 submit
               </Button>
