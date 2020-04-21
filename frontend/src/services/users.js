@@ -1,11 +1,12 @@
 import axios from 'axios'
 
 const baseUrl = 'http://localhost:3001/api'
-// let token = null
-//
-// const setToken = (newToken) => {
-//   token = `bearer ${newToken}`
-// }
+// eslint-disable-next-line no-unused-vars
+let token = null
+
+const setToken = (newToken) => {
+  token = `bearer ${newToken}`
+}
 
 const login = async (credentials) => {
   try {
@@ -41,4 +42,5 @@ export default {
   login,
   createUser,
   getUser,
+  setToken,
 }
