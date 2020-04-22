@@ -85,6 +85,7 @@ const QPaper = ({ user, question, handleDelete }) => {
                   overflowWrap: 'break-word',
                   marginLeft: 32,
                 }}
+                data-testid="title"
               >
                 {question.title}
               </Typography>
@@ -115,13 +116,16 @@ const QPaper = ({ user, question, handleDelete }) => {
             direction="column"
             alignItems="center"
             className={classes.upvoteBoxContainer}
+            data-testid="likes"
           >
             <KeyboardArrowUpIcon className={classes.upvoteBox} />
             {utils.getLikes(question.likes)}
           </Grid>
-          <Typography style={{
-            width: '90%',
-          }}
+          <Typography
+            style={{
+              width: '90%',
+            }}
+            data-testid="content"
           >
             {`${question.content.substr(0, 100)}...`}
           </Typography>
@@ -133,6 +137,7 @@ const QPaper = ({ user, question, handleDelete }) => {
               color: 'grey',
               marginRight: 8,
             }}
+            data-testid="postedBy"
           >
             posted by:
             {question && question.postedBy && question.postedBy.username}
