@@ -7,6 +7,7 @@ import NewQuestionForm from '../components/NewQuestionForm'
 import newQuestion from '../__mocks__/newQuestion'
 import user from '../__mocks__/user'
 import UserContext from '../components/UserContext'
+import inputHelper from '../services/testHelpers/inputHelper'
 
 jest.mock('axios')
 const baseUrl = 'http://localhost:3001/api'
@@ -26,32 +27,18 @@ describe('NewQuestionForm tests', () => {
       </UserContext.Provider>,
     )
 
-    const title = {
-      target: {
-        value: 'question test title',
-      },
-    }
-
-    const content = {
-      target: {
-        value: 'question test content',
-      },
-    }
-
-    const tags = {
-      target: {
-        value: 'question, test, tag',
-      },
-    }
+    const title = 'question test title'
+    const content = 'question test content'
+    const tags = 'question, test, tag'
 
     axiosMock.post.mockResolvedValueOnce({
       data: newQuestion,
     })
 
     expect(getByTestId('questionForm-container')).toBeInTheDocument()
-    fireEvent.change(getByTestId('title-input'), title)
-    fireEvent.change(getByTestId('content-input'), content)
-    fireEvent.change(getByTestId('tags-input'), tags)
+    fireEvent.change(getByTestId('title-input'), inputHelper.parseValue(title))
+    fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(content))
+    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(tags))
     fireEvent.click(getByTestId('submit-button'), tags)
 
     rerender(
@@ -89,32 +76,18 @@ describe('NewQuestionForm tests', () => {
       </UserContext.Provider>,
     )
 
-    const title = {
-      target: {
-        value: 'bad t',
-      },
-    }
-
-    const content = {
-      target: {
-        value: 'bad c',
-      },
-    }
-
-    const tags = {
-      target: {
-        value: 'bad tags',
-      },
-    }
+    const title = 'bad t'
+    const content = 'bad c'
+    const tags = 'bad tags'
 
     axiosMock.post.mockResolvedValueOnce({
       data: newQuestion,
     })
 
     expect(getByTestId('questionForm-container')).toBeInTheDocument()
-    fireEvent.change(getByTestId('title-input'), title)
-    fireEvent.change(getByTestId('content-input'), content)
-    fireEvent.change(getByTestId('tags-input'), tags)
+    fireEvent.change(getByTestId('title-input'), inputHelper.parseValue(title))
+    fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(content))
+    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(tags))
     fireEvent.click(getByTestId('submit-button'), tags)
 
     rerender(
