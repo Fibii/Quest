@@ -4,7 +4,7 @@ import {
 } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import axiosMock from 'axios'
-import { MemoryRouter, Route } from 'react-router-dom'
+import { MemoryRouter, Route, withRouter } from 'react-router-dom'
 import user from '../__mocks__/user'
 import SignupForm from '../components/SignupForm'
 
@@ -23,6 +23,7 @@ const EMAIL_HELPERTEXT = 'invalid email'
 const PASSWORD_HELPERTEXT = 'must be between 8 to 32 characters long, must include one lowercase letter, one uppercase letter and no spaces'
 const DATE_OF_BIRTH_HELPERTEXT = 'Birthday must be between 1900 and 2018'
 const SERVER_DOWN = 'couldn\'t connect to the server'
+const LOGIN_PATH = '/login'
 
 /**
  * @param input: TextField input
@@ -164,5 +165,26 @@ describe('SignupForm tests', () => {
     expect(getByTestId('notification').textContent)
       .toContain('All fields are required, if a field is red, then fix it, make sure dob is valid')
     expect(axiosMock.post).toHaveBeenCalledTimes(0)
+  })
+
+  test('redirects to /login when login link is clicked', async () => {
+    const LocationDisplay = withRouter(({ location }) => (
+      <div data-testid="location-display">{location.pathname}</div>
+    ))
+
+    const { getByTestId, queryByTestId } = render(
+      <MemoryRouter initialEntries={['/register']}>
+        <Route path="/register">
+          <SignupForm />
+        </Route>
+        <Route path={LOGIN_PATH}>
+          <LocationDisplay />
+        </Route>
+      </MemoryRouter>,
+    )
+    expect(queryByTestId('location-display')).toBeNull()
+    fireEvent.click(getByTestId('login-link'))
+    expect(getByTestId('location-display')).toBeInTheDocument()
+    expect(getByTestId('location-display').textContent).toEqual(LOGIN_PATH)
   })
 })
