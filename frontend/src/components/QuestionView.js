@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import List from '@material-ui/core/List'
 import IconButton from '@material-ui/core/IconButton'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -203,6 +203,9 @@ const QuestionView = ({
                           width: '70%',
                           margin: 8,
                         }}
+                        inputProps={{
+                          'data-testid': 'title-input',
+                        }}
                       />
                       {!isMobile ? (
                         <QuestionIcons
@@ -316,6 +319,9 @@ const QuestionView = ({
                           width: '90%',
                           marginLeft: 8,
                         }}
+                        inputProps={{
+                          'data-testid': 'content-input',
+                        }}
                       />
                     )
                     : (
@@ -380,6 +386,9 @@ const QuestionView = ({
                         width: '90%',
                         margin: 8,
                         marginBottom: 26,
+                      }}
+                      inputProps={{
+                        'data-testid': 'tags-input',
                       }}
                     />
                   )
