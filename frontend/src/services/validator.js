@@ -27,7 +27,7 @@ const questionFormSchema = Joi.object({
   content: Joi.string()
     .min(8),
   tags: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9,_ ]*$')),
+    .pattern(new RegExp('^[a-zA-Z0-9 ]*$')),
 })
   .or('title', 'content', 'tags')
 

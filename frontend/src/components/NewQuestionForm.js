@@ -95,7 +95,7 @@ const NewQuestionForm = () => {
     setTagsHelperText('')
 
     if (!validator.questionFormValidator({ tags })) {
-      setTagsHelperText('tags must be words, separated by commas, such "hello, world"')
+      setTagsHelperText('tags must be words, separated by space, like in "hello world"')
     }
   }
 
@@ -108,7 +108,7 @@ const NewQuestionForm = () => {
    * @see questionService
    * */
   const handleQuestionPost = async () => {
-    const tags = questionTags.split(',')
+    const tags = questionTags.split(' ')
       .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
       .filter((tag) => tag.length > 0)
 
