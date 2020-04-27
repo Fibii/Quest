@@ -185,6 +185,7 @@ const NewQuestionForm = () => {
               <TextField
                 error={titleHelperText.length > 0}
                 helperText={titleHelperText}
+                id="title"
                 placeholder="Title"
                 multiline
                 fullWidth
@@ -200,6 +201,7 @@ const NewQuestionForm = () => {
               <TextField
                 error={contentHelperText.length > 0}
                 helperText={contentHelperText}
+                id="content"
                 placeholder="Content"
                 multiline
                 rows={3}
@@ -217,6 +219,7 @@ const NewQuestionForm = () => {
               <TextField
                 error={tagsHelperText.length > 0}
                 helperText={tagsHelperText}
+                id="tags"
                 placeholder="Tags"
                 multiline
                 fullWidth

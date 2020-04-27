@@ -13,6 +13,10 @@ jest.mock('axios')
 const baseUrl = 'http://localhost:3001/api'
 const url = `${baseUrl}/questions`
 
+const TITLE_HELPERTEXT = 'title must be 6 characters long at least and 64 at most'
+const CONTENT_HELPERTEXT = 'content must be at least 8 characters long'
+const TAGS_HELPERTEXT = 'tags must be words, separated by space, like in "hello world"'
+
 describe('NewQuestionForm tests', () => {
   test('renders NewQuestionForm and POST a new question', async () => {
     const { getByTestId, rerender } = render(
@@ -29,7 +33,7 @@ describe('NewQuestionForm tests', () => {
 
     const title = 'question test title'
     const content = 'question test content'
-    const tags = 'question, test, tag'
+    const tags = 'question test tag'
 
     axiosMock.post.mockResolvedValueOnce({
       data: newQuestion,
@@ -64,7 +68,7 @@ describe('NewQuestionForm tests', () => {
   })
 
   test('renders NewQuestionForm and validates input', async () => {
-    const { getByTestId, rerender } = render(
+    const { getByTestId, rerender, container } = render(
       <UserContext.Provider value={[user]}>
         <MemoryRouter initialEntries={['/question/new']}>
           <Route path="/question/new">
@@ -78,7 +82,7 @@ describe('NewQuestionForm tests', () => {
 
     const title = 'bad t'
     const content = 'bad c'
-    const tags = 'bad tags'
+    const tags = 'asdw4 $,'
 
     axiosMock.post.mockResolvedValueOnce({
       data: newQuestion,
@@ -89,6 +93,10 @@ describe('NewQuestionForm tests', () => {
     fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(content))
     fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(tags))
     fireEvent.click(getByTestId('submit-button'), tags)
+
+    expect(container.querySelector('#title-helper-text').textContent).toEqual(TITLE_HELPERTEXT)
+    expect(container.querySelector('#content-helper-text').textContent).toEqual(CONTENT_HELPERTEXT)
+    expect(container.querySelector('#tags-helper-text').textContent).toEqual(TAGS_HELPERTEXT)
 
     rerender(
       <UserContext.Provider value={[user]}>
