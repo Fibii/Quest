@@ -67,7 +67,7 @@ const SignIn = ({ setUser }) => {
   }
 
   return (
-    <div>
+    <div data-testid="signin-container">
       <Notification title="Error" message={errorMessage} severity="error" />
       <div style={{
         position: 'relative',
@@ -101,6 +101,9 @@ const SignIn = ({ setUser }) => {
                 autoComplete="username"
                 autoFocus
                 onChange={(event) => setUsername(event.target.value)}
+                inputProps={{
+                  'data-testid': 'username-input',
+                }}
               />
               <TextField
                 variant="outlined"
@@ -113,6 +116,9 @@ const SignIn = ({ setUser }) => {
                 id="password"
                 autoComplete="current-password"
                 onChange={(event) => setPassword(event.target.value)}
+                inputProps={{
+                  'data-testid': 'password-input',
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -125,6 +131,7 @@ const SignIn = ({ setUser }) => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                data-testid="submit-button"
               >
                 Sign In
               </Button>
