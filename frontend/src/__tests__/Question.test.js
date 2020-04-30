@@ -102,13 +102,13 @@ describe('question tests', () => {
     const editedQuestion = {
       title: 'edited question title',
       content: 'edited question content',
-      tags: 'edited, tags',
+      tags: 'edited tags',
       solved: question.solved,
     }
 
     const updatedQuestion = {
       ...editedQuestion,
-      tags: editedQuestion.tags.split(', '),
+      tags: editedQuestion.tags.split(' '),
     }
 
     axiosMock.put.mockResolvedValueOnce({
@@ -116,14 +116,14 @@ describe('question tests', () => {
         ...question,
         title: editedQuestion.title,
         content: editedQuestion.content,
-        tags: editedQuestion.tags,
+        tags: updatedQuestion.tags,
       },
     })
 
 
     fireEvent.change(getByTestId('title-input'), inputHelper.parseValue(editedQuestion.title))
     fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(editedQuestion.content))
-    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue('edited,tags'))
+    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(editedQuestion.tags))
 
     fireEvent.click(getByTestId('update-button'))
     fireEvent.click(getByTestId('confirm-button')) // confirm the alertWindow
