@@ -194,7 +194,7 @@ const QuestionView = ({
                       <TextField
                         helperText={editedQuestionTitleHelperText}
                         error={editedQuestionTitleHelperText.length > 0}
-                        id="editedQuestionTitle"
+                        id="title"
                         label="Title"
                         variant="outlined"
                         value={editedQuestionTitle}
@@ -306,7 +306,7 @@ const QuestionView = ({
                       <TextField
                         helperText={editedQuestionContentHelperText}
                         error={editedQuestionContentHelperText.length > 0}
-                        id="editedQuestionContent"
+                        id="content"
                         label="Content"
                         variant="outlined"
                         value={editedQuestionContent}
@@ -377,7 +377,7 @@ const QuestionView = ({
                     <TextField
                       helperText={editedQuestionTagsHelperText}
                       error={editedQuestionTagsHelperText.length > 0}
-                      id="editedQuestionTags"
+                      id="tags"
                       label="Tags"
                       variant="outlined"
                       value={editedQuestionTags}

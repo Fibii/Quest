@@ -21,6 +21,9 @@ afterEach(() => {
 const baseUrl = 'http://localhost:3001/api'
 const url = `${baseUrl}/questions/${question.id}`
 
+const TITLE_HELPERTEXT = 'title must be 6 characters long at least and 64 at most'
+const CONTENT_HELPERTEXT = 'content must be at least 8 characters long'
+const TAGS_HELPERTEXT = 'tags must be words, separated by space, like in "hello world"'
 
 describe('question tests', () => {
   test('displays an error message', async () => {
@@ -130,5 +133,49 @@ describe('question tests', () => {
     await waitForElement(() => getAllByTestId('question-container'))
     expect(axiosMock.put).toBeCalledTimes(1)
     expect(axiosMock.put).toBeCalledWith(url, updatedQuestion, null)
+  })
+
+  test('validates edit question input', async () => {
+    axiosMock.get.mockResolvedValueOnce({
+      data: question,
+    })
+
+    const { getByTestId, getAllByTestId, container } = render(
+      <UserContext.Provider value={[user]}>
+        <MemoryRouter initialEntries={[`question/${question.id}`]}>
+          <Route path="question/:id">
+            <Question />
+          </Route>
+        </MemoryRouter>
+      </UserContext.Provider>,
+    )
+
+    await waitForElement(() => getAllByTestId('question-container'))
+    fireEvent.click(getByTestId('edit-button'))
+
+    const editedQuestion = {
+      title: 'a',
+      content: 'ab',
+      tags: '$$$$, ',
+      solved: question.solved,
+    }
+
+    // clear the input fields
+    fireEvent.change(getByTestId('title-input'), inputHelper.parseValue(''))
+    fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(''))
+    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(''))
+
+    fireEvent.change(getByTestId('title-input'), inputHelper.parseValue(editedQuestion.title))
+    fireEvent.change(getByTestId('content-input'), inputHelper.parseValue(editedQuestion.content))
+    fireEvent.change(getByTestId('tags-input'), inputHelper.parseValue(editedQuestion.tags))
+
+    expect(container.querySelector('#title-helper-text').textContent).toEqual(TITLE_HELPERTEXT)
+    expect(container.querySelector('#content-helper-text').textContent).toEqual(CONTENT_HELPERTEXT)
+    expect(container.querySelector('#tags-helper-text').textContent).toEqual(TAGS_HELPERTEXT)
+
+    fireEvent.click(getByTestId('update-button'))
+    fireEvent.click(getByTestId('confirm-button')) // confirm the alertWindow
+    await waitForElement(() => getAllByTestId('question-container'))
+    expect(axiosMock.put).toBeCalledTimes(0)
   })
 })
