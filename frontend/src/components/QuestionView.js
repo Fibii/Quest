@@ -161,7 +161,7 @@ const QuestionView = ({
     dispatch(setEditedQuestionTagsHelperText(''))
 
     if (!validator.questionFormValidator({ tags })) {
-      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"'))
+      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by space, like in "hello world"'))
     }
   }
 
