@@ -17,7 +17,7 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 const url = `${baseUrl}/questions/${question.id}`
 
 const TITLE_HELPERTEXT = 'title must be 6 characters long at least and 64 at most'

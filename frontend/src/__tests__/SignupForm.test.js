@@ -15,7 +15,7 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 const url = `${baseUrl}/users`
 
 const FULLNAME_HELPERTEXT = 'only characters are allowed\nlength must be between 3 and 32'

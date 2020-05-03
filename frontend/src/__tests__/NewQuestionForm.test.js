@@ -9,7 +9,7 @@ import user from '../__mocks__/user'
 import UserContext from '../components/UserContext'
 import inputHelper from '../services/testHelpers/inputHelper'
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 const url = `${baseUrl}/questions`
 
 const TITLE_HELPERTEXT = 'title must be 6 characters long at least and 64 at most'

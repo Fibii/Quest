@@ -33,7 +33,7 @@ describe('user tests', () => {
   })
 
   test('loads and displays a user profile', async () => {
-    const baseUrl = 'http://localhost:3001/api'
+    const baseUrl = process.env.REACT_APP_BACKEND_URL
     const url = `${baseUrl}/users/${user.id}`
 
     axiosMock.get.mockResolvedValueOnce({

@@ -18,7 +18,7 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 const LOGIN_URL = '/login'
 const APP_URL = '/'
 const LOGIN_ERROR = 'error, incorrect username or password'
