@@ -11,7 +11,6 @@ import questions from '../__mocks__/questions'
 import Questions from '../components/Questions'
 import utils from '../services/utils'
 
-jest.mock('axios')
 afterAll(cleanup)
 afterEach(() => {
   jest.clearAllMocks()

@@ -10,7 +10,6 @@ import SignupForm from '../components/SignupForm'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
 import inputHelper from '../services/testHelpers/inputHelper'
 
-jest.mock('axios')
 afterAll(cleanup)
 afterEach(() => {
   jest.clearAllMocks()

@@ -9,7 +9,6 @@ import Profile from '../components/Profile'
 import user from '../__mocks__/user'
 import utils from '../services/utils'
 
-jest.mock('axios')
 afterAll(cleanup)
 afterEach(() => {
   jest.clearAllMocks()

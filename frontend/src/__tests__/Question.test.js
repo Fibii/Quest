@@ -12,7 +12,6 @@ import UserContext from '../components/UserContext'
 import user from '../__mocks__/user'
 import inputHelper from '../services/testHelpers/inputHelper'
 
-jest.mock('axios')
 afterAll(cleanup)
 afterEach(() => {
   jest.clearAllMocks()

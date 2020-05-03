@@ -9,7 +9,6 @@ import user from '../__mocks__/user'
 import UserContext from '../components/UserContext'
 import inputHelper from '../services/testHelpers/inputHelper'
 
-jest.mock('axios')
 const baseUrl = 'http://localhost:3001/api'
 const url = `${baseUrl}/questions`
 

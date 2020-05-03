@@ -13,7 +13,6 @@ import UserContext from '../components/UserContext'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
 
 
-jest.mock('axios')
 afterAll(cleanup)
 afterEach(() => {
   jest.clearAllMocks()
