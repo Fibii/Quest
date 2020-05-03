@@ -178,4 +178,31 @@ describe('question tests', () => {
     await waitForElement(() => getAllByTestId('question-container'))
     expect(axiosMock.put).toBeCalledTimes(0)
   })
+
+  test('deletes a question', async () => {
+    axiosMock.get.mockResolvedValueOnce({
+      data: question,
+    })
+
+    const { getByTestId, getAllByTestId } = render(
+      <UserContext.Provider value={[user]}>
+        <MemoryRouter initialEntries={[`question/${question.id}`]}>
+          <Route path="question/:id">
+            <Question />
+          </Route>
+        </MemoryRouter>
+      </UserContext.Provider>,
+    )
+
+    axiosMock.delete.mockResolvedValueOnce({
+      status: 204,
+    })
+
+    await waitForElement(() => getAllByTestId('question-container'))
+    fireEvent.click(getAllByTestId('delete-button')[0])
+    fireEvent.click(getByTestId('confirm-button'))
+    await waitForElement(() => getAllByTestId('question-container'))
+    expect(axiosMock.delete).toBeCalledTimes(1)
+    expect(axiosMock.delete).toBeCalledWith(url, null)
+  })
 })
