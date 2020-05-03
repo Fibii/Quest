@@ -35,8 +35,9 @@ describe('SingIn tests', () => {
 
     const { getByTestId } = render(
       <UserContext.Provider value={[null, setUser]}>
-        <MemoryRouter initialEntries={['/login']}>
-          <Route path="/login">
+        <MemoryRouter initialEntries={[LOGIN_URL]}>
+          <LocationDisplay />
+          <Route path={LOGIN_URL}>
             <SignIn setUser={setUser} />
           </Route>
         </MemoryRouter>
@@ -64,6 +65,7 @@ describe('SingIn tests', () => {
     expect(axiosMock.post).toBeCalledTimes(1)
     expect(axiosMock.post).toBeCalledWith(url, loggedOutUser)
     expect(testUser).toEqual(loggedUser)
+    expect(getByTestId('location-display').textContent).toEqual(APP_URL)
   })
 
   test("a user with wrong info can't sign in", async () => {
