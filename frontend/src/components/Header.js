@@ -208,7 +208,7 @@ const Header = () => {
   )
 
   return (
-    <div className={classes.grow}>
+    <div className={classes.grow} data-testid="header-container">
       <AppBar position="relative" style={{ marginBottom: '5%' }}>
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -217,6 +217,7 @@ const Header = () => {
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
+            data-testid="open-drawer"
           >
             <MenuIcon />
           </IconButton>
@@ -261,27 +262,27 @@ const Header = () => {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.drawerHeader}>
+        <div className={classes.drawerHeader} data-testid="drawer-container">
           <Typography variant="h4">Quest</Typography>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} data-testid="close-drawer">
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
           <Link to="/" className={classes.link}>
-            <ListItem button key="home">
+            <ListItem button key="home" data-testid="home-button">
               <HomeIcon className={classes.icons} />
               <ListItemText primary="Home" />
             </ListItem>
           </Link>
-          <Link to="/question/new" className={classes.link}>
+          <Link to="/question/new" className={classes.link} data-testid="newQuestion-button">
             <ListItem button key="newQuestion">
               <AddBoxIcon className={classes.icons} />
               <ListItemText primary="New Question" />
             </ListItem>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()}>
+          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logout-button">
             <ExitToAppIcon className={classes.icons} />
             <ListItemText primary="Logout" />
           </ListItem>
