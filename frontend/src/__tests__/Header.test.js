@@ -17,11 +17,32 @@ afterEach(() => {
 
 const MAIN_URL = process.env.REACT_APP_URL
 
+const setup = async (user = null, setUser = null) => {
+  axiosMock.get.mockResolvedValueOnce({
+    data: questions,
+  })
+
+  const renderResult = render(
+    <UserContext.Provider value={[user, setUser]}>
+      <MemoryRouter initialEntries={[MAIN_URL]}>
+        <Route path={MAIN_URL}>
+          <Header />
+        </Route>
+      </MemoryRouter>
+    </UserContext.Provider>,
+  )
+
+  await waitForElement(() => renderResult.getByTestId('header-container'))
+  return renderResult
+}
+
 describe('header tests', () => {
   test('renders header and drawer with logged in user', async () => {
-    axiosMock.get.mockResolvedValueOnce({
-      data: questions,
-    })
+    const { getByTestId } = await setup(user)
+    expect(getByTestId('header-container')).toBeInTheDocument()
+    fireEvent.click(getByTestId('open-drawer'))
+    expect(getByTestId('drawer-container')).toBeInTheDocument()
+  })
 
     const { getByTestId } = render(
       <UserContext.Provider value={[user]}>
