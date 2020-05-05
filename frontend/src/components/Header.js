@@ -95,10 +95,10 @@ const Header = () => {
 
   if (!user) {
     return (
-      <div className={classes.grow}>
+      <div className={classes.grow} data-testid="header-container">
         <AppBar position="relative" style={{ marginBottom: '5%' }}>
           <Toolbar className={classes.toolbar}>
-            <Link to="/" className={classes.link}>
+            <Link to="/" className={classes.link} data-testid="logo">
               <Typography variant="h5" noWrap>
                 Quest
               </Typography>

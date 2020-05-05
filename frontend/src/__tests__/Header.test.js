@@ -16,6 +16,7 @@ afterEach(() => {
 })
 
 const MAIN_URL = process.env.REACT_APP_URL
+const APP_NAME = 'Quest'
 
 const setup = async (user = null, setUser = null) => {
   axiosMock.get.mockResolvedValueOnce({
@@ -44,19 +45,10 @@ describe('header tests', () => {
     expect(getByTestId('drawer-container')).toBeInTheDocument()
   })
 
-    const { getByTestId } = render(
-      <UserContext.Provider value={[user]}>
-        <MemoryRouter initialEntries={[MAIN_URL]}>
-          <Route path={MAIN_URL}>
-            <Header />
-          </Route>
-        </MemoryRouter>
-      </UserContext.Provider>,
-    )
-
-    await waitForElement(() => getByTestId('header-container'))
+  test('renders header without drawer when a user is not logged in', async () => {
+    const { queryByTestId, getByTestId } = await setup()
     expect(getByTestId('header-container')).toBeInTheDocument()
-    fireEvent.click(getByTestId('open-drawer'))
-    expect(getByTestId('drawer-container')).toBeInTheDocument()
+    expect(queryByTestId('open-drawer')).toBeNull()
+    expect(getByTestId('logo').textContent).toContain(APP_NAME)
   })
 })
