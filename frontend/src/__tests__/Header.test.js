@@ -9,6 +9,7 @@ import user from '../__mocks__/user'
 import Header from '../components/Header'
 import UserContext from '../components/UserContext'
 import questions from '../__mocks__/questions'
+import LocationDisplay from '../services/testHelpers/LocationDisplay'
 
 afterAll(cleanup)
 afterEach(() => {
@@ -17,6 +18,8 @@ afterEach(() => {
 
 const MAIN_URL = process.env.REACT_APP_URL
 const APP_NAME = 'Quest'
+const HOME_ROUTE = '/'
+const NEW_QUESTION_ROUTE = '/question/new'
 
 const setup = async (user = null, setUser = null) => {
   axiosMock.get.mockResolvedValueOnce({
@@ -26,6 +29,7 @@ const setup = async (user = null, setUser = null) => {
   const renderResult = render(
     <UserContext.Provider value={[user, setUser]}>
       <MemoryRouter initialEntries={[MAIN_URL]}>
+        <LocationDisplay />
         <Route path={MAIN_URL}>
           <Header />
         </Route>
@@ -43,6 +47,23 @@ describe('header tests', () => {
     expect(getByTestId('header-container')).toBeInTheDocument()
     fireEvent.click(getByTestId('open-drawer'))
     expect(getByTestId('drawer-container')).toBeInTheDocument()
+  })
+
+  test('redirects to links with a logged in user', async () => {
+    // eslint-disable-next-line no-unused-vars
+    const setUser = jest.fn((user) => null)
+    const { getByTestId } = await setup(user, setUser)
+    fireEvent.click(getByTestId('open-drawer'))
+    fireEvent.click(getByTestId('newQuestion-button'))
+    expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_ROUTE)
+    fireEvent.click(getByTestId('home-button'))
+    expect(getByTestId('location-display').textContent).toEqual(HOME_ROUTE)
+    fireEvent.click(getByTestId('newQuestion-button'))
+    fireEvent.click(getByTestId('logo'))
+    expect(getByTestId('location-display').textContent).toEqual(HOME_ROUTE)
+    fireEvent.click(getByTestId('logout-button'))
+    expect(setUser).toBeCalledTimes(1)
+    expect(setUser).toBeCalledWith(null)
   })
 
   test('renders header without drawer when a user is not logged in', async () => {

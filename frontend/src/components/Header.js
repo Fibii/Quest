@@ -221,7 +221,7 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Link to="/" className={classes.link}>
+          <Link to="/" className={classes.link} data-testid="logo">
             <Typography className={classes.title} variant="h6" noWrap>
               Quest
             </Typography>
