@@ -72,4 +72,10 @@ describe('header tests', () => {
     expect(queryByTestId('open-drawer')).toBeNull()
     expect(getByTestId('logo').textContent).toContain(APP_NAME)
   })
+
+  test('redirect to homepage when logo is clicked for a logged out user', async () => {
+    const { getByTestId } = await setup()
+    fireEvent.click(getByTestId('logo'))
+    expect(getByTestId('location-display').textContent).toEqual(HOME_ROUTE)
+  })
 })
