@@ -168,11 +168,12 @@ const Header = () => {
         <Link
           className={classes.link}
           to={`/user/${user.id}`}
+          data-testid="profile-button"
         >
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+      <MenuItem onClick={handleLogoutClick} data-testid="logoutDesktop-button">Logout</MenuItem>
     </Menu>
   )
 
@@ -193,7 +194,7 @@ const Header = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleProfileMenuOpen} data-testid="profileMobile-menu">
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -236,6 +237,7 @@ const Header = () => {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              data-testid="avatarDesktop-button"
             >
               <AccountCircle />
             </IconButton>
@@ -247,6 +249,7 @@ const Header = () => {
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
               color="inherit"
+              data-testid="avatarMobile-button"
             >
               <MoreIcon />
             </IconButton>
@@ -282,7 +285,7 @@ const Header = () => {
               <ListItemText primary="New Question" />
             </ListItem>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logout-button">
+          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutMobile-button">
             <ExitToAppIcon className={classes.icons} />
             <ListItemText primary="Logout" />
           </ListItem>

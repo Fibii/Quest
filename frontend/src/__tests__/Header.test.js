@@ -20,6 +20,12 @@ const MAIN_URL = process.env.REACT_APP_URL
 const APP_NAME = 'Quest'
 const HOME_ROUTE = '/'
 const NEW_QUESTION_ROUTE = '/question/new'
+const PROFILE_BUTTON = 'Profile'
+const LOGOUT_BUTTON = 'Logout'
+const PROFILE_LINK = `${HOME_ROUTE}user/${user.id}`
+
+// eslint-disable-next-line no-unused-vars
+const setUser = jest.fn((user) => null)
 
 const setup = async (user = null, setUser = null) => {
   axiosMock.get.mockResolvedValueOnce({
@@ -50,8 +56,6 @@ describe('header tests', () => {
   })
 
   test('redirects to links with a logged in user', async () => {
-    // eslint-disable-next-line no-unused-vars
-    const setUser = jest.fn((user) => null)
     const { getByTestId } = await setup(user, setUser)
     fireEvent.click(getByTestId('open-drawer'))
     fireEvent.click(getByTestId('newQuestion-button'))
@@ -77,5 +81,31 @@ describe('header tests', () => {
     const { getByTestId } = await setup()
     fireEvent.click(getByTestId('logo'))
     expect(getByTestId('location-display').textContent).toEqual(HOME_ROUTE)
+  })
+
+  test('renders and ... avatar menu buttons for desktop', async () => {
+    const { getByTestId } = await setup(user, setUser)
+    fireEvent.click(getByTestId('avatarDesktop-button'))
+    expect(getByTestId('profile-button').textContent).toEqual(PROFILE_BUTTON)
+    fireEvent.click(getByTestId('profile-button'))
+    expect(getByTestId('location-display').textContent).toEqual(PROFILE_LINK)
+    expect(getByTestId('logoutDesktop-button').textContent).toEqual(LOGOUT_BUTTON)
+    fireEvent.click(getByTestId('logoutDesktop-button'))
+    expect(setUser).toBeCalledTimes(1)
+    expect(setUser).toBeCalledWith(null)
+  })
+
+  test('renders and ... avatar menu buttons for mobile', async () => {
+    global.innerWidth = 300
+    const { getByTestId } = await setup(user, setUser)
+    fireEvent.click(getByTestId('avatarMobile-button'))
+    expect(getByTestId('profileMobile-menu').textContent).toEqual(PROFILE_BUTTON)
+    fireEvent.click(getByTestId('profileMobile-menu'))
+    fireEvent.click(getByTestId('profile-button'))
+    expect(getByTestId('location-display').textContent).toEqual(PROFILE_LINK)
+    expect(getByTestId('logoutMobile-button').textContent).toEqual(LOGOUT_BUTTON)
+    fireEvent.click(getByTestId('logoutMobile-button'))
+    expect(setUser).toBeCalledTimes(1)
+    expect(setUser).toBeCalledWith(null)
   })
 })
