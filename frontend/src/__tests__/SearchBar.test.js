@@ -46,4 +46,12 @@ describe('SearchBar tests', () => {
     const titles = getAllByTestId('content-title').map((question) => question.textContent)
     expect(titles).toContain(questions[1].title)
   })
+
+  test('redirects to a question when a question is clicked', async () => {
+    const { getByTestId, getAllByTestId } = await setup()
+    const QUESTION_LINK = `${MAIN_URL}question/${questions[1].id}`
+    fireEvent.change(getByTestId('searchBar-input'), inputHelper.parseValue(SEARCH_VALUE))
+    fireEvent.click(getAllByTestId('content-title')[0])
+    expect(getByTestId('location-display').textContent).toEqual(QUESTION_LINK)
+  })
 })
