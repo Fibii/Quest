@@ -173,7 +173,7 @@ const Header = () => {
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleLogoutClick} data-testid="logoutDesktop-button">Logout</MenuItem>
+      <MenuItem onClick={handleLogoutClick} data-testid="logoutHeader-button">Logout</MenuItem>
     </Menu>
   )
 
@@ -285,7 +285,7 @@ const Header = () => {
               <ListItemText primary="New Question" />
             </ListItem>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutMobile-button">
+          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutDrawer-button">
             <ExitToAppIcon className={classes.icons} />
             <ListItemText primary="Logout" />
           </ListItem>
