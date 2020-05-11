@@ -31,4 +31,15 @@ describe('MainApp tests', () => {
     expect(getByTestId('location-display').textContent).toEqual('/')
     expect(getByTestId('questions-container')).toBeInTheDocument()
   })
+
+  test('shows welcome page if a user is not logged in', async () => {
+    const { getByTestId } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <LocationDisplay />
+        <MainApp />
+      </MemoryRouter>,
+    )
+    await waitForElement(() => getByTestId('mainApp-container'))
+    expect(getByTestId('location-display').textContent).toEqual('/')
+  })
 })
