@@ -33,10 +33,12 @@ const MainApp = () => {
   }, [])
 
   return (
-    <div style={{
-      backgroundColor: grey[100],
-      height: '100vh',
-    }}
+    <div
+      style={{
+        backgroundColor: grey[100],
+        height: '100vh',
+      }}
+      data-testid="mainApp-container"
     >
       <UserContext.Provider value={[user, setUser]}>
         <Header />
