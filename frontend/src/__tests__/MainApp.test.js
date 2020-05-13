@@ -22,32 +22,34 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
+const HOME_URL = '/'
+const NEW_QUESTION_URL = '/question/new'
+
+const setup = async (path) => {
+  const renderResult = render(
+    <MemoryRouter initialEntries={[path]}>
+      <LocationDisplay />
+      <MainApp />
+    </MemoryRouter>,
+  )
+  await waitForElement(() => renderResult.getByTestId('mainApp-container'))
+  return renderResult
+}
+
 describe('MainApp tests', () => {
   test('renders questions in home route if a user is logged in', async () => {
     window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId } = render(
-      <MemoryRouter initialEntries={['/']}>
-        <LocationDisplay />
-        <MainApp />
-      </MemoryRouter>,
-    )
-    await waitForElement(() => getByTestId('mainApp-container'))
-    expect(getByTestId('location-display').textContent).toEqual('/')
+    const { getByTestId } = await setup(HOME_URL)
+    expect(getByTestId('location-display').textContent).toEqual(HOME_URL)
     expect(getByTestId('questions-container')).toBeInTheDocument()
   })
 
   test('shows welcome page if a user is not logged in', async () => {
-    const { getByTestId } = render(
-      <MemoryRouter initialEntries={['/']}>
-        <LocationDisplay />
-        <MainApp />
-      </MemoryRouter>,
-    )
-    await waitForElement(() => getByTestId('mainApp-container'))
-    expect(getByTestId('location-display').textContent).toEqual('/')
+    const { getByTestId } = await setup(HOME_URL)
+    expect(getByTestId('location-display').textContent).toEqual(HOME_URL)
   })
 
   test('renders newQuestionForm if a user is logged in', async () => {
@@ -55,14 +57,8 @@ describe('MainApp tests', () => {
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId } = render(
-      <MemoryRouter initialEntries={['/question/new']}>
-        <LocationDisplay />
-        <MainApp />
-      </MemoryRouter>,
-    )
-    await waitForElement(() => getByTestId('mainApp-container'))
-    expect(getByTestId('location-display').textContent).toEqual('/question/new')
+    const { getByTestId } = await setup(NEW_QUESTION_URL)
+    expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(getByTestId('questionForm-container')).toBeInTheDocument()
   })
 
@@ -70,14 +66,8 @@ describe('MainApp tests', () => {
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId, queryByTestId } = render(
-      <MemoryRouter initialEntries={['/question/new']}>
-        <LocationDisplay />
-        <MainApp />
-      </MemoryRouter>,
-    )
-    await waitForElement(() => getByTestId('mainApp-container'))
-    expect(getByTestId('location-display').textContent).toEqual('/question/new')
+    const { getByTestId, queryByTestId } = await setup(NEW_QUESTION_URL)
+    expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(queryByTestId('questionForm-container')).toBeNull()
   })
 })
