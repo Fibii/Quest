@@ -48,7 +48,7 @@ const Welcome = () => {
   const classes = useStyles()
   const history = useHistory()
   return (
-    <div className={classes.heroContent} data-testid="welcome">
+    <div className={classes.heroContent} data-testid="welcome-container">
       <Container maxWidth="sm">
         <Typography
           component="h1"

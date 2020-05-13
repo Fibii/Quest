@@ -50,6 +50,7 @@ describe('MainApp tests', () => {
   test('shows welcome page if a user is not logged in', async () => {
     const { getByTestId } = await setup(HOME_URL)
     expect(getByTestId('location-display').textContent).toEqual(HOME_URL)
+    expect(getByTestId('welcome-container')).toBeInTheDocument()
   })
 
   test('renders newQuestionForm if a user is logged in', async () => {
