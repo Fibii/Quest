@@ -22,18 +22,19 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
+const REDIRECT_INFO_MESSAGE = "You're already logged in, you'll be redirected to the homepage in 5 seconds"
 const HOME_URL = '/'
 const NEW_QUESTION_URL = '/question/new'
 const LOGIN_URL = '/login'
 
-const setup = async (path) => {
+const setup = async (path, container = 'mainApp-container') => {
   const renderResult = render(
     <MemoryRouter initialEntries={[path]}>
       <LocationDisplay />
       <MainApp />
     </MemoryRouter>,
   )
-  await waitForElement(() => renderResult.getByTestId('mainApp-container'))
+  await waitForElement(() => renderResult.getByTestId(container))
   return renderResult
 }
 
@@ -68,6 +69,16 @@ describe('MainApp tests', () => {
     const { getByTestId } = await setup(LOGIN_URL)
     expect(getByTestId('location-display').textContent).toEqual(LOGIN_URL)
     expect(getByTestId('signin-container')).toBeInTheDocument()
+  })
+
+  test(`redirect to home if a logged user accesses ${LOGIN_URL}`, async () => {
+    jest.useFakeTimers()
+    window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
+    const { getByTestId } = await setup(LOGIN_URL, 'notification')
+    expect(getByTestId('notification')).toBeInTheDocument()
+    expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
+    await setTimeout(() => expect(getByTestId('location-display').textContent).toEqual(HOME_URL), 5000)
+    jest.runAllTimers()
   })
 
   test("doesn't render newQuestionForm if a user is not logged in", async () => {
