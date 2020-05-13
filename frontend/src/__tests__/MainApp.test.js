@@ -24,6 +24,7 @@ afterEach(() => {
 
 const HOME_URL = '/'
 const NEW_QUESTION_URL = '/question/new'
+const LOGIN_URL = '/login'
 
 const setup = async (path) => {
   const renderResult = render(
@@ -61,6 +62,12 @@ describe('MainApp tests', () => {
     const { getByTestId } = await setup(NEW_QUESTION_URL)
     expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(getByTestId('questionForm-container')).toBeInTheDocument()
+  })
+
+  test('renders login if a user is not logged in', async () => {
+    const { getByTestId } = await setup(LOGIN_URL)
+    expect(getByTestId('location-display').textContent).toEqual(LOGIN_URL)
+    expect(getByTestId('signin-container')).toBeInTheDocument()
   })
 
   test("doesn't render newQuestionForm if a user is not logged in", async () => {
