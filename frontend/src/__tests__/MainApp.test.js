@@ -26,6 +26,7 @@ const REDIRECT_INFO_MESSAGE = "You're already logged in, you'll be redirected to
 const HOME_URL = '/'
 const NEW_QUESTION_URL = '/question/new'
 const LOGIN_URL = '/login'
+const REGISTER_URL = '/register'
 
 const setup = async (path, container = 'mainApp-container') => {
   const renderResult = render(
@@ -79,6 +80,12 @@ describe('MainApp tests', () => {
     expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
     await setTimeout(() => expect(getByTestId('location-display').textContent).toEqual(HOME_URL), 5000)
     jest.runAllTimers()
+  })
+
+  test('renders register if a user is not logged in', async () => {
+    const { getByTestId } = await setup(REGISTER_URL)
+    expect(getByTestId('location-display').textContent).toEqual(REGISTER_URL)
+    expect(getByTestId('signup-container')).toBeInTheDocument()
   })
 
   test("doesn't render newQuestionForm if a user is not logged in", async () => {
