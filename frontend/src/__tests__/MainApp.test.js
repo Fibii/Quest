@@ -27,6 +27,8 @@ const HOME_URL = '/'
 const NEW_QUESTION_URL = '/question/new'
 const LOGIN_URL = '/login'
 const REGISTER_URL = '/register'
+const question = questions[0]
+const QUESTION_URL = `/question/${question.id}`
 
 const setup = async (path, container = 'mainApp-container') => {
   const renderResult = render(
@@ -57,6 +59,22 @@ const redirectSetup = async (url, redirectTo = HOME_URL) => {
   expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
   await waitForElement(() => getByTestId('questions-container'), { timeout: 5000 })
   expect(getByTestId('location-display').textContent).toEqual(redirectTo)
+}
+
+
+const renderQuestion = async (user = null) => {
+  if (user) {
+    window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(user))
+    axiosMock.get.mockResolvedValue({
+      data: questions,
+    })
+  }
+  axiosMock.get.mockResolvedValueOnce({
+    data: question,
+  })
+  const { getByTestId } = await setup(QUESTION_URL, 'question-container')
+  expect(getByTestId('location-display').textContent).toEqual(QUESTION_URL)
+  expect(getByTestId('question-container')).toBeInTheDocument()
 }
 
 
@@ -114,5 +132,13 @@ describe('MainApp tests', () => {
     const { getByTestId, queryByTestId } = await setup(NEW_QUESTION_URL)
     expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(queryByTestId('questionForm-container')).toBeNull()
+  })
+
+  test('renders Question if a user is not logged in', async () => {
+    await renderQuestion()
+  })
+
+  test('renders Question if a user is logged in', async () => {
+    await renderQuestion(loggedUser)
   })
 })
