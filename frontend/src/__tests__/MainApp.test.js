@@ -39,6 +39,27 @@ const setup = async (path, container = 'mainApp-container') => {
   return renderResult
 }
 
+/**
+ * a setup for tests of components that should be displayed when a user
+ * is not logged in, like SignUpForm or SignInForm, if a user is logged in
+ * and access /login or /register then they should be redirected to the home page
+ *
+ * @param url: the url when said components are rendered
+ * @param redirectTo: the url that user is redirect to afte 5 seconds
+ * */
+const redirectSetup = async (url, redirectTo = HOME_URL) => {
+  jest.setTimeout(10000)
+  axiosMock.get.mockResolvedValue({
+    data: questions,
+  })
+  window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
+  const { getByTestId } = await setup(url, 'notification')
+  expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
+  await waitForElement(() => getByTestId('questions-container'), { timeout: 5000 })
+  expect(getByTestId('location-display').textContent).toEqual(redirectTo)
+}
+
+
 describe('MainApp tests', () => {
   test('renders questions in home route if a user is logged in', async () => {
     window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
@@ -73,13 +94,7 @@ describe('MainApp tests', () => {
   })
 
   test(`redirect to home if a logged user accesses ${LOGIN_URL}`, async () => {
-    jest.useFakeTimers()
-    window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
-    const { getByTestId } = await setup(LOGIN_URL, 'notification')
-    expect(getByTestId('notification')).toBeInTheDocument()
-    expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
-    await setTimeout(() => expect(getByTestId('location-display').textContent).toEqual(HOME_URL), 5000)
-    jest.runAllTimers()
+    await redirectSetup(LOGIN_URL)
   })
 
   test('renders register if a user is not logged in', async () => {
