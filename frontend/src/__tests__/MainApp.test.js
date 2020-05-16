@@ -93,7 +93,7 @@ describe('MainApp tests', () => {
     expect(getByTestId('signin-container')).toBeInTheDocument()
   })
 
-  test(`redirect to home if a logged user accesses ${LOGIN_URL}`, async () => {
+  test(`redirects to home if a logged user accesses ${LOGIN_URL}`, async () => {
     await redirectSetup(LOGIN_URL)
   })
 
