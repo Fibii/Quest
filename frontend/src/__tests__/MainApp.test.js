@@ -97,6 +97,10 @@ describe('MainApp tests', () => {
     await redirectSetup(LOGIN_URL)
   })
 
+  test(`redirects to home if a logged user accesses ${REGISTER_URL}`, async () => {
+    await redirectSetup(REGISTER_URL)
+  })
+
   test('renders register if a user is not logged in', async () => {
     const { getByTestId } = await setup(REGISTER_URL)
     expect(getByTestId('location-display').textContent).toEqual(REGISTER_URL)
