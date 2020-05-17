@@ -11,6 +11,7 @@ import LocationDisplay from '../services/testHelpers/LocationDisplay'
 import loggedUser from '../__mocks__/loggedUser'
 import questions from '../__mocks__/questions'
 import localStorageMock from '../__mocks__/localStorage'
+import user from '../__mocks__/user'
 
 beforeAll(() => {
   Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -29,6 +30,7 @@ const LOGIN_URL = '/login'
 const REGISTER_URL = '/register'
 const question = questions[0]
 const QUESTION_URL = `/question/${question.id}`
+const PROFILE_URL = `/user/${user.id}`
 
 const setup = async (path, container = 'mainApp-container') => {
   const renderResult = render(
@@ -75,6 +77,21 @@ const renderQuestion = async (user = null) => {
   const { getByTestId } = await setup(QUESTION_URL, 'question-container')
   expect(getByTestId('location-display').textContent).toEqual(QUESTION_URL)
   expect(getByTestId('question-container')).toBeInTheDocument()
+}
+
+const renderProfile = async (loggedInUser = null) => {
+  if (loggedInUser) {
+    window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedInUser))
+    axiosMock.get.mockResolvedValue({
+      data: questions,
+    })
+  }
+  axiosMock.get.mockResolvedValueOnce({
+    data: user,
+  })
+  const { getByTestId } = await setup(PROFILE_URL, 'profile-container')
+  expect(getByTestId('location-display').textContent).toEqual(PROFILE_URL)
+  expect(getByTestId('profile-container')).toBeInTheDocument()
 }
 
 
@@ -140,5 +157,13 @@ describe('MainApp tests', () => {
 
   test('renders Question if a user is logged in', async () => {
     await renderQuestion(loggedUser)
+  })
+
+  test('renders Profile if a user is not logged in', async () => {
+    await renderProfile()
+  })
+
+  test('renders Profile if a user is logged in', async () => {
+    await renderProfile(loggedUser)
   })
 })
