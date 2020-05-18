@@ -212,7 +212,7 @@ const QuestionView = ({
                           direction="row"
                           handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
-                          handleUpdate={handleQuestionUpdate}
+                          handleUpdate={showEditFields && handleQuestionUpdate}
                           path={`question/${question.id}`}
                         />
                       ) : ''}
@@ -254,7 +254,7 @@ const QuestionView = ({
                           direction="row"
                           handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
-                          handleUpdate={handleQuestionUpdate}
+                          handleUpdate={showEditFields && handleQuestionUpdate}
                           path={`question/${question.id}`}
                         />, utils.iff(!isMobile,
                           <div
@@ -398,7 +398,7 @@ const QuestionView = ({
                     direction="row"
                     handleDelete={() => handleDeleteQuestion(question.id)}
                     handleEdit={() => setShowEditFields(!showEditFields)}
-                    handleUpdate={handleQuestionUpdate}
+                    handleUpdate={showEditFields && handleQuestionUpdate}
                     path={`question/${question.id}`}
                   />,
                   <div
