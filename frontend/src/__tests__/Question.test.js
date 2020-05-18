@@ -78,7 +78,7 @@ describe('question tests', () => {
       data: question,
     })
 
-    const { getByTestId, getAllByTestId } = render(
+    const { getByTestId, getAllByTestId, queryByTestId } = render(
       <UserContext.Provider value={[user]}>
         <MemoryRouter initialEntries={[`question/${question.id}`]}>
           <Route path="question/:id">
@@ -89,8 +89,9 @@ describe('question tests', () => {
     )
 
     await waitForElement(() => getAllByTestId('question-container'))
+    expect(queryByTestId('update-button')).toBeNull()
     fireEvent.click(getByTestId('edit-button'))
-
+    expect(queryByTestId('update-button')).toBeInTheDocument()
     // to be refactored into expect(edit-container) to in the document
     // after exporting edit view to its own component
     expect(getByTestId('title-input'))
