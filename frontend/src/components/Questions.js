@@ -63,16 +63,17 @@ const Questions = ({ user }) => {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} data-testid="questions-container">
       <Notification title="Error" message={errorMessage} severity="error" />
       <div>
-        <List dense={dense}>
+        <List dense={dense} data-testid="question-list">
           {questions.map((question) => (
             <QPaper
               user={user}
               question={question}
               handleDelete={() => handleDeleteQuestion(question.id)}
               key={question.id}
+              data-testid="question"
             />
           ))}
         </List>

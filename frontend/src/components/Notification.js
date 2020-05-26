@@ -31,7 +31,7 @@ const Notification = ({ title, message, severity }) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} data-testid="notification">
       <Alert
         severity={severity}
         variant="filled"
@@ -39,8 +39,10 @@ const Notification = ({ title, message, severity }) => {
           minWidth: '90%',
         }}
       >
-        <AlertTitle>{title}</AlertTitle>
-        {message}
+        <AlertTitle data-testid="title">{title}</AlertTitle>
+        <div data-testid="message">
+          {message}
+        </div>
       </Alert>
     </div>
   )

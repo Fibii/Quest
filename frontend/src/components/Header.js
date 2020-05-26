@@ -95,10 +95,10 @@ const Header = () => {
 
   if (!user) {
     return (
-      <div className={classes.grow}>
+      <div className={classes.grow} data-testid="header-container">
         <AppBar position="relative" style={{ marginBottom: '5%' }}>
           <Toolbar className={classes.toolbar}>
-            <Link to="/" className={classes.link}>
+            <Link to="/" className={classes.link} data-testid="logo">
               <Typography variant="h5" noWrap>
                 Quest
               </Typography>
@@ -168,11 +168,12 @@ const Header = () => {
         <Link
           className={classes.link}
           to={`/user/${user.id}`}
+          data-testid="profile-button"
         >
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+      <MenuItem onClick={handleLogoutClick} data-testid="logoutHeader-button">Logout</MenuItem>
     </Menu>
   )
 
@@ -193,7 +194,7 @@ const Header = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleProfileMenuOpen} data-testid="profileMobile-menu">
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -208,7 +209,7 @@ const Header = () => {
   )
 
   return (
-    <div className={classes.grow}>
+    <div className={classes.grow} data-testid="header-container">
       <AppBar position="relative" style={{ marginBottom: '5%' }}>
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -217,10 +218,11 @@ const Header = () => {
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
+            data-testid="open-drawer"
           >
             <MenuIcon />
           </IconButton>
-          <Link to="/" className={classes.link}>
+          <Link to="/" className={classes.link} data-testid="logo">
             <Typography className={classes.title} variant="h6" noWrap>
               Quest
             </Typography>
@@ -235,6 +237,7 @@ const Header = () => {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              data-testid="avatarDesktop-button"
             >
               <AccountCircle />
             </IconButton>
@@ -246,6 +249,7 @@ const Header = () => {
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
               color="inherit"
+              data-testid="avatarMobile-button"
             >
               <MoreIcon />
             </IconButton>
@@ -261,27 +265,27 @@ const Header = () => {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.drawerHeader}>
+        <div className={classes.drawerHeader} data-testid="drawer-container">
           <Typography variant="h4">Quest</Typography>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} data-testid="close-drawer">
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
           <Link to="/" className={classes.link}>
-            <ListItem button key="home">
+            <ListItem button key="home" data-testid="home-button">
               <HomeIcon className={classes.icons} />
               <ListItemText primary="Home" />
             </ListItem>
           </Link>
-          <Link to="/question/new" className={classes.link}>
+          <Link to="/question/new" className={classes.link} data-testid="newQuestion-button">
             <ListItem button key="newQuestion">
               <AddBoxIcon className={classes.icons} />
               <ListItemText primary="New Question" />
             </ListItem>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()}>
+          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutDrawer-button">
             <ExitToAppIcon className={classes.icons} />
             <ListItemText primary="Logout" />
           </ListItem>

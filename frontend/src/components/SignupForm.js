@@ -134,10 +134,12 @@ const SignupForm = () => {
   }
 
   return (
-    <div style={{
-      position: 'relative',
-      minHeight: '100vh',
-    }}
+    <div
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+      }}
+      data-testid="signup-container"
     >
       <Notification title="Error" message={errorMessage} severity="error" />
       <Container
@@ -175,6 +177,9 @@ const SignupForm = () => {
                   label="Full Name"
                   autoFocus
                   onChange={fullNameOnChange}
+                  inputProps={{
+                    'data-testid': 'fullname-input',
+                  }}
                 />
               </Grid>
 
@@ -190,6 +195,9 @@ const SignupForm = () => {
                   label="Username"
                   name="username"
                   autoComplete="username"
+                  inputProps={{
+                    'data-testid': 'username-input',
+                  }}
                 />
               </Grid>
 
@@ -205,6 +213,9 @@ const SignupForm = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  inputProps={{
+                    'data-testid': 'email-input',
+                  }}
                 />
               </Grid>
 
@@ -221,6 +232,9 @@ const SignupForm = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  inputProps={{
+                    'data-testid': 'password-input',
+                  }}
                 />
               </Grid>
 
@@ -236,6 +250,9 @@ const SignupForm = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  inputProps={{
+                    'data-testid': 'dateOfBirth-input',
+                  }}
                 />
               </Grid>
 
@@ -247,13 +264,14 @@ const SignupForm = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              data-testid="submit-button"
             >
               Sign Up
             </Button>
 
             <Grid container justify="flex-end">
               <Grid item>
-                <Link to="/login">
+                <Link to="/login" data-testid="login-link">
                   Already have an account? Sign in
                 </Link>
               </Grid>

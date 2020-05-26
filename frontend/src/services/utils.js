@@ -18,7 +18,19 @@ const getLikes = (likeable) => {
  * */
 const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
+/**
+ * Formats javascript date to day/month/year and fixes month number
+ * (js months start from 0)
+ *
+ * @return string date as DD/MM/YYYY
+ * */
+const formatDate = (date) => {
+  const dateObj = new Date(date)
+  return `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`
+}
+
 export default {
   getLikes,
   iff,
+  formatDate,
 }

@@ -242,7 +242,7 @@ const Question = () => {
   }
 
   const handleQuestionUpdate = async () => {
-    const tags = state.editedQuestionTags.split(',')
+    const tags = state.editedQuestionTags.split(' ')
       .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
       .filter((tag) => tag.length > 0)
 

@@ -110,7 +110,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className={classes.search}>
+    <div className={classes.search} data-testid="searchBar-container">
       <div className={classes.searchIcon}>
         <SearchIcon />
       </div>
@@ -120,7 +120,10 @@ const SearchBar = () => {
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
-        inputProps={{ 'aria-label': 'search' }}
+        inputProps={{
+          'aria-label': 'search',
+          'data-testid': 'searchBar-input',
+        }}
         onChange={handleInput}
       />
       <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -135,7 +138,7 @@ const SearchBar = () => {
           }}
         >
 
-          <List>
+          <List data-testid="content">
             {questions && questions.filter((question) => question.title.startsWith(searchInput))
               .map((question) => (
                 <Link
@@ -143,6 +146,7 @@ const SearchBar = () => {
                   className={classes.link}
                   onClick={() => setOpen(false)}
                   key={question.id}
+                  data-testid="content-title"
                 >
                   <ListItem button><ListItemText>{question.title}</ListItemText></ListItem>
                 </Link>

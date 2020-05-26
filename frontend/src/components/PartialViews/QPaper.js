@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -9,9 +9,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import grey from '@material-ui/core/colors/grey'
 import { Link } from 'react-router-dom'
-import IconButton from '@material-ui/core/IconButton'
-import ShareIcon from '@material-ui/icons/Share'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import validator from '../../services/validator'
 import utils from '../../services/utils'
 import QuestionIcons from './QuestionIcons'
@@ -59,11 +56,10 @@ const useStyles = makeStyles((theme) => ({
 
 const QPaper = ({ user, question, handleDelete }) => {
   const classes = useStyles()
-  const [openAlertWindow, setOpenAlertWindow] = useState(false)
   const path = `question/${question.id}`
 
   return (
-    <Grid container justify="center">
+    <Grid container justify="center" data-testid="qpaper-container">
       <Paper className={classes.paper}>
         <Grid
           container
@@ -89,30 +85,22 @@ const QPaper = ({ user, question, handleDelete }) => {
                   overflowWrap: 'break-word',
                   marginLeft: 32,
                 }}
+                data-testid="title"
               >
                 {question.title}
               </Typography>
             </Link>
             <Grid item>
-              {validator.isAuthor(user, question)
-                ? (
-                  <QuestionIcons
-                    handleDelete={() => setOpenAlertWindow(true)}
-                    path={path}
-                    direction="row"
-                    alertCallback={handleDelete}
-                    alertOpen={openAlertWindow}
-                    alertSetOpen={setOpenAlertWindow}
-                  />
-                )
-                : (
-                  <CopyToClipboard text={`${window.location.origin}/${path}`}>
-                    <IconButton size="small">
-                      <ShareIcon />
-                    </IconButton>
-                  </CopyToClipboard>
-                )}
-
+              {utils.iff(validator.isAuthor(user, question),
+                <QuestionIcons
+                  handleDelete={handleDelete}
+                  path={path}
+                  direction="row"
+                />,
+                <QuestionIcons
+                  path={path}
+                  direction="row"
+                />)}
             </Grid>
           </Grid>
         </Grid>
@@ -128,13 +116,16 @@ const QPaper = ({ user, question, handleDelete }) => {
             direction="column"
             alignItems="center"
             className={classes.upvoteBoxContainer}
+            data-testid="likes"
           >
             <KeyboardArrowUpIcon className={classes.upvoteBox} />
             {utils.getLikes(question.likes)}
           </Grid>
-          <Typography style={{
-            width: '90%',
-          }}
+          <Typography
+            style={{
+              width: '90%',
+            }}
+            data-testid="content"
           >
             {`${question.content.substr(0, 100)}...`}
           </Typography>
@@ -146,6 +137,7 @@ const QPaper = ({ user, question, handleDelete }) => {
               color: 'grey',
               marginRight: 8,
             }}
+            data-testid="postedBy"
           >
             posted by:
             {question && question.postedBy && question.postedBy.username}

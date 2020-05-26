@@ -95,7 +95,7 @@ const NewQuestionForm = () => {
     setTagsHelperText('')
 
     if (!validator.questionFormValidator({ tags })) {
-      setTagsHelperText('tags must be words, separated by commas, such "hello, world"')
+      setTagsHelperText('tags must be words, separated by space, like in "hello world"')
     }
   }
 
@@ -108,7 +108,7 @@ const NewQuestionForm = () => {
    * @see questionService
    * */
   const handleQuestionPost = async () => {
-    const tags = questionTags.split(',')
+    const tags = questionTags.split(' ')
       .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
       .filter((tag) => tag.length > 0)
 
@@ -169,8 +169,9 @@ const NewQuestionForm = () => {
         position: 'relative',
         minHeight: '100vh',
       }}
+      data-testid="questionForm-container"
     >
-      <Notification title="Error" message={errorMessage} severity="error" />
+      <Notification title="Error" message={errorMessage} severity="error" data-testid="error-message" />
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -184,18 +185,23 @@ const NewQuestionForm = () => {
               <TextField
                 error={titleHelperText.length > 0}
                 helperText={titleHelperText}
+                id="title"
                 placeholder="Title"
                 multiline
                 fullWidth
                 variant="outlined"
                 value={questionTitle}
                 onChange={titleOnChange}
+                inputProps={{
+                  'data-testid': 'title-input',
+                }}
               />
             </Grid>
             <Grid item className={classes.item}>
               <TextField
                 error={contentHelperText.length > 0}
                 helperText={contentHelperText}
+                id="content"
                 placeholder="Content"
                 multiline
                 rows={3}
@@ -204,18 +210,25 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 value={questionContent}
                 onChange={contentOnChange}
+                inputProps={{
+                  'data-testid': 'content-input',
+                }}
               />
             </Grid>
             <Grid item className={classes.item}>
               <TextField
                 error={tagsHelperText.length > 0}
                 helperText={tagsHelperText}
+                id="tags"
                 placeholder="Tags"
                 multiline
                 fullWidth
                 variant="outlined"
                 value={questionTags}
                 onChange={tagsOnChange}
+                inputProps={{
+                  'data-testid': 'tags-input',
+                }}
               />
             </Grid>
             <Grid container justify="flex-end" className={classes.item}>
@@ -226,6 +239,7 @@ const NewQuestionForm = () => {
                 style={{
                   marginRight: 8,
                 }}
+                data-testid="clear-button"
               >
                 clear
               </Button>
@@ -233,6 +247,7 @@ const NewQuestionForm = () => {
                 variant="outlined"
                 color="primary"
                 onClick={handleQuestionPost}
+                data-testid="submit-button"
               >
                 submit
               </Button>

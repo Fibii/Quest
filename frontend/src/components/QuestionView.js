@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import List from '@material-ui/core/List'
 import IconButton from '@material-ui/core/IconButton'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -96,7 +96,6 @@ const QuestionView = ({
     editedQuestionTagsHelperText, editedQuestionTitleHelperText,
     commentContent,
   } = state
-  const [openAlertWindow, setOpenAlertWindow] = useState(false)
   const isMobile = useMediaQuery('(max-width:600px)')
   const isLowResolution = useMediaQuery('(max-width:800px)')
 
@@ -162,14 +161,14 @@ const QuestionView = ({
     dispatch(setEditedQuestionTagsHelperText(''))
 
     if (!validator.questionFormValidator({ tags })) {
-      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by commas, such "hello, world"'))
+      dispatch(setEditedQuestionTagsHelperText('tags must be words, separated by space, like in "hello world"'))
     }
   }
 
   const questionLikes = utils.getLikes(question)
 
   return (
-    <div className={classes.mainContainer}>
+    <div className={classes.mainContainer} data-testid="question-container">
       <Notification title="Error" message={errorMessage} severity="error" />
       <div className={classes.container}>
         <div
@@ -195,7 +194,7 @@ const QuestionView = ({
                       <TextField
                         helperText={editedQuestionTitleHelperText}
                         error={editedQuestionTitleHelperText.length > 0}
-                        id="editedQuestionTitle"
+                        id="title"
                         label="Title"
                         variant="outlined"
                         value={editedQuestionTitle}
@@ -204,16 +203,16 @@ const QuestionView = ({
                           width: '70%',
                           margin: 8,
                         }}
+                        inputProps={{
+                          'data-testid': 'title-input',
+                        }}
                       />
                       {!isMobile ? (
                         <QuestionIcons
                           direction="row"
-                          handleDelete={() => setOpenAlertWindow(true)}
+                          handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
-                          handleUpdate={handleQuestionUpdate}
-                          alertCallback={() => handleDeleteQuestion(question.id)}
-                          alertOpen={openAlertWindow}
-                          alertSetOpen={setOpenAlertWindow}
+                          handleUpdate={showEditFields && handleQuestionUpdate}
                           path={`question/${question.id}`}
                         />
                       ) : ''}
@@ -238,6 +237,7 @@ const QuestionView = ({
                             width: '80%',
                             overflowWrap: 'break-word',
                           }}
+                          data-testid="title"
                         >
                           {question.title}
                         </Typography>
@@ -252,12 +252,9 @@ const QuestionView = ({
                       >
                         {utils.iff(validator.isAuthor(user, question) && !isMobile, <QuestionIcons
                           direction="row"
-                          handleDelete={() => setOpenAlertWindow(true)}
+                          handleDelete={() => handleDeleteQuestion(question.id)}
                           handleEdit={() => setShowEditFields(!showEditFields)}
-                          handleUpdate={handleQuestionUpdate}
-                          alertCallback={() => handleDeleteQuestion(question.id)}
-                          alertOpen={openAlertWindow}
-                          alertSetOpen={setOpenAlertWindow}
+                          handleUpdate={showEditFields && handleQuestionUpdate}
                           path={`question/${question.id}`}
                         />, utils.iff(!isMobile,
                           <div
@@ -309,7 +306,7 @@ const QuestionView = ({
                       <TextField
                         helperText={editedQuestionContentHelperText}
                         error={editedQuestionContentHelperText.length > 0}
-                        id="editedQuestionContent"
+                        id="content"
                         label="Content"
                         variant="outlined"
                         value={editedQuestionContent}
@@ -321,6 +318,9 @@ const QuestionView = ({
                         style={{
                           width: '90%',
                           marginLeft: 8,
+                        }}
+                        inputProps={{
+                          'data-testid': 'content-input',
                         }}
                       />
                     )
@@ -343,6 +343,7 @@ const QuestionView = ({
                             overflowWrap: 'break-word',
                             width: '100%',
                           }}
+                          data-testid="content"
                         >
                           {question.content}
                         </Typography>
@@ -376,7 +377,7 @@ const QuestionView = ({
                     <TextField
                       helperText={editedQuestionTagsHelperText}
                       error={editedQuestionTagsHelperText.length > 0}
-                      id="editedQuestionTags"
+                      id="tags"
                       label="Tags"
                       variant="outlined"
                       value={editedQuestionTags}
@@ -386,18 +387,18 @@ const QuestionView = ({
                         margin: 8,
                         marginBottom: 26,
                       }}
+                      inputProps={{
+                        'data-testid': 'tags-input',
+                      }}
                     />
                   )
                   : ''}
                 {utils.iff(isMobile, utils.iff(validator.isAuthor(user, question),
                   <QuestionIcons
                     direction="row"
-                    handleDelete={() => setOpenAlertWindow(true)}
+                    handleDelete={() => handleDeleteQuestion(question.id)}
                     handleEdit={() => setShowEditFields(!showEditFields)}
-                    handleUpdate={handleQuestionUpdate}
-                    alertCallback={() => handleDeleteQuestion(question.id)}
-                    alertOpen={openAlertWindow}
-                    alertSetOpen={setOpenAlertWindow}
+                    handleUpdate={showEditFields && handleQuestionUpdate}
                     path={`question/${question.id}`}
                   />,
                   <div

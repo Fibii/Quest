@@ -11,7 +11,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Notification from './Notification'
 import users from '../services/users'
-
+import utils from '../services/utils'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -73,23 +73,22 @@ const Profile = () => {
   }, [])
 
   if (error) {
-    return <Notification severity="error" title="Error" message={error} />
+    return (
+      <Notification severity="error" title="Error" message={error} />
+    )
   }
 
-  const formateDate = (date) => {
-    const dateObj = new Date(date)
-    return `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`
-  }
+
   return (
-    <Grid container justify="center">
+    <Grid container justify="center" data-testid="profile-container">
       <Grid container direction="column" alignItems="center" className={classes.container}>
-        <Typography className={classes.fullname}>{user.fullname}</Typography>
-        <Typography className={classes.username}>
+        <Typography className={classes.fullname} data-testid="fullname">{user.fullname}</Typography>
+        <Typography className={classes.username} data-testid="username">
           @(
           {user.username}
           )
         </Typography>
-        <Typography variant="h6">
+        <Typography variant="h6" data-testid="location">
           {user.location
           && (
             <IconButton>
@@ -99,14 +98,14 @@ const Profile = () => {
           )}
         </Typography>
         <Grid container direction="row" justify="space-between">
-          <Typography className={classes.date}>
+          <Typography className={classes.date} data-testid="Joined">
             Joined:
-            {formateDate(user.registerDate)}
+            {utils.formatDate(user.registerDate)}
           </Typography>
-          <Typography className={classes.date}>
+          <Typography className={classes.date} data-testid="lastSignedInDate">
             Last
             Seen:
-            {formateDate(user.lastSignedInDate)}
+            {utils.formatDate(user.lastSignedInDate)}
           </Typography>
         </Grid>
         <List
@@ -126,6 +125,7 @@ const Profile = () => {
               <Link to={`/question/${question.id}`} className={classes.link}>
                 <ListItemText
                   primary={question.title}
+                  data-testid="question"
                 />
               </Link>
             </ListItem>
