@@ -59,7 +59,7 @@ const redirectSetup = async (url, redirectTo = HOME_URL) => {
   window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(loggedUser))
   const { getByTestId } = await setup(url, 'notification')
   expect(getByTestId('notification').textContent).toContain(REDIRECT_INFO_MESSAGE)
-  await waitForElement(() => getByTestId('questions-container'), { timeout: 5000 })
+  await waitForElement(() => getByTestId('questions-container'), { timeout: 6000 })
   expect(getByTestId('location-display').textContent).toEqual(redirectTo)
 }
 

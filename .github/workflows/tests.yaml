@@ -1,8 +1,8 @@
-name: Build
+name: Github CI
 on: [push, pull_request]
 
 jobs:
-  test:
+  backend_tests:
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -20,3 +20,17 @@ jobs:
           npm install
           npm test
         working-directory: ./backend
+
+  frontend_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - name: test
+        run: |
+          npm install
+          npm test
+        working-directory: ./frontend
