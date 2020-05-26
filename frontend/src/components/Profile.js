@@ -74,7 +74,7 @@ const Profile = () => {
 
   if (error) {
     return (
-        <Notification severity="error" title="Error" message={error} />
+      <Notification severity="error" title="Error" message={error} />
     )
   }
 
