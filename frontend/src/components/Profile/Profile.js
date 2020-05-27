@@ -9,9 +9,9 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import Notification from './Notification'
-import users from '../services/users'
-import utils from '../services/utils'
+import Notification from '../Notification/Notification'
+import users from '../../services/users'
+import utils from '../../services/utils'
 
 const useStyles = makeStyles((theme) => ({
   container: {

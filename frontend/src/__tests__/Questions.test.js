@@ -5,10 +5,10 @@ import {
 import '@testing-library/jest-dom/extend-expect'
 import axiosMock from 'axios'
 import { MemoryRouter, Route } from 'react-router-dom'
-import UserContext from '../components/UserContext'
+import UserContext from '../components/UserContext/UserContext'
 import user from '../__mocks__/user'
 import questions from '../__mocks__/questions'
-import Questions from '../components/Questions'
+import Questions from '../components/Questions/Questions'
 import utils from '../services/utils'
 
 afterAll(cleanup)

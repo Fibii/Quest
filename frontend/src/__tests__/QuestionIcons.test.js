@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
-import QuestionIcons from '../components/PartialViews/QuestionIcons'
+import QuestionIcons from '../components/QuestionIcons/QuestionIcons'
 
 describe('QuestionIcons tests', () => {
   /**

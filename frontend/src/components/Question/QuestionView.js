@@ -15,11 +15,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { makeStyles } from '@material-ui/core/styles'
 import grey from '@material-ui/core/colors/grey'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-import Notification from './Notification'
-import Copyright from './Copyrights'
+import Notification from '../Notification/Notification'
+import Copyright from '../Copyrights/Copyrights'
 
-import validator from '../services/validator'
-import questionActions from '../actions/questionAction'
+import validator from '../../services/validator'
+import questionActions from '../../actions/questionAction'
 import {
   setEditedQuestionContent,
   setEditedQuestionContentHelperText,
@@ -27,11 +27,11 @@ import {
   setEditedQuestionTagsHelperText,
   setEditedQuestionTitle,
   setEditedQuestionTitleHelperText,
-} from '../actions/questionActions'
-import Comment from './PartialViews/Comment'
-import QuestionIcons from './PartialViews/QuestionIcons'
-import UpvoteBox from './PartialViews/UpvoteBox'
-import utils from '../services/utils'
+} from '../../actions/questionActions'
+import Comment from '../Comment/Comment'
+import QuestionIcons from '../QuestionIcons/QuestionIcons'
+import UpvoteBox from '../UpvoteBox/UpvoteBox'
+import utils from '../../services/utils'
 
 const useStyles = makeStyles((theme) => ({
   container: {

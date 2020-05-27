@@ -5,7 +5,7 @@ import {
 import '@testing-library/jest-dom/extend-expect'
 import axiosMock from 'axios'
 import { MemoryRouter, Route } from 'react-router-dom'
-import Profile from '../components/Profile'
+import Profile from '../components/Profile/Profile'
 import user from '../__mocks__/user'
 import utils from '../services/utils'
 

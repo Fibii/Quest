@@ -22,8 +22,8 @@ import HomeIcon from '@material-ui/icons/Home'
 import { Link } from 'react-router-dom'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import { grey, lightBlue } from '@material-ui/core/colors'
-import UserContext from './UserContext'
-import SearchBar from './PartialViews/SearchBar'
+import UserContext from '../UserContext/UserContext'
+import SearchBar from '../SearchBar/SearchBar'
 
 const drawerWidth = 240
 

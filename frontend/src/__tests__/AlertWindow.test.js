@@ -1,6 +1,6 @@
 import { render, waitForElement, fireEvent } from '@testing-library/react'
 import React from 'react'
-import AlertWindow from '../components/AlertWindow'
+import AlertWindow from '../components/AlertWindow/AlertWindow'
 
 describe('AlertWindow tests', () => {
   test('renders and executes callback', async () => {

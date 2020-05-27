@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
 import comment from '../__mocks__/comment'
-import Comment from '../components/PartialViews/Comment'
+import Comment from '../components/Comment/Comment'
 import user from '../__mocks__/user'
 import '@testing-library/jest-dom/extend-expect'
 

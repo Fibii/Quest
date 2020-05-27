@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useReducer } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import UserContext from './UserContext'
-import questionService from '../services/questions'
+import UserContext from '../UserContext/UserContext'
+import questionService from '../../services/questions'
 
 import QuestionView from './QuestionView'
-import { questionReducer, initialState } from '../reducers/QuestionReducer'
+import { questionReducer, initialState } from '../../reducers/QuestionReducer'
 import {
   setQuestion,
   setEditedQuestionContent,
@@ -13,8 +13,8 @@ import {
   setShowEditFields,
   setCommentContent,
   setErrorMessage,
-} from '../actions/questionActions'
-import validator from '../services/validator'
+} from '../../actions/questionActions'
+import validator from '../../services/validator'
 
 
 const Question = () => {

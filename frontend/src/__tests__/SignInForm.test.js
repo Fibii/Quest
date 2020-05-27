@@ -5,11 +5,11 @@ import { MemoryRouter, Route } from 'react-router-dom'
 import axiosMock from 'axios'
 import React from 'react'
 import inputHelper from '../services/testHelpers/inputHelper'
-import SignIn from '../components/SignInForm'
+import SignIn from '../components/SignInForm/SignInForm'
 import user from '../__mocks__/user'
 import '@testing-library/jest-dom/extend-expect'
 import loggedUser from '../__mocks__/loggedUser'
-import UserContext from '../components/UserContext'
+import UserContext from '../components/UserContext/UserContext'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
 
 

@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import grey from '@material-ui/core/colors/grey'
-import Copyright from './Copyrights'
+import Copyright from '../Copyrights/Copyrights'
 
 const useStyles = makeStyles((theme) => ({
   icon: {

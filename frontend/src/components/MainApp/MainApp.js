@@ -3,21 +3,21 @@ import {
   Route, Switch, useLocation, useHistory,
 } from 'react-router-dom'
 import grey from '@material-ui/core/colors/grey'
-import UserContext from './UserContext'
+import UserContext from '../UserContext/UserContext'
 
-import Header from './Header'
-import Welcome from './Welcome'
-import SignIn from './SignInForm'
-import SignupForm from './SignupForm'
-import NewQuestionForm from './NewQuestionForm'
-import Question from './Question'
-import Questions from './Questions'
+import Header from '../Header/Header'
+import Welcome from '../Welcome/Welcome'
+import SignIn from '../SignInForm/SignInForm'
+import SignupForm from '../SignupForm/SignupForm'
+import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
+import Question from '../Question/Question'
+import Questions from '../Questions/Questions'
 
-import questionService from '../services/questions'
-import userService from '../services/users'
-import { setErrorMessage } from '../actions/questionActions'
-import Profile from './Profile'
-import Notification from './Notification'
+import questionService from '../../services/questions'
+import userService from '../../services/users'
+import { setErrorMessage } from '../../actions/questionActions'
+import Profile from '../Profile/Profile'
+import Notification from '../Notification/Notification'
 
 const MainApp = () => {
   const [user, setUser] = useState(null)

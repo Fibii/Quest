@@ -5,11 +5,11 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import { useHistory } from 'react-router-dom'
-import UserContext from './UserContext'
-import Copyright from './Copyrights'
-import Notification from './Notification'
-import questionService from '../services/questions'
-import validator from '../services/validator'
+import UserContext from '../UserContext/UserContext'
+import Copyright from '../Copyrights/Copyrights'
+import Notification from '../Notification/Notification'
+import questionService from '../../services/questions'
+import validator from '../../services/validator'
 
 const useStyles = makeStyles((theme) => ({
   root: {

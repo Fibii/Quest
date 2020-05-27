@@ -6,7 +6,7 @@ import {
 import '@testing-library/jest-dom/extend-expect'
 import { MemoryRouter } from 'react-router-dom'
 import axiosMock from 'axios'
-import MainApp from '../components/MainApp'
+import MainApp from '../components/MainApp/MainApp'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
 import loggedUser from '../__mocks__/loggedUser'
 import questions from '../__mocks__/questions'

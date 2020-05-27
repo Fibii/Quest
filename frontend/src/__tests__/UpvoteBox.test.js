@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
-import UpvoteBox from '../components/PartialViews/UpvoteBox'
+import UpvoteBox from '../components/UpvoteBox/UpvoteBox'
 
 describe('UpvoteBox tests', () => {
   test('renders upvoteBox and executes callback', async () => {
