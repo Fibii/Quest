@@ -14,12 +14,14 @@ import users from '../../services/users'
 import utils from '../../services/utils'
 
 const useStyles = makeStyles((theme) => ({
+  mainContainer: {
+    height: '100%',
+  },
   container: {
     width: '60%',
     [theme.breakpoints.up('xs')]: {
       width: '90%',
     },
-
   },
   questionList: {
     marginTop: 16,
@@ -80,7 +82,7 @@ const Profile = () => {
 
 
   return (
-    <Grid container justify="center" data-testid="profile-container">
+    <Grid container justify="center" data-testid="profile-container" className={classes.mainContainer}>
       <Grid container direction="column" alignItems="center" className={classes.container}>
         <Typography className={classes.fullname} data-testid="fullname">{user.fullname}</Typography>
         <Typography className={classes.username} data-testid="username">
