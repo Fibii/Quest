@@ -8,7 +8,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from '@material-ui/core/Snackbar'
 import grey from '@material-ui/core/colors/grey'
-import AlertWindow from '../AlertWindow'
+import AlertWindow from '../AlertWindow/AlertWindow'
 import utils from '../../services/utils'
 
 /**

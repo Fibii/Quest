@@ -7,10 +7,10 @@ import grey from '@material-ui/core/colors/grey'
 
 const useStyles = makeStyles(() => ({
   copyright: {
+    flexShrink: 0,
     paddingBottom: '2.5 rem',
     background: grey[400],
     bottom: 0,
-    position: 'absolute',
     width: '100%',
   },
 }))

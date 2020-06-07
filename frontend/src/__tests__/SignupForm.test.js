@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/extend-expect'
 import axiosMock from 'axios'
 import { MemoryRouter, Route } from 'react-router-dom'
 import user from '../__mocks__/user'
-import SignupForm from '../components/SignupForm'
+import SignupForm from '../components/SignupForm/SignupForm'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
 import inputHelper from '../services/testHelpers/inputHelper'
 

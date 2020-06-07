@@ -7,7 +7,7 @@ import axiosMock from 'axios'
 import { MemoryRouter, Route } from 'react-router-dom'
 import questions from '../__mocks__/questions'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
-import SearchBar from '../components/PartialViews/SearchBar'
+import SearchBar from '../components/SearchBar/SearchBar'
 import inputHelper from '../services/testHelpers/inputHelper'
 
 afterAll(cleanup)

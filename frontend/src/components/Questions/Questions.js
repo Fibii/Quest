@@ -2,15 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import grey from '@material-ui/core/colors/grey'
-import Copyright from './Copyrights'
-import Notification from './Notification'
-import questionService from '../services/questions'
-import QPaper from './PartialViews/QPaper'
+import Notification from '../Notification/Notification'
+import questionService from '../../services/questions'
+import QPaper from '../QPaper/QPaper'
 
 const useStyles = makeStyles(() => ({
   container: {
-    position: 'relative',
-    minHeight: '100vh',
     height: '100%',
     backgroundColor: grey[100],
   },
@@ -77,7 +74,6 @@ const Questions = ({ user }) => {
             />
           ))}
         </List>
-        <Copyright />
       </div>
     </div>
   )

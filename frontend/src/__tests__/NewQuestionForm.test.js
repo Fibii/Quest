@@ -3,10 +3,10 @@ import { render, fireEvent, waitForElement } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import axiosMock from 'axios'
 import { MemoryRouter, Route } from 'react-router-dom'
-import NewQuestionForm from '../components/NewQuestionForm'
+import NewQuestionForm from '../components/NewQuestionForm/NewQuestionForm'
 import newQuestion from '../__mocks__/newQuestion'
 import user from '../__mocks__/user'
-import UserContext from '../components/UserContext'
+import UserContext from '../components/UserContext/UserContext'
 import inputHelper from '../services/testHelpers/inputHelper'
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL

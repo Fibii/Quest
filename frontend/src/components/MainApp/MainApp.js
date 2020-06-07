@@ -3,26 +3,39 @@ import {
   Route, Switch, useLocation, useHistory,
 } from 'react-router-dom'
 import grey from '@material-ui/core/colors/grey'
-import UserContext from './UserContext'
+import { makeStyles } from '@material-ui/core/styles'
+import UserContext from '../UserContext/UserContext'
 
-import Header from './Header'
-import Welcome from './Welcome'
-import SignIn from './SignInForm'
-import SignupForm from './SignupForm'
-import NewQuestionForm from './NewQuestionForm'
-import Question from './Question'
-import Questions from './Questions'
+import Header from '../Header/Header'
+import Welcome from '../Welcome/Welcome'
+import SignIn from '../SignInForm/SignInForm'
+import SignupForm from '../SignupForm/SignupForm'
+import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
+import Question from '../Question/Question'
+import Questions from '../Questions/Questions'
 
-import questionService from '../services/questions'
-import userService from '../services/users'
-import { setErrorMessage } from '../actions/questionActions'
-import Profile from './Profile'
-import Notification from './Notification'
+import questionService from '../../services/questions'
+import userService from '../../services/users'
+import { setErrorMessage } from '../../actions/questionActions'
+import Profile from '../Profile/Profile'
+import Notification from '../Notification/Notification'
+import Copyrights from '../Copyrights/Copyrights'
+
+const useStyles = makeStyles(() => ({
+  container: {
+    backgroundColor: grey[100],
+    height: '100vh',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}))
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
   const location = useLocation()
   const history = useHistory()
+  const classes = useStyles()
 
   useEffect(() => {
     try {
@@ -51,13 +64,7 @@ const MainApp = () => {
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: grey[100],
-        height: '100vh',
-      }}
-      data-testid="mainApp-container"
-    >
+    <div data-testid="mainApp-container" className={classes.container}>
       <UserContext.Provider value={[user, setUser]}>
         <Header />
         <Switch>
@@ -79,6 +86,7 @@ const MainApp = () => {
           <Route path="/question/:id" exact render={() => <Question />} />
           <Route path="/user/:id" exact render={() => <Profile />} />
         </Switch>
+        <Copyrights />
       </UserContext.Provider>
     </div>
   )

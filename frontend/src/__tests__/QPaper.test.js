@@ -3,7 +3,7 @@ import React from 'react'
 import { MemoryRouter, Route } from 'react-router-dom'
 import '@testing-library/jest-dom/extend-expect'
 import user from '../__mocks__/user'
-import QPaper from '../components/PartialViews/QPaper'
+import QPaper from '../components/QPaper/QPaper'
 import question from '../__mocks__/question'
 
 

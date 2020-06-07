@@ -11,7 +11,7 @@ import grey from '@material-ui/core/colors/grey'
 import { Link } from 'react-router-dom'
 import validator from '../../services/validator'
 import utils from '../../services/utils'
-import QuestionIcons from './QuestionIcons'
+import QuestionIcons from '../QuestionIcons/QuestionIcons'
 
 const useStyles = makeStyles((theme) => ({
 

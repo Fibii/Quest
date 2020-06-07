@@ -11,10 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import Copyright from './Copyrights'
-import userService from '../services/users'
-import Notification from './Notification'
-import questionService from '../services/questions'
+import userService from '../../services/users'
+import Notification from '../Notification/Notification'
+import questionService from '../../services/questions'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -150,9 +149,7 @@ const SignIn = ({ setUser }) => {
             </form>
           </div>
         </Container>
-        <Copyright />
       </div>
-
     </div>
   )
 }

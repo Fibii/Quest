@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import React from 'react'
-import Notification from '../components/Notification'
+import Notification from '../components/Notification/Notification'
 
 describe('Notification Tests', () => {
   test('renders title and message', () => {
