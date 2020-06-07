@@ -16,7 +16,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import grey from '@material-ui/core/colors/grey'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import Notification from '../Notification/Notification'
-import Copyright from '../Copyrights/Copyrights'
 
 import validator from '../../services/validator'
 import questionActions from '../../actions/questionAction'
@@ -530,7 +529,6 @@ const QuestionView = ({
             ) : ''}
           </List>
         </div>
-        <Copyright />
       </div>
     </div>
   )

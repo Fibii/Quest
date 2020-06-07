@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { useHistory, Link } from 'react-router-dom'
-import Copyright from '../Copyrights/Copyrights'
 import Notification from '../Notification/Notification'
 import userService from '../../services/users'
 
@@ -280,7 +279,6 @@ const SignupForm = () => {
           </form>
         </div>
       </Container>
-      <Copyright />
     </div>
 
   )
