@@ -22,7 +22,7 @@ app works is written alongside ui code
     - Utils: contains helper functions that are used by multiple components
     - Test Helpers: components/function used specifically for `__tests__`
     
-- `/actions`: if you used `redux`, you know what actions are, else (check this link)[https://redux.js.org/basics/actions], for 
+- `/actions`: if you used `redux`, you know what actions are, otherwise [check this link](https://redux.js.org/basics/actions), for 
 now, there's only one action, `Question Action` and its `dispatch` wrapper, i choose to go with this implementation
 because `Question` component was too big (~900 loc) and now it's ~300 loc
 
