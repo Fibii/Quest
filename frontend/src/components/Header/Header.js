@@ -94,8 +94,8 @@ const Header = () => {
 
   if (!user) {
     return (
-      <div className={classes.grow} data-testid="header-container">
-        <AppBar position="relative" style={{ marginBottom: '5%' }}>
+      <div data-testid="header-container">
+        <AppBar position="relative">
           <Toolbar className={classes.toolbar}>
             <Link to="/" className={classes.link} data-testid="logo">
               <Typography variant="h5" noWrap>
@@ -208,8 +208,8 @@ const Header = () => {
   )
 
   return (
-    <div className={classes.grow} data-testid="header-container">
-      <AppBar position="relative" style={{ marginBottom: '5%' }}>
+    <div data-testid="header-container">
+      <AppBar position="relative">
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
