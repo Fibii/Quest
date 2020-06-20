@@ -19,7 +19,7 @@ import userService from '../../services/users'
 import { setErrorMessage } from '../../actions/questionActions'
 import Profile from '../Profile/Profile'
 import Notification from '../Notification/Notification'
-import Copyrights from '../Copyrights/Copyrights'
+import Footer from '../Footer/Footer'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -86,7 +86,7 @@ const MainApp = () => {
           <Route path="/question/:id" exact render={() => <Question />} />
           <Route path="/user/:id" exact render={() => <Profile />} />
         </Switch>
-        <Copyrights />
+        <Footer />
       </UserContext.Provider>
     </div>
   )
