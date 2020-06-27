@@ -50,7 +50,7 @@ const Comment = ({
 
   return (
     <Paper>
-      <Grid container justify="flex-start" data-testid="comment-container">
+      <Grid container justify="flex-start" data-testid="comment-container" wrap="nowrap">
         <UpvoteBox
           likes={utils.getLikes(comment)}
           handleUpvote={handleUpvote}
