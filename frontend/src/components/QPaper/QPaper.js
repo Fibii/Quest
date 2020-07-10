@@ -119,7 +119,7 @@ const QPaper = ({ user, question, handleDelete }) => {
             data-testid="likes"
           >
             <KeyboardArrowUpIcon className={classes.upvoteBox} />
-            {utils.getLikes(question.likes)}
+            {utils.getLikes(question)}
           </Grid>
           <Typography
             style={{
