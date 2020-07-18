@@ -10,7 +10,6 @@ import Header from '../components/Header/Header'
 import UserContext from '../components/UserContext/UserContext'
 import questions from '../__mocks__/questions'
 import LocationDisplay from '../services/testHelpers/LocationDisplay'
-import inputHelper from '../services/testHelpers/inputHelper'
 
 afterAll(cleanup)
 afterEach(() => {
@@ -108,15 +107,5 @@ describe('header tests', () => {
     fireEvent.click(getByTestId('logoutHeader-button'))
     expect(setUser).toBeCalledTimes(1)
     expect(setUser).toBeCalledWith(null)
-  })
-
-  test('searches for a question and redirects to it', async () => {
-    const SEARCH_VALUE = 'sec'
-    const QUESTION_LINK = `${MAIN_URL}question/${questions[1].id}`
-    const { getByTestId, getAllByTestId } = await setup(user, setUser)
-    fireEvent.change(getByTestId('searchBar-input'), inputHelper.parseValue(SEARCH_VALUE))
-    expect(getByTestId('content')).toBeInTheDocument()
-    fireEvent.click(getAllByTestId('content-title')[0])
-    expect(getByTestId('location-display').textContent).toEqual(QUESTION_LINK)
   })
 })
