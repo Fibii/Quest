@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
-import InputBase from '@material-ui/core/InputBase'
-import SearchIcon from '@material-ui/icons/Search'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import { Link } from 'react-router-dom'
-import grey from '@material-ui/core/colors/grey'
+import TextField from '@material-ui/core/TextField'
+import { grey } from '@material-ui/core/colors'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import { useHistory, useLocation } from 'react-router-dom'
 import questionService from '../../services/questions'
 
-const drawerWidth = '80%'
+
+const QUESTION_URL = '/question'
 
 const useStyles = makeStyles((theme) => ({
-
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -30,63 +25,30 @@ const useStyles = makeStyles((theme) => ({
       width: '60%',
     },
   },
-
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  clearIndicator: {
+    marginRight: 4,
   },
-
-  inputRoot: {
-    color: 'inherit',
+  popupIndicator: {
+    display: 'none',
   },
-
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
+  textfield: {
+    color: grey[100],
+    paddingLeft: 8,
+    fontSize: '1rem',
+    marginBottom: 8,
     width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
   },
-
-  drawer: {
-    width: drawerWidth,
-    height: '80%',
+  autocomplete: {
+    width: '100%',
+    height: 40,
   },
-
-  drawerPaper: {
-    width: drawerWidth,
-    marginTop: 80,
-    margin: '0 auto',
-    background: grey[100],
-  },
-
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'space-between',
-  },
-
-  link: {
-    textDecoration: 'none',
-    color: 'inherit',
-    outline: 'none',
-  },
-
 }))
 
 const SearchBar = () => {
   const classes = useStyles()
-  const [open, setOpen] = useState(false)
-  const [searchInput, setSearchInput] = useState('')
   const [questions, setQuestions] = useState([])
+  const history = useHistory()
+  const location = useLocation()
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -100,60 +62,47 @@ const SearchBar = () => {
     getQuestions()
   }, [])
 
-  const handleInput = (event) => {
-    setSearchInput(event.target.value)
-    if (searchInput.length > 0) {
-      setOpen(true)
-    } else {
-      setOpen(false)
-    }
-  }
 
   return (
-    <div className={classes.search} data-testid="searchBar-container">
-      <div className={classes.searchIcon}>
-        <SearchIcon />
-      </div>
-      <InputBase
-        placeholder="Search…"
+    <div data-testid="searchBar-container" className={classes.search}>
+      <Autocomplete
+        multiple
+        id="searchbar"
+        data-testid="searchbar"
+        options={questions}
+        getOptionLabel={(question) => question.title}
+        noOptionsText="No questions were found"
+        key={location.pathname}
+        freeSolo
+        className={classes.autocomplete}
         classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
+          popupIndicator: classes.popupIndicator,
+          clearIndicator: classes.clearIndicator,
         }}
-        inputProps={{
-          'aria-label': 'search',
-          'data-testid': 'searchBar-input',
+        onChange={(event, newValue) => {
+          if (newValue && newValue[0]) {
+            console.log(newValue[0].id)
+            history.push(`${QUESTION_URL}/${newValue[0].id}`)
+          }
         }}
-        onChange={handleInput}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            type="textarea"
+            margin="dense"
+            fullWidth
+            variant="standard"
+            InputProps={{
+              type: 'text',
+              ...params.InputProps,
+              ...{
+                disableUnderline: true,
+              },
+              className: classes.textfield,
+            }}
+          />
+        )}
       />
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="top"
-          transitionDuration={0}
-          open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-
-          <List data-testid="content">
-            {questions && questions.filter((question) => question.title.startsWith(searchInput))
-              .map((question) => (
-                <Link
-                  to={`/question/${question.id}`}
-                  className={classes.link}
-                  onClick={() => setOpen(false)}
-                  key={question.id}
-                  data-testid="content-title"
-                >
-                  <ListItem button><ListItemText>{question.title}</ListItemText></ListItem>
-                </Link>
-              ))}
-          </List>
-        </Drawer>
-      </ClickAwayListener>
     </div>
   )
 }
