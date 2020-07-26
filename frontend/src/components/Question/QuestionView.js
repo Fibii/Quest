@@ -7,9 +7,9 @@ const QuestionView = ({ state, dispatch }) => {
   const { showEditFields } = state
   if (showEditFields) {
     return (
-      <EditMode state={state}>
-        <ViewMode state={state} dispatch={dispatch} />
-      </EditMode>
+      <QuestionContainer state={state}>
+        <EditMode state={state} dispatch={dispatch} />
+      </QuestionContainer>
     )
   }
 
