@@ -18,12 +18,15 @@ const useStyles = makeStyles((theme) => ({
  * @param title: title of alert
  * @param message: message to be displayed in alert
  * @param severity: icon to be displayed in alert, one of:
+ * @param style: css style object
  *    - error
  *    - warning
  *    - info
  *    - success
  * */
-const Notification = ({ title, message, severity }) => {
+const Notification = ({
+  title, message, severity, style,
+}) => {
   const classes = useStyles()
 
   if (!message) {
@@ -31,7 +34,7 @@ const Notification = ({ title, message, severity }) => {
   }
 
   return (
-    <div className={classes.root} data-testid="notification">
+    <div className={classes.root} data-testid="notification" style={style}>
       <Alert
         severity={severity}
         variant="filled"

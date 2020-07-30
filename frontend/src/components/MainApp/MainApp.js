@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom'
 import grey from '@material-ui/core/colors/grey'
 import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
 import UserContext from '../UserContext/UserContext'
 
 import Header from '../Header/Header'
@@ -19,15 +20,19 @@ import userService from '../../services/users'
 import { setErrorMessage } from '../../actions/questionActions'
 import Profile from '../Profile/Profile'
 import Notification from '../Notification/Notification'
-import Copyrights from '../Copyrights/Copyrights'
+import Footer from '../Footer/Footer'
 
 const useStyles = makeStyles(() => ({
   container: {
     backgroundColor: grey[100],
-    height: '100vh',
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
+    minHeight: '100%',
+  },
+  content: {
+    flex: '1 0 auto',
+    marginTop: 32,
+  },
+  footer: {
+    flexShrink: 0,
   },
 }))
 
@@ -64,31 +69,35 @@ const MainApp = () => {
   }
 
   return (
-    <div data-testid="mainApp-container" className={classes.container}>
+    <Grid container direction="column" className={classes.container}>
       <UserContext.Provider value={[user, setUser]}>
         <Header />
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => (
-              user ? (
-                <Questions user={user} />
-              ) : (
-                <Welcome />
-              )
-            )}
-          />
-          <Route path="/welcome" render={() => <Welcome />} />
-          <Route path="/login" render={() => <SignIn setUser={setUser} />} />
-          <Route path="/register" component={SignupForm} />
-          <Route path="/question/new" exact render={() => <NewQuestionForm />} />
-          <Route path="/question/:id" exact render={() => <Question />} />
-          <Route path="/user/:id" exact render={() => <Profile />} />
-        </Switch>
-        <Copyrights />
+        <Grid className={classes.content}>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                user ? (
+                  <Questions user={user} />
+                ) : (
+                  <Welcome />
+                )
+              )}
+            />
+            <Route path="/welcome" render={() => <Welcome />} />
+            <Route path="/login" render={() => <SignIn setUser={setUser} />} />
+            <Route path="/register" component={SignupForm} />
+            <Route path="/question/new" exact render={() => <NewQuestionForm />} />
+            <Route path="/question/:id" exact render={() => <Question />} />
+            <Route path="/user/:id" exact render={() => <Profile />} />
+          </Switch>
+        </Grid>
       </UserContext.Provider>
-    </div>
+      <Grid className={classes.footer}>
+        <Footer />
+      </Grid>
+    </Grid>
   )
 }
 

@@ -101,13 +101,13 @@ describe('MainApp tests', () => {
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId } = await setup(HOME_URL)
+    const { getByTestId } = await setup(HOME_URL, 'questions-container')
     expect(getByTestId('location-display').textContent).toEqual(HOME_URL)
     expect(getByTestId('questions-container')).toBeInTheDocument()
   })
 
   test('shows welcome page if a user is not logged in', async () => {
-    const { getByTestId } = await setup(HOME_URL)
+    const { getByTestId } = await setup(HOME_URL, 'welcome-container')
     expect(getByTestId('location-display').textContent).toEqual(HOME_URL)
     expect(getByTestId('welcome-container')).toBeInTheDocument()
   })
@@ -117,13 +117,13 @@ describe('MainApp tests', () => {
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId } = await setup(NEW_QUESTION_URL)
+    const { getByTestId } = await setup(NEW_QUESTION_URL, 'questionForm-container')
     expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(getByTestId('questionForm-container')).toBeInTheDocument()
   })
 
   test('renders login if a user is not logged in', async () => {
-    const { getByTestId } = await setup(LOGIN_URL)
+    const { getByTestId } = await setup(LOGIN_URL, 'signin-container')
     expect(getByTestId('location-display').textContent).toEqual(LOGIN_URL)
     expect(getByTestId('signin-container')).toBeInTheDocument()
   })
@@ -137,7 +137,7 @@ describe('MainApp tests', () => {
   })
 
   test('renders register if a user is not logged in', async () => {
-    const { getByTestId } = await setup(REGISTER_URL)
+    const { getByTestId } = await setup(REGISTER_URL, 'signup-container')
     expect(getByTestId('location-display').textContent).toEqual(REGISTER_URL)
     expect(getByTestId('signup-container')).toBeInTheDocument()
   })
@@ -146,7 +146,7 @@ describe('MainApp tests', () => {
     axiosMock.get.mockResolvedValue({
       data: questions,
     })
-    const { getByTestId, queryByTestId } = await setup(NEW_QUESTION_URL)
+    const { getByTestId, queryByTestId } = await setup(NEW_QUESTION_URL, 'notification')
     expect(getByTestId('location-display').textContent).toEqual(NEW_QUESTION_URL)
     expect(queryByTestId('questionForm-container')).toBeNull()
   })

@@ -123,14 +123,14 @@ const Profile = () => {
           className={classes.questionList}
         >
           {user.questions && user.questions.map((question) => (
-            <ListItem button key={question.id}>
-              <Link to={`/question/${question.id}`} className={classes.link}>
+            <Link to={`/question/${question.id}`} className={classes.link} key={question.id}>
+              <ListItem button>
                 <ListItemText
                   primary={question.title}
                   data-testid="question"
                 />
-              </Link>
-            </ListItem>
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Grid>
