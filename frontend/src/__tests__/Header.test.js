@@ -94,18 +94,4 @@ describe('header tests', () => {
     expect(setUser).toBeCalledTimes(1)
     expect(setUser).toBeCalledWith(null)
   })
-
-  test('renders and ... avatar menu buttons for mobile', async () => {
-    global.innerWidth = 300
-    const { getByTestId } = await setup(user, setUser)
-    fireEvent.click(getByTestId('avatarMobile-button'))
-    expect(getByTestId('profileMobile-menu').textContent).toEqual(PROFILE_BUTTON)
-    fireEvent.click(getByTestId('profileMobile-menu'))
-    fireEvent.click(getByTestId('profile-button'))
-    expect(getByTestId('location-display').textContent).toEqual(PROFILE_LINK)
-    expect(getByTestId('logoutHeader-button').textContent).toEqual(LOGOUT_BUTTON)
-    fireEvent.click(getByTestId('logoutHeader-button'))
-    expect(setUser).toBeCalledTimes(1)
-    expect(setUser).toBeCalledWith(null)
-  })
 })
