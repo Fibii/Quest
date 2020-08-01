@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Notification from '../Notification/Notification'
 import users from '../../services/users'
 import utils from '../../services/utils'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -60,6 +61,7 @@ const Profile = () => {
   const { id } = useParams()
   const [user, setUser] = useState({})
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
   const classes = useStyles()
 
   useEffect(() => {
@@ -67,12 +69,18 @@ const Profile = () => {
       const user = await users.getUser(id)
       if (user) {
         setUser(user)
+        setIsLoading(false)
       } else {
         setError('Couldn\'t get this user')
       }
+      setIsLoading(false)
     }
     getUser()
   }, [])
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
 
   if (error) {
     return (
