@@ -28,7 +28,7 @@ describe('user tests', () => {
       </MemoryRouter>,
     )
 
-    await waitForElement(() => getByTestId('profile-container'))
+    await waitForElement(() => getByTestId('notification'))
     expect(getByTestId('notification').textContent).toContain("Couldn't get this user")
   })
 

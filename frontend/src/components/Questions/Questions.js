@@ -5,6 +5,7 @@ import grey from '@material-ui/core/colors/grey'
 import Notification from '../Notification/Notification'
 import questionService from '../../services/questions'
 import QPaper from '../QPaper/QPaper'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -22,6 +23,7 @@ const Questions = ({ user }) => {
   const [dense] = useState(false)
   const [questions, setQuestions] = useState([])
   const [error, setError] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
   const classes = useStyles()
@@ -34,6 +36,7 @@ const Questions = ({ user }) => {
       } else {
         setQuestions(questions)
       }
+      setIsLoading(false)
     }
     getQuestions()
   }, [])
@@ -57,6 +60,10 @@ const Questions = ({ user }) => {
       setErrorMessage('error: couldn\'t delete the question')
       setTimeout(() => setErrorMessage(''), 5000)
     }
+  }
+
+  if (isLoading) {
+    return <LoadingScreen />
   }
 
   return (

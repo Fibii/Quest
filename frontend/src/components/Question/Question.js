@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import questionService from '../../services/questions'
 
@@ -11,12 +11,13 @@ import {
   setEditedQuestionTitle,
   setErrorMessage,
 } from '../../actions/questionActions'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
 
 
 const Question = () => {
   const [state, dispatch] = useReducer(questionReducer, initialState)
   const { id } = useParams()
-
+  const [isLoading, setIsLoading] = useState(true)
 
   /**
    * fetches the question from the backend and updates the question variable if no error,
@@ -44,9 +45,14 @@ const Question = () => {
           dispatch(setEditedQuestionTags(question.tags.join(', ')))
         }
       }
+      setIsLoading(false)
     }
     getQuestion()
   }, [id])
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
 
   return (
     <QuestionView
