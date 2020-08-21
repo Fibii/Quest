@@ -1,12 +1,11 @@
 module.exports = {
   env: {
     browser: true,
+    commonjs: true,
     es6: true,
-    jest: true
   },
   extends: [
-    'plugin:react/recommended',
-    'airbnb',
+    'airbnb-base',
   ],
   globals: {
     Atomics: 'readonly',
@@ -14,16 +13,12 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module',
   },
   rules: {
-    "semi": [
-      "error",
-      "never"
+    semi: [
+      'error',
+      'never',
     ],
-    "import/extensions": "off",
-    "no-console": "off",
-    "no-alert": "off",
-    "no-shadow": "off",
+    'no-underscore-dangle': 'off',
   },
-};
+}
