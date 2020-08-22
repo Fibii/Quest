@@ -3,6 +3,8 @@ const express = require('express')
 const path = require('path')
 const fs = require('fs')
 const logger = require('morgan')
+const mongoose = require('mongoose')
+const cors = require('cors')
 const middleware = require('./utils/middleware')
 
 const indexRouter = require('./controllers/index')
@@ -10,28 +12,25 @@ const usersRouter = require('./controllers/users')
 const questionRouter = require('./controllers/questions')
 const loginRouter = require('./controllers/login')
 
-const mongoose = require('mongoose')
-const cors = require('cors')
-
 const app = express()
 app.use(logger('dev'))
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(logger('combined', { stream: accessLogStream }))
 
-const DB = process.env.DB
+const { DB } = process.env
 console.log(DB)
 
 mongoose.connect('mongodb://127.0.0.1:27017/qaTEST', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
 })
   .then(() => {
-      console.log("connected to db")
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    console.log('connected to db')
+  })
+  .catch((error) => {
+    console.log(error)
+  })
 
 app.use(cors())
 app.use(express.json())

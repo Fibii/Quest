@@ -6,8 +6,8 @@ const userSchema = mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    required:true,
-    minlength: 3
+    required: true,
+    minlength: 3,
   },
   passwordHash: String,
   dateOfBirth: Date,
@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    minlength: 6
+    minlength: 6,
   },
   location: String,
   registerDate: Date,
@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
   questions: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question'
+      ref: 'Question',
     },
   ],
 })
@@ -37,11 +37,9 @@ userSchema.set('toJSON', {
     delete returnedObject.__v
     // the passwordHash should not be revealed
     delete returnedObject.passwordHash
-  }
+  },
 })
-
 
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
-
