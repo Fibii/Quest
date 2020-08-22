@@ -1,10 +1,10 @@
 const express = require('express')
 
 const router = express.Router()
-const jwt = require('jsonwebtoken')
 const Question = require('../models/question')
 const User = require('../models/user')
 const Comment = require('../models/comment')
+const userService = require('../utils/user')
 
 router.get('/', async (request, response, next) => {
   try {
@@ -60,17 +60,10 @@ router.get('/:id', async (request, response, next) => {
 router.post('/', async (request, response, next) => {
   try {
     const { body } = request
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
 
-    // if the token is invalid
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.title || !body.content) {
@@ -114,18 +107,9 @@ router.put('/:id', async (request, response, next) => {
         .json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401)
-        .json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401)
-        .json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.title || !body.content) {
@@ -164,16 +148,9 @@ router.post('/:id/title-content', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.title || !body.content) {
@@ -208,16 +185,9 @@ router.post('/:id/new-comment', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.content) {
@@ -262,16 +232,9 @@ router.delete('/:questionID/delete-comment/:commentID', async (request, response
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (comment.postedBy.toString() !== user._id.toString()) {
@@ -308,16 +271,9 @@ router.post('/:questionID/likes/:commentID', async (request, response, next) => 
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.likes) {
@@ -378,16 +334,9 @@ router.post('/:questionID/edit-comment/:commentID', async (request, response, ne
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (comment.postedBy.toString() !== user._id.toString()) {
@@ -421,16 +370,9 @@ router.post('/:id/tags', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (question.postedBy.toString() !== user._id.toString()) {
@@ -464,16 +406,9 @@ router.post('/:id/solved', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (question.postedBy.toString() !== user._id.toString()) {
@@ -511,16 +446,9 @@ router.post('/:id/likes', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (!body.likes) {
@@ -578,16 +506,9 @@ router.delete('/:id', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     if (question.postedBy.toString() !== user._id.toString()) {
