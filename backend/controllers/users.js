@@ -2,9 +2,9 @@ const express = require('express')
 
 const router = express.Router()
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const validator = require('../utils/validator')
+const userService = require('../utils/user')
 
 router.get('/', async (request, response, next) => {
   try {
@@ -76,20 +76,13 @@ router.put('/:id', async (request, response, next) => {
   try {
     const { body } = request
     const { id } = request.params
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
 
-    if (!decodedToken.id || decodedToken.id !== id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
-    const user = await User.findById(id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const isPasswordCorrect = user === null
-      ? false : await bcrypt.compare(body.password, user.passwordHash)
+    const isPasswordCorrect = await bcrypt.compare(body.password, user.passwordHash)
 
     if (!isPasswordCorrect) {
       return response.status(401).json({ error: 'wrong password' })
@@ -126,16 +119,10 @@ router.delete('/:id', async (request, response, next) => {
   try {
     const { body } = request
     const { id } = request.params
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
 
-    if (!decodedToken.id || decodedToken.id !== id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const user = await User.findById(id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthenticated(request.token, id)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
     const isPasswordCorrect = user === null
