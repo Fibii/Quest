@@ -392,7 +392,7 @@ describe('question updation', () => {
     expect(authorQuestion.body.solved).toBeTruthy()
   })
 
-  test('a comment can by added by any user', async () => {
+  test('a comment can be added by any user', async () => {
     const response = await getUserResponse()
     const secondUserResponse = await getUserResponse(1)
 
@@ -411,7 +411,7 @@ describe('question updation', () => {
       .send(newQuestion)
       .expect(201)
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
       .send(newComment)
       .expect(200)
@@ -425,7 +425,7 @@ describe('question updation', () => {
     expect(comment).toBeTruthy()
   })
 
-  test('comment can be deleted to solved by the author', async () => {
+  test('a comment can be deleted the author', async () => {
     const firstUserResponse = await getUserResponse()
     const secondUserResponse = await getUserResponse(1)
 
@@ -444,23 +444,23 @@ describe('question updation', () => {
       content: 'another comment, thanks',
     }
 
-    await api.post(`/api/questions/${question.body.id}/new-comment`)
+    await api.post(`/api/questions/${question.body.id}/comments`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send({
         content: 'new comment, thanks',
       })
       .expect(200)
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send(comment)
       .expect(200)
 
-    await api.delete(`/api/questions/${question.body.id}/delete-comment/${commentResponse.body.id}`)
+    await api.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
       .expect(401)
 
-    await api.delete(`/api/questions/${question.body.id}/delete-comment/${commentResponse.body.id}`)
+    await api.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .expect(200)
 
@@ -487,27 +487,27 @@ describe('question updation', () => {
       content: 'new comment',
     }
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send(comment)
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send({ likes: 1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send({ likes: 1 })
       .expect(401)
 
-    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
       .send({ likes: -1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/likes/${commentResponse.body.id}`)
+    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
       .send({ likes: -1 })
       .expect(401)
@@ -538,17 +538,17 @@ describe('question updation', () => {
       content: 'new comment',
     }
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/new-comment`)
+    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send(comment)
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/edit-comment/${commentResponse.body.id}`)
+    await api.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${firstUserResponse.body.token}`)
       .send({ content: 'comment is edited' })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/edit-comment/${commentResponse.body.id}`)
+    await api.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .set('Authorization', `bearer ${secondUserResponse.body.token}`)
       .send({ content: 'comment is edited' })
       .expect(401)

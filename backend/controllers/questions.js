@@ -3,8 +3,13 @@ const express = require('express')
 const router = express.Router()
 const Question = require('../models/question')
 const User = require('../models/user')
-const Comment = require('../models/comment')
 const userService = require('../utils/user')
+const commentsRouter = require('./comments')
+
+router.use('/:questionId/comments/', (request, response, next) => {
+  request.questionId = request.params.questionId
+  next()
+}, commentsRouter)
 
 router.get('/', async (request, response, next) => {
   try {
@@ -169,191 +174,6 @@ router.post('/:id/title-content', async (request, response, next) => {
     }
 
     await Question.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(200).end()
-  } catch (error) {
-    return next(error)
-  }
-})
-
-router.post('/:id/new-comment', async (request, response, next) => {
-  try {
-    const { body } = request
-    const { id } = request.params
-    const question = await Question.findById(id)
-
-    if (!question) {
-      return response.status(401).json({ error: 'invalid question id' })
-    }
-
-    const user = await userService.isAuthenticated(request.token)
-    if (user.error) {
-      return response.status(401).json(user.error)
-    }
-
-    if (!body.content) {
-      return response.status(401)
-        .json({ error: 'content must be provided' })
-    }
-
-    const comment = new Comment({
-      content: body.content,
-      likes: [{
-        value: 0,
-      }],
-      postedBy: user.id,
-    })
-
-    await comment.save()
-
-    const updatedQuestion = {
-      ...question._doc,
-      comments: question._doc.comments.concat(comment),
-    }
-
-    await Question.findByIdAndUpdate(id, updatedQuestion)
-    return response.status(200).json(comment)
-  } catch (error) {
-    return next(error)
-  }
-})
-
-/**
- * deletes the comment with the given id,
- * since every comment has its id, there's no need to specify the id of the question
- * */
-router.delete('/:questionID/delete-comment/:commentID', async (request, response, next) => {
-  try {
-    const { questionID } = request.params
-    const { commentID } = request.params
-    const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
-
-    if (!comment || !question) {
-      return response.status(401).json({ error: 'invalid comment id or question id' })
-    }
-
-    const user = await userService.isAuthenticated(request.token)
-    if (user.error) {
-      return response.status(401).json(user.error)
-    }
-
-    if (comment.postedBy.toString() !== user._id.toString()) {
-      return response.status(401).json({ error: 'comments can be deleted by authors only' })
-    }
-
-    const updatedQuestion = {
-      ...question._doc,
-      comments: question._doc.comments.filter((commentId) => commentId !== commentID),
-    }
-
-    await Promise.all([
-      Question.findByIdAndUpdate(questionID, updatedQuestion),
-      Comment.findByIdAndRemove(commentID),
-    ])
-    return response.status(200).end()
-  } catch (error) {
-    return next(error)
-  }
-})
-
-/**
- * increases or decreases the number of likes of a comment
- * */
-router.post('/:questionID/likes/:commentID', async (request, response, next) => {
-  try {
-    const { body } = request
-    const { questionID } = request.params
-    const { commentID } = request.params
-    const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
-
-    if (!comment || !question) {
-      return response.status(401).json({ error: 'invalid comment id or question id' })
-    }
-
-    const user = await userService.isAuthenticated(request.token)
-    if (user.error) {
-      return response.status(401).json(user.error)
-    }
-
-    if (!body.likes) {
-      return response.status(401)
-        .json({ error: 'value must be provided as a number' })
-    }
-
-    const likeUsers = comment.likes.map((like) => like.likedBy)
-
-    // if the user upvotes or downvotes again
-    if (likeUsers.includes(user.id)) {
-      const currentLike = body.likes >= 0 ? 1 : -1
-      const userLikes = comment.likes.filter((like) => String(like.likedBy) === String(user.id))
-      const userLike = userLikes[userLikes.length - 1].value
-      if (currentLike === userLike || currentLike * 2 === userLike) {
-        return response.status(401).end()
-      }
-
-      const updatedComment = {
-        ...comment._doc,
-        likes: comment.likes.concat({
-          value: body.likes >= 0 ? 2 : -2,
-          likedBy: user.id,
-        }),
-      }
-
-      await Comment.findByIdAndUpdate(comment.id, updatedComment)
-      return response.status(200).end()
-    }
-
-    const updatedComment = {
-      ...comment._doc,
-      likes: comment.likes.concat({
-        value: body.likes >= 0 ? 1 : -1,
-        likedBy: user.id,
-      }),
-    }
-
-    await Comment.findByIdAndUpdate(comment.id, updatedComment)
-    return response.status(200).end()
-  } catch (error) {
-    return next(error)
-  }
-})
-
-/**
- * increases or decreases the number of likes of a comment
- * */
-router.post('/:questionID/edit-comment/:commentID', async (request, response, next) => {
-  try {
-    const { body } = request
-    const { questionID } = request.params
-    const { commentID } = request.params
-    const comment = await Comment.findById(commentID)
-    const question = await Question.findById(questionID)
-
-    if (!comment || !question) {
-      return response.status(401).json({ error: 'invalid comment id or question id' })
-    }
-
-    const user = await userService.isAuthenticated(request.token)
-    if (user.error) {
-      return response.status(401).json(user.error)
-    }
-
-    if (comment.postedBy.toString() !== user._id.toString()) {
-      return response.status(401).json({ error: 'comments can be deleted by authors only' })
-    }
-
-    if (!body.content) {
-      return response.status(401)
-        .json({ error: 'content must be provided' })
-    }
-
-    const updatedComment = {
-      ...comment._doc,
-      content: body.content,
-    }
-
-    await Comment.findByIdAndUpdate(commentID, updatedComment)
     return response.status(200).end()
   } catch (error) {
     return next(error)
