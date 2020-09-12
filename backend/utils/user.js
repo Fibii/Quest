@@ -1,36 +1,71 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const User = require('../models/user')
+
+const TOKEN_ERROR = { error: 'token missing or invalid' }
+const PASSWORD_ERROR = { error: 'wrong password' }
+
+const decodeToken = (token) => {
+  const decodedToken = jwt.decode(token, process.env.SECRET)
+  return decodedToken
+}
 
 /**
  * Checks if a user is logged in or not
  *
- * If userId is undefined, that's because it's not needed to
- * authenticate the user, like if the user is posting a new question
- *
- * If a user is updating/deleting a User object, then userId must be defined to make sure
- * that the token provided in the request belongs to the user with userId
- *
- * @param userId: mongodb id of the user
  * @param token: the token the user used in the request
  * @return user object if the user is authenticated, error object otherwise
  * */
-const isAuthenticated = async (token, userId) => {
-  const decodedToken = jwt.decode(token, process.env.SECRET)
-  const errorObj = { error: 'token missing or invalid' }
+const isAuthenticated = async (token) => {
+  const decodedToken = decodeToken(token)
 
   if (!decodedToken.id) {
-    return errorObj
+    return TOKEN_ERROR
   }
 
-  if (userId && (!decodedToken.id || decodedToken.id !== userId)) {
-    return errorObj
-  }
-
-  const id = userId || decodedToken.id
+  const { id } = decodedToken
   const user = await User.findById(id)
 
   if (!user) {
-    return errorObj
+    return TOKEN_ERROR
+  }
+
+  return user
+}
+
+/**
+ * Checks if the user is authorized to do some operations
+ * usually these operations are user related, like deleting a user or
+ * updating a user
+ *
+ * A user is authorized if their token is valid, and they have the right
+ * to update/delete their account
+ *
+ * @param token: the token the user used in the request
+ * @param userId: the id of the user
+ * @param password: the password the user provided as password confirmation
+ * @return user object if the user is authorized, error object otherwise
+ * */
+const isAuthorized = async (token, userId, password) => {
+  const decodedToken = decodeToken(token)
+
+  if (userId && (!decodedToken.id || decodedToken.id !== userId)) {
+    return TOKEN_ERROR
+  }
+
+  const user = await isAuthenticated(token, userId)
+
+  if (user.error) {
+    return user
+  }
+
+  if (password) {
+    const isPasswordCorrect = user === null
+      ? false : await bcrypt.compare(password, user.passwordHash)
+
+    if (!isPasswordCorrect) {
+      return PASSWORD_ERROR
+    }
   }
 
   return user
@@ -38,4 +73,5 @@ const isAuthenticated = async (token, userId) => {
 
 module.exports = {
   isAuthenticated,
+  isAuthorized,
 }

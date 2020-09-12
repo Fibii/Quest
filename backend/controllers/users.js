@@ -1,7 +1,6 @@
 const express = require('express')
 
 const router = express.Router()
-const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const validator = require('../utils/validator')
 const userService = require('../utils/user')
@@ -77,15 +76,9 @@ router.put('/:id', async (request, response, next) => {
     const { body } = request
     const { id } = request.params
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthorized(request.token, id, body.password)
     if (user.error) {
       return response.status(401).json(user.error)
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(body.password, user.passwordHash)
-
-    if (!isPasswordCorrect) {
-      return response.status(401).json({ error: 'wrong password' })
     }
 
     if (!body.email || !body.dateOfBirth || !body.fullname) {
@@ -120,18 +113,10 @@ router.delete('/:id', async (request, response, next) => {
     const { body } = request
     const { id } = request.params
 
-    const user = await userService.isAuthenticated(request.token, id)
+    const user = await userService.isAuthorized(request.token, id, body.password)
     if (user.error) {
       return response.status(401).json(user.error)
     }
-
-    const isPasswordCorrect = user === null
-      ? false : await bcrypt.compare(body.password, user.passwordHash)
-
-    if (!isPasswordCorrect) {
-      return response.status(401).json({ error: 'wrong password' })
-    }
-
     await User.findByIdAndRemove(id)
     return response.status(204).end()
   } catch (error) {
