@@ -18,9 +18,8 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 app.use(logger('combined', { stream: accessLogStream }))
 
 const { DB } = process.env
-console.log(DB)
 
-mongoose.connect('mongodb://127.0.0.1:27017/qaTEST', {
+mongoose.connect(DB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,

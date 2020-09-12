@@ -2,7 +2,7 @@ const http = require('http')
 const app = require('./app')
 
 const server = http.createServer(app)
-
-server.listen(3000, () => {
-  console.log('server started on localhost:3000')
+const { PORT } = process.env
+server.listen(PORT, () => {
+  console.log(`server started on localhost:${PORT}`)
 })
