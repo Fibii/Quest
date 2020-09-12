@@ -6,6 +6,7 @@ import Notification from '../Notification/Notification'
 import questionService from '../../services/questions'
 import QPaper from '../QPaper/QPaper'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import NoQuestions from '../NoQuestions/NoQuestions'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -66,6 +67,9 @@ const Questions = ({ user }) => {
     return <LoadingScreen />
   }
 
+  if (questions.length === 0) {
+    return <NoQuestions />
+  }
   return (
     <div className={classes.container} data-testid="questions-container">
       <Notification title="Error" message={errorMessage} severity="error" />
