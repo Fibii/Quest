@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 // eslint-disable-next-line no-unused-vars
 let token = null
 
