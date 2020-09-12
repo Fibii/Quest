@@ -3,13 +3,13 @@ import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import grey from '@material-ui/core/colors/grey'
+import blue from '@material-ui/core/colors/blue'
 
 const useStyles = makeStyles(() => ({
   copyright: {
     flexShrink: 0,
     paddingBottom: '2.5 rem',
-    background: grey[400],
+    background: blue[200],
     bottom: 0,
     width: '100%',
   },
