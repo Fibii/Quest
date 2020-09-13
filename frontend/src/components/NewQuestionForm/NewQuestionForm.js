@@ -2,37 +2,87 @@ import React, { useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import { useHistory } from 'react-router-dom'
+import Typography from '@material-ui/core/Typography'
+import { ThemeProvider } from '@material-ui/styles'
+import { createMuiTheme } from '@material-ui/core'
+import { blue, lightBlue, pink } from '@material-ui/core/colors'
 import UserContext from '../UserContext/UserContext'
 import Notification from '../Notification/Notification'
 import questionService from '../../services/questions'
 import validator from '../../services/validator'
+import QuestionInstructions from './QuestionInstructions'
+import QuestionInstructionSmall from './QuestionInstructionSmall'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 600,
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
-    paddingBottom: 24,
+    paddingBottom: 64,
   },
-
   paper: {
     minWidth: 340,
-    prefWidth: 600,
-    width: 600,
+    width: '40%',
+    [theme.breakpoints.down('sm')]: {
+      width: '80%',
+      marginRight: 0,
+    },
     padding: 16,
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginRight: 20,
+    marginBottom: 16,
   },
-
+  instructionPaper: {
+    width: 300,
+    height: 100,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingBottom: 64,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
   item: {
     marginTop: 8,
   },
 }))
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+})
+
+const SubmitButton = withStyles({
+  root: {
+    border: '1px solid',
+    boxShadow: 'none',
+    borderColor: lightBlue[600],
+    color: lightBlue[700],
+    '&:hover': {
+      borderColor: lightBlue[400],
+      backgroundColor: lightBlue[100],
+    },
+  },
+})(Button)
+
+const ClearButton = withStyles({
+  root: {
+    border: '1px solid',
+    boxShadow: 'none',
+    borderColor: pink[600],
+    color: pink[700],
+    '&:hover': {
+      borderColor: pink[400],
+      backgroundColor: pink[100],
+    },
+  },
+})(Button)
 
 const NewQuestionForm = () => {
   const classes = useStyles()
@@ -47,7 +97,6 @@ const NewQuestionForm = () => {
 
   const [user] = useContext(UserContext)
   const history = useHistory()
-
 
   /**
    * Updates questionTitle to user input, validates the title
@@ -171,67 +220,83 @@ const NewQuestionForm = () => {
       data-testid="questionForm-container"
     >
       <Notification title="Error" message={errorMessage} severity="error" data-testid="error-message" />
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        paddingBotton: '3.5 rem',
-      }}
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        style={{
+          paddingBotton: '3.5 rem',
+        }}
       >
+        <QuestionInstructionSmall />
         <Paper className={classes.paper}>
           <Grid container justify="flex-start" direction="column" className={classes.root}>
-            <Grid item className={classes.item}>
-              <TextField
-                error={titleHelperText.length > 0}
-                helperText={titleHelperText}
-                id="title"
-                placeholder="Title"
-                multiline
-                fullWidth
-                variant="outlined"
-                value={questionTitle}
-                onChange={titleOnChange}
-                inputProps={{
-                  'data-testid': 'title-input',
-                }}
-              />
-            </Grid>
-            <Grid item className={classes.item}>
-              <TextField
-                error={contentHelperText.length > 0}
-                helperText={contentHelperText}
-                id="content"
-                placeholder="Content"
-                multiline
-                rows={3}
-                rowsMax={8}
-                fullWidth
-                variant="outlined"
-                value={questionContent}
-                onChange={contentOnChange}
-                inputProps={{
-                  'data-testid': 'content-input',
-                }}
-              />
-            </Grid>
-            <Grid item className={classes.item}>
-              <TextField
-                error={tagsHelperText.length > 0}
-                helperText={tagsHelperText}
-                id="tags"
-                placeholder="Tags"
-                multiline
-                fullWidth
-                variant="outlined"
-                value={questionTags}
-                onChange={tagsOnChange}
-                inputProps={{
-                  'data-testid': 'tags-input',
-                }}
-              />
-            </Grid>
+            <ThemeProvider theme={theme}>
+              <Grid item className={classes.item}>
+                <Typography variant="h6">Title</Typography>
+                <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+                  Be specific and imagine you’re asking a question to another person
+                </Typography>
+                <TextField
+                  error={titleHelperText.length > 0}
+                  helperText={titleHelperText}
+                  id="title"
+                  placeholder="Ex: how do i undo git commit without losing changes?"
+                  multiline
+                  fullWidth
+                  variant="outlined"
+                  value={questionTitle}
+                  onChange={titleOnChange}
+                  inputProps={{
+                    'data-testid': 'title-input',
+                  }}
+                />
+              </Grid>
+              <Grid item className={classes.item}>
+                <Typography variant="h6">Body</Typography>
+                <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+                  Include all the information someone would need to answer your question
+                </Typography>
+                <TextField
+                  error={contentHelperText.length > 0}
+                  helperText={contentHelperText}
+                  id="content"
+                  placeholder="Content"
+                  multiline
+                  rows={3}
+                  rowsMax={8}
+                  fullWidth
+                  variant="outlined"
+                  value={questionContent}
+                  onChange={contentOnChange}
+                  inputProps={{
+                    'data-testid': 'content-input',
+                  }}
+                />
+              </Grid>
+              <Grid item className={classes.item}>
+                <Typography variant="h6">Tags</Typography>
+                <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+                  Add tags to describe what your question is about (tags are separated by space)
+                </Typography>
+                <TextField
+                  error={tagsHelperText.length > 0}
+                  helperText={tagsHelperText}
+                  id="tags"
+                  placeholder="Ex: Java Spring_boot"
+                  multiline
+                  fullWidth
+                  variant="outlined"
+                  value={questionTags}
+                  onChange={tagsOnChange}
+                  inputProps={{
+                    'data-testid': 'tags-input',
+                  }}
+                />
+              </Grid>
+            </ThemeProvider>
             <Grid container justify="flex-end" className={classes.item}>
-              <Button
+              <ClearButton
                 variant="outlined"
                 color="secondary"
                 onClick={handleClearButton}
@@ -241,19 +306,22 @@ const NewQuestionForm = () => {
                 data-testid="clear-button"
               >
                 clear
-              </Button>
-              <Button
+              </ClearButton>
+              <SubmitButton
                 variant="outlined"
                 color="primary"
                 onClick={handleQuestionPost}
                 data-testid="submit-button"
               >
                 submit
-              </Button>
+              </SubmitButton>
             </Grid>
           </Grid>
         </Paper>
-      </div>
+        <Paper className={classes.instructionPaper}>
+          <QuestionInstructions />
+        </Paper>
+      </Grid>
     </div>
   )
 }
