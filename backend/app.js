@@ -19,17 +19,40 @@ app.use(logger('combined', { stream: accessLogStream }))
 
 const { DB } = process.env
 
-mongoose.connect(DB, {
+if (!DB) {
+  console.log('no database uri was found in .env, please provide one')
+  console.log('quitting')
+  process.exit(0)
+}
+
+let TIMEOUT_SECONDS = 1000
+
+if (process.env.NODE_ENV === 'PROD') {
+  TIMEOUT_SECONDS = 10000
+  console.log("NOTE THAT IF THE SERVER CAN'T ESTABLISH A CONNECTION TO THE DATABASE")
+  console.log(`IT WILL KEEP TRYING TO ESTABLISH ONE FOR ${TIMEOUT_SECONDS} MS`)
+  console.log(`AND YOU WON'T GET ANY ERRORS UNTIL ${TIMEOUT_SECONDS} MS PASS`)
+  console.log('read more about that here https://mongoosejs.com/docs/connections.html')
+}
+
+const mongooseOptions = {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
   useCreateIndex: true,
-})
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: TIMEOUT_SECONDS,
+}
+
+mongoose.connect(DB, mongooseOptions)
   .then(() => {
+    // eslint-disable-next-line no-console
     console.log('connected to db')
   })
-  .catch((error) => {
-    console.log(error)
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.log(`Error on start: ${err.stack}`)
+    process.exit(1)
   })
+
 
 app.use(cors())
 app.use(express.json())
