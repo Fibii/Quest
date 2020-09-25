@@ -4,9 +4,39 @@ const app = require('../app')
 const Question = require('../models/question')
 const User = require('../models/user')
 const Comment = require('../models/comment')
-
-const api = supertest(app)
 const testHelper = require('../utils/testHelper')
+
+const agent = supertest.agent(app)
+
+/**
+ *
+ * logs in a user, and updates the cookie of agent to the user's cookie
+ *
+ * @param userIndex: the index of user in initialUsers
+ * @returns the response of user login
+ * */
+const createSession = async (userIndex = 0, createUser = true) => {
+  const initialUsers = testHelper.getInitialUsers()
+  const user = initialUsers[userIndex]
+
+  if (createUser) {
+    // register the user
+    await agent.post('/api/users')
+      .send(initialUsers[userIndex])
+  }
+
+  // login
+  const response = await agent
+    .post('/api/login')
+    .send(user)
+
+  const cookie = response
+    .headers['set-cookie'][0]
+    .split(',')
+    .map((item) => item.split(';')[0])
+  agent.jar.setCookie(cookie[0])
+  return response
+}
 
 beforeEach(async () => {
   // clear the database
@@ -21,34 +51,11 @@ beforeEach(async () => {
   await Promise.all(promiseArray)
 })
 
-/**
- * userIndex is the index of user in initialUsers
- * returns the response of user login
- * */
-const getUserResponse = async (userIndex = 0) => {
-  const initialUsers = testHelper.getInitialUsers()
-
-  const user = {
-    username: initialUsers[userIndex].username,
-    password: initialUsers[userIndex].password,
-  }
-
-  // register the user
-  await api.post('/api/users')
-    .send(initialUsers[userIndex])
-
-  // login the user to get jwt
-  const response = await api.post('/api/login')
-    .send(user)
-
-  return response
-}
-
 describe('question crud', () => {
   test('all questions are returned', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
 
-    const response = await api.get('/api/questions')
+    const response = await agent.get('/api/questions')
       .expect(200)
 
     const finalQuestions = JSON.parse(response.text)
@@ -58,33 +65,19 @@ describe('question crud', () => {
 
   test('a proper question can be created', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const initialUsers = testHelper.getInitialUsers()
 
-    const user = {
-      username: initialUsers[0].username,
-      password: initialUsers[0].password,
-    }
-
-    // register the user
-    const userPostResponse = await api.post('/api/users')
-      .send(initialUsers[0])
-
-    // login the user to get jwt
-    const response = await api.post('/api/login')
-      .send(user)
-
+    const response = await createSession()
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const questionResponse = await api.post('/api/questions')
-      .set('Authorization', `bearer ${response.body.token}`)
+    const questionResponse = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
-    const userGetResponse = await api.get(`/api/users/${userPostResponse.body.id}`)
+    const userGetResponse = await agent.get(`/api/users/${response.body.id}`)
     const finalQuestions = await testHelper.getQuestionsInDb()
 
     const userQuestions = userGetResponse.body.questions
@@ -95,7 +88,7 @@ describe('question crud', () => {
 
   test('a specific question is returned', async () => {
     const question = (await testHelper.getQuestionsInDb())[0]
-    const response = await api.get(`/api/questions/${question.id}`)
+    const response = await agent.get(`/api/questions/${question.id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -108,7 +101,7 @@ describe('question crud', () => {
 describe('question deletion', () => {
   test('a question can be deleted by the user that created it', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const response = await getUserResponse()
+    const response = await createSession()
 
     const newQuestion = {
       title: 'first question',
@@ -116,18 +109,16 @@ describe('question deletion', () => {
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${response.body.token}`)
+    const question = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
-    await api.delete(`/api/questions/${question.body.id}`)
-      .set('Authorization', `bearer ${response.body.token}`)
+    await agent.delete(`/api/questions/${question.body.id}`)
       .send()
       .expect(204)
 
     // expect the question to be deleted from the user question list
-    const userResponse = await api.get(`/api/users/${response.body.id}`)
+    const userResponse = await agent.get(`/api/users/${response.body.id}`)
     const finalQuestions = await testHelper.getQuestionsInDb()
 
     expect(finalQuestions.length).toBe(initialQuestions.length)
@@ -137,24 +128,24 @@ describe('question deletion', () => {
   test("a question cannot be deleted with a user that didn't create it", async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
 
-    // login the user to get jwt
-    const responseOne = await getUserResponse(0)
-
-    const responseTwo = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${responseOne.body.token}`)
+    // login the user to get jwt
+    await createSession(0)
+
+    const question = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
-    const deleteResponse = await api.delete(`/api/questions/${question.body.id}`)
-      .set('Authorization', `bearer ${responseTwo.body.token}`)
+    // create another user with a different cookie
+    await createSession(1)
+
+    // this delete will use the 2nd user cookie
+    const deleteResponse = await agent.delete(`/api/questions/${question.body.id}`)
       .send()
       .expect(401)
 
@@ -167,19 +158,11 @@ describe('question deletion', () => {
 
 describe('question updation', () => {
   test('a question can be updated', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
-
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
 
     // edit title and content
     const editedQuestion = {
@@ -188,13 +171,19 @@ describe('question updation', () => {
       tags: ['newTags'],
     }
 
-    await api.put(`/api/questions/${question.body.id}`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    await agent.put(`/api/questions/${question.body.id}`)
       .send(editedQuestion)
       .expect(200)
 
-    await api.put(`/api/questions/${question.body.id}`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession(1)
+
+    await agent.put(`/api/questions/${question.body.id}`)
       .send(editedQuestion)
       .expect(401)
 
@@ -206,9 +195,12 @@ describe('question updation', () => {
       .toBe(editedQuestion.title)
   })
 
+  /**
+   * partial update
+   * */
   test('a question\'s with title and content can be updated by the author', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const response = await getUserResponse()
+    await createSession()
 
     const newQuestion = {
       title: 'first question',
@@ -216,8 +208,7 @@ describe('question updation', () => {
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${response.body.token}`)
+    const question = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
@@ -227,8 +218,7 @@ describe('question updation', () => {
       content: 'this question has been edited',
     }
 
-    await api.post(`/api/questions/${question.body.id}/title-content`)
-      .set('Authorization', `bearer ${response.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/title-content`)
       .send(editedQuestion)
       .expect(200)
 
@@ -241,10 +231,11 @@ describe('question updation', () => {
     expect(finalQuestions).toContainEqual(editedQuestion)
   })
 
+  /**
+   * partial update that should fail
+   * */
   test('a question with title and content cannot be updated by the user that didnt create it', async () => {
     const initialQuestions = await testHelper.getQuestionsInDb()
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
 
     const newQuestion = {
       title: 'first question',
@@ -252,52 +243,49 @@ describe('question updation', () => {
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
-
-    // edit title and content
     const editedQuestion = {
       title: 'this question has been edited',
       content: 'this question has been edited',
     }
 
-    await api.post(`/api/questions/${question.body.id}/title-content`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    await createSession(1)
+
+    await agent.post(`/api/questions/${question.body.id}/title-content`)
       .send(editedQuestion)
       .expect(401)
 
     const finalQuestions = await testHelper.getQuestionsInDb()
-
     expect(finalQuestions.length).toBe(initialQuestions.length + 1)
   })
 
-  test('the number of likes can be increased, decreased', async () => {
-    const response = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-    const initLikes = 0
-
+  test('question likes can be increased, decreased by multiple users', async () => {
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${response.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
-    await api.post(`/api/questions/${question.body.id}/likes`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/likes`)
       .send({ likes: 1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/likes`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/likes`)
       .send({ likes: 1 })
       .expect(401)
+
+    const initLikes = 0
 
     const questionIncreased = (await testHelper.getQuestionsInDb())
       .filter((incQuestion) => incQuestion.id === question.body.id)[0]
@@ -307,13 +295,13 @@ describe('question updation', () => {
 
     expect(increasedLikes).toBe(initLikes + 1)
 
-    await api.post(`/api/questions/${question.body.id}/likes`)
-      .set('Authorization', `bearer ${response.body.token}`)
+    await createSession(1)
+
+    await agent.post(`/api/questions/${question.body.id}/likes`)
       .send({ likes: -1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/likes`)
-      .set('Authorization', `bearer ${response.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/likes`)
       .send({ likes: -1 })
       .expect(401)
 
@@ -327,75 +315,67 @@ describe('question updation', () => {
   })
 
   test('question tags can be updated by the author', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
-
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
 
     const tags = {
       tags: ['new_tag', 'react', 'redux'],
     }
 
-    await api.post(`/api/questions/${question.body.id}/tags`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    await agent.post(`/api/questions/${question.body.id}/tags`)
       .send(tags)
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/tags`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession(1)
+
+    await agent.post(`/api/questions/${question.body.id}/tags`)
       .send(tags)
       .expect(401)
 
-    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    const authorQuestion = await agent.get(`/api/questions/${question.body.id}`)
     expect(authorQuestion.body.tags.sort()).toEqual(tags.tags.sort())
   })
 
   test('question can be set to solved by the author', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
-
     const solved = {
       solved: true,
     }
 
-    await api.post(`/api/questions/${question.body.id}/solved`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    await agent.post(`/api/questions/${question.body.id}/solved`)
       .send(solved)
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/solved`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession(1)
+
+    await agent.post(`/api/questions/${question.body.id}/solved`)
       .send(solved)
       .expect(401)
 
-    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    const authorQuestion = await agent.get(`/api/questions/${question.body.id}`)
     expect(authorQuestion.body.solved).toBeTruthy()
   })
 
   test('a comment can be added by any user', async () => {
-    const response = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
@@ -406,15 +386,17 @@ describe('question updation', () => {
       content: 'first comment added for the sake of testing',
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${response.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
       .send(newQuestion)
       .expect(201)
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    const commentResponse = await agent.post(`/api/questions/${question.body.id}/comments`)
       .send(newComment)
       .expect(200)
+
+    await createSession(1)
 
     const finalQuestion = (await testHelper.getQuestionsInDb())
       .filter((finalQuestion) => finalQuestion.id === question.body.id)[0]
@@ -426,91 +408,85 @@ describe('question updation', () => {
   })
 
   test('a comment can be deleted the author', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
-
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
 
     const comment = {
       content: 'another comment, thanks',
     }
 
-    await api.post(`/api/questions/${question.body.id}/comments`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    await agent.post(`/api/questions/${question.body.id}/comments`)
       .send({
         content: 'new comment, thanks',
       })
       .expect(200)
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    const commentResponse = await agent.post(`/api/questions/${question.body.id}/comments`)
       .send(comment)
       .expect(200)
 
-    await api.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession(1)
+
+    await agent.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .expect(401)
 
-    await api.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    // login as user 0
+    await createSession(0, false)
+
+    await agent.delete(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .expect(200)
 
-    const authorQuestion = await api.get(`/api/questions/${question.body.id}`)
+    const authorQuestion = await agent.get(`/api/questions/${question.body.id}`)
     expect(authorQuestion.body.comments.length).toBe(1)
   })
 
-  test('likes of a comment can be increased, decreased', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
+  test('comment likes can be increased, decreased by multiple users', async () => {
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
-
     const comment = {
       content: 'new comment',
     }
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    const commentResponse = await agent.post(`/api/questions/${question.body.id}/comments`)
       .send(comment)
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .send({ likes: 1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .send({ likes: 1 })
       .expect(401)
 
-    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await agent.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
       .send({ likes: -1 })
       .expect(200)
 
-    await api.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-      .send({ likes: -1 })
-      .expect(401)
+    await createSession(1)
+
+    await agent.post(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}/likes`)
+      .send({ likes: 1 })
+      .expect(200)
 
     const finalComment = await Comment.findById(commentResponse.body.id)
     const finalCommentLikes = finalComment.likes.map((like) => like.value)
@@ -520,36 +496,33 @@ describe('question updation', () => {
   })
 
   test('a comment can be edited by the author', async () => {
-    const firstUserResponse = await getUserResponse()
-    const secondUserResponse = await getUserResponse(1)
-
     const newQuestion = {
       title: 'first question',
       content: 'first question added for the sake of testing',
       tags: ['testing', 'hello_world'],
     }
 
-    const question = await api.post('/api/questions')
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-      .send(newQuestion)
-      .expect(201)
-
     const comment = {
       content: 'new comment',
     }
 
-    const commentResponse = await api.post(`/api/questions/${question.body.id}/comments`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await createSession()
+
+    const question = await agent.post('/api/questions')
+      .send(newQuestion)
+      .expect(201)
+
+    const commentResponse = await agent.post(`/api/questions/${question.body.id}/comments`)
       .send(comment)
       .expect(200)
 
-    await api.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
-      .set('Authorization', `bearer ${firstUserResponse.body.token}`)
+    await agent.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .send({ content: 'comment is edited' })
       .expect(200)
 
-    await api.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
-      .set('Authorization', `bearer ${secondUserResponse.body.token}`)
+    await createSession(1)
+
+    await agent.put(`/api/questions/${question.body.id}/comments/${commentResponse.body.id}`)
       .send({ content: 'comment is edited' })
       .expect(401)
 
