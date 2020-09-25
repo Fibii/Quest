@@ -4,6 +4,7 @@ const app = require('../app')
 const User = require('../models/user')
 
 const api = superTest(app)
+const agent = superTest.agent(app)
 
 beforeEach(async () => {
   await User.deleteMany({})
@@ -60,5 +61,29 @@ describe('auth', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body.error).toBe('invalid password')
+  })
+
+  test('user cookie can be verified', async () => {
+    const initialUsers = testHelper.getInitialUsers()
+    const user = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password,
+    }
+
+    await agent.post('/api/users')
+      .send(initialUsers[0])
+
+    const response = await agent
+      .post('/api/login')
+      .send(user)
+
+    const cookie = response
+      .headers['set-cookie'][0]
+      .split(',')
+      .map((item) => item.split(';')[0])
+    agent.jar.setCookie(cookie[0])
+
+    await agent.get('/api/login/isValidToken')
+      .expect(200)
   })
 })
