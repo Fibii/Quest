@@ -78,7 +78,7 @@ router.put('/:id', async (request, response, next) => {
     const { body } = request
     const { id } = request.params
 
-    const user = await userService.isAuthorized(request.token, id, body.password)
+    const user = await userService.isAuthorized(request.cookies.token, id, body.password)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -115,7 +115,7 @@ router.delete('/:id', async (request, response, next) => {
     const { body } = request
     const { id } = request.params
 
-    const user = await userService.isAuthorized(request.token, id, body.password)
+    const user = await userService.isAuthorized(request.cookies.token, id, body.password)
     if (user.error) {
       return response.status(401).json(user.error)
     }

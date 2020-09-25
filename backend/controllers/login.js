@@ -2,16 +2,24 @@ const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const userService = require('../utils/user')
+
+router.get('/isValidToken', async (request, response, next) => {
+  const user = await userService.isAuthenticated(request.token)
+  if (user) {
+    return response.status(200)
+  }
+  return response.status(403)
+})
 
 router.post('/', async (request, response, next) => {
   try {
     const { username } = request.body
     const { password } = request.body
-
     const user = await User.findOne({ username })
 
     if (!user || !password) {
-      return response.json({
+      return response.status(404).json({
         error: "user doesn't exist",
       })
     }
@@ -32,11 +40,10 @@ router.post('/', async (request, response, next) => {
       }
 
       const token = jwt.sign(userTokenObj, process.env.SECRET)
-
+      response.cookie('token', token, { httpOnly: true, secure: false })
       return response.status(200)
         .json({
           username,
-          token,
           id: user._id,
         })
     }

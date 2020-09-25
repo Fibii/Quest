@@ -14,7 +14,7 @@ router.post('/', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -57,7 +57,7 @@ router.post('/:commentId/likes', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -116,7 +116,7 @@ router.put('/:commentId', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -153,7 +153,7 @@ router.delete('/:commentId', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid comment id or question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }

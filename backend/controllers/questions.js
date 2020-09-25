@@ -65,8 +65,7 @@ router.get('/:id', async (request, response, next) => {
 router.post('/', async (request, response, next) => {
   try {
     const { body } = request
-
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -112,7 +111,7 @@ router.put('/:id', async (request, response, next) => {
         .json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -153,7 +152,7 @@ router.post('/:id/title-content', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -190,7 +189,7 @@ router.post('/:id/tags', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -226,7 +225,7 @@ router.post('/:id/solved', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -266,7 +265,7 @@ router.post('/:id/likes', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }
@@ -326,7 +325,7 @@ router.delete('/:id', async (request, response, next) => {
       return response.status(401).json({ error: 'invalid question id' })
     }
 
-    const user = await userService.isAuthenticated(request.token)
+    const user = await userService.isAuthenticated(request.cookies.token)
     if (user.error) {
       return response.status(401).json(user.error)
     }

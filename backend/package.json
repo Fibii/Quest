@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node index.js",
+    "start": "NODE_ENV=ENV node index.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
     "bcrypt": "^3.0.7",
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
@@ -19,6 +19,7 @@
     "mongoose": "^5.7.13",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "~1.9.1",
+    "superagent": "^6.1.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {

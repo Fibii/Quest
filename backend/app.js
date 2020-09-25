@@ -5,6 +5,7 @@ const fs = require('fs')
 const logger = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const middleware = require('./utils/middleware')
 
 const indexRouter = require('./controllers/index')
@@ -17,7 +18,7 @@ app.use(logger('dev'))
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(logger('combined', { stream: accessLogStream }))
 
-const { DB } = process.env
+const { DB, FRONTEND } = process.env
 
 if (!DB) {
   console.log('no database uri was found in .env, please provide one')
@@ -53,8 +54,11 @@ mongoose.connect(DB, mongooseOptions)
     process.exit(1)
   })
 
-
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({
+  origin: FRONTEND,
+  credentials: true,
+}))
 app.use(express.json())
 app.use(middleware.tokenExtractor)
 app.use(express.urlencoded({ extended: false }))
