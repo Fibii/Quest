@@ -5,11 +5,15 @@ const User = require('../models/user')
 const userService = require('../utils/user')
 
 router.get('/isValidToken', async (request, response, next) => {
-  const user = await userService.isAuthenticated(request.token)
-  if (user) {
-    return response.status(200)
+  try {
+    const user = await userService.isAuthenticated(request.cookies.token)
+    if (user.id) {
+      return response.status(200).end()
+    }
+    return response.status(403).end()
+  } catch (error) {
+    return next(error)
   }
-  return response.status(403)
 })
 
 router.post('/', async (request, response, next) => {
