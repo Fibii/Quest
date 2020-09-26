@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Route, Switch, useLocation, useHistory,
+  Route, Switch, useHistory,
 } from 'react-router-dom'
 import grey from '@material-ui/core/colors/grey'
 import { makeStyles } from '@material-ui/core/styles'
@@ -14,13 +14,11 @@ import SignupForm from '../SignupForm/SignupForm'
 import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
 import Question from '../Question/Question'
 import Questions from '../Questions/Questions'
-
-import questionService from '../../services/questions'
 import userService from '../../services/users'
 import { setErrorMessage } from '../../actions/questionActions'
 import Profile from '../Profile/Profile'
-import Notification from '../Notification/Notification'
 import Footer from '../Footer/Footer'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -38,34 +36,28 @@ const useStyles = makeStyles(() => ({
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
-  const location = useLocation()
+  const [isLoading, setIsLoading] = useState(true)
   const history = useHistory()
   const classes = useStyles()
 
   useEffect(() => {
-    try {
-      const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
-      if (loggedUser) {
-        setUser(loggedUser)
-        questionService.setToken(loggedUser.token)
-        userService.setToken(loggedUser.token)
+    const before = async () => {
+      try {
+        const user = await userService.getSavedUser()
+        if (user !== null) {
+          setUser(user)
+        }
+      } catch (error) {
+        setErrorMessage('error while loading the saved in user')
       }
-    } catch (error) {
-      setErrorMessage('error while loading the saved in user')
+      setIsLoading(false)
     }
+
+    before()
   }, [])
 
-  if (user) {
-    if (location.pathname === '/login' || location.pathname === '/register') {
-      setTimeout(() => history.push('/'), 5000)
-      return (
-        <Notification
-          title="Already logged in"
-          message="You're already logged in, you'll be redirected to the homepage in 5 seconds"
-          severity="info"
-        />
-      )
-    }
+  if (isLoading) {
+    return <LoadingScreen />
   }
 
   return (
