@@ -6,11 +6,14 @@ const userService = require('../utils/user')
 
 router.get('/isValidToken', async (request, response, next) => {
   try {
+    if (!request.cookies.token) {
+      return response.status(401).end()
+    }
     const user = await userService.isAuthenticated(request.cookies.token)
     if (user.id) {
       return response.status(200).end()
     }
-    return response.status(403).end()
+    return response.status(401).end()
   } catch (error) {
     return next(error)
   }
@@ -20,6 +23,7 @@ router.post('/', async (request, response, next) => {
   try {
     const { username } = request.body
     const { password } = request.body
+    const { rememberMe } = request.body
     const user = await User.findOne({ username })
 
     if (!user || !password) {
@@ -44,7 +48,12 @@ router.post('/', async (request, response, next) => {
       }
 
       const token = jwt.sign(userTokenObj, process.env.SECRET)
-      response.cookie('token', token, { httpOnly: true, secure: false })
+      const today = new Date()
+      const tomorrow = new Date(today)
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      const expires = rememberMe ? tomorrow : false
+      console.log('remember me: ', rememberMe)
+      response.cookie('token', token, { httpOnly: true, secure: false, expires })
       return response.status(200)
         .json({
           username,
