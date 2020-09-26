@@ -36,8 +36,20 @@ const getUser = async (userId) => {
   return false
 }
 
+const isValidToken = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/login/isValidToken`, config)
+    console.log('response', response)
+    return response.status === 200
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
+
 export default {
   login,
   createUser,
   getUser,
+  isValidToken,
 }
