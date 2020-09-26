@@ -40,7 +40,7 @@ const addComment = async (id, comment) => {
 const deleteComment = async (questionId, commentId) => {
   try {
     const response = await axios
-      .delete(`${baseUrl}/questions/${questionId}/delete-comment/${commentId}`, config)
+      .delete(`${baseUrl}/questions/${questionId}/comments/${commentId}`, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -50,7 +50,7 @@ const deleteComment = async (questionId, commentId) => {
 
 const upvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: 1 }, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: 1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -60,7 +60,7 @@ const upvoteComment = async (questionId, commentId) => {
 
 const downvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: -1 }, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: -1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
