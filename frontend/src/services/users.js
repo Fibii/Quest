@@ -36,20 +36,33 @@ const getUser = async (userId) => {
   return false
 }
 
-const isValidToken = async () => {
-  try {
+/**
+ * check if there's a logged in user saved in localStorage
+ * @return true if there's a user saved in localStorage with a valid token cookie,
+ * false otherwise
+ * */
+const getSavedUser = async () => {
+  const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
+  const rememberMe = JSON.parse(window.localStorage.getItem('qa_userRememberMe'))
+  console.log('lu', loggedUser)
+  console.log('rm', rememberMe)
+  if (loggedUser != null || rememberMe != null) {
+    console.log('we here chief')
     const response = await axios.get(`${baseUrl}/login/isValidToken`, config)
-    console.log('response', response)
-    return response.status === 200
-  } catch (error) {
-    console.log(error)
-    return false
+    const isValidToken = response.status === 200
+    console.log('vt', isValidToken)
+    if (isValidToken) {
+      return loggedUser
+    }
+    window.localStorage.removeItem('qa_userLoggedIn')
+    window.localStorage.removeItem('qa_userRememberMe')
   }
+  return null
 }
 
 export default {
   login,
   createUser,
   getUser,
-  isValidToken,
+  getSavedUser,
 }
