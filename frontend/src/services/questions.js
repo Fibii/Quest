@@ -1,14 +1,9 @@
 import axios from 'axios'
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL
-let token = null
-let config = null
 
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`
-  config = {
-    headers: { Authorization: token },
-  }
+const config = {
+  withCredentials: true,
 }
 
 const getAll = async () => {
@@ -34,7 +29,7 @@ const get = async (id) => {
 const addComment = async (id, comment) => {
   try {
     const response = await axios
-      .post(`${baseUrl}/questions/${id}/new-comment`, comment, config)
+      .post(`${baseUrl}/questions/${id}/comments`, comment, config)
     return response
   } catch (error) {
     console.log(error)
@@ -134,7 +129,6 @@ const updateQuestion = async (id, updatedQuestion) => {
 
 export default {
   getAll,
-  setToken,
   get,
   addComment,
   addQuestion,
