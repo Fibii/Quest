@@ -36,7 +36,6 @@ const QuestionIconsView = ({
     }
   }
 
-
   const handleQuestionUpdate = async () => {
     const tags = state.editedQuestionTags.split(' ')
       .map((tag) => tag.replace(/^\s+|\s+$/gm, ''))
@@ -97,7 +96,7 @@ const QuestionIconsView = ({
           }}
         >
           <CopyToClipboard text={window.location.href}>
-            <IconButton size="small">
+            <IconButton size="small" style={{ width: 40 }}>
               <ShareIcon />
             </IconButton>
           </CopyToClipboard>
@@ -105,6 +104,5 @@ const QuestionIconsView = ({
     </Grid>
   )
 }
-
 
 export default QuestionIconsView
