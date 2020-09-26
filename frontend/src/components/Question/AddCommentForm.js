@@ -4,8 +4,7 @@ import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import UserContext from '../UserContext/UserContext'
-import questionActions from '../../actions/questionAction'
-import { setErrorMessage, setQuestion } from '../../actions/questionActions'
+import { setCommentContent, setErrorMessage, setQuestion } from '../../actions/questionActions'
 import questionService from '../../services/questions'
 
 const AddCommentForm = ({ state, dispatch }) => {
@@ -15,11 +14,10 @@ const AddCommentForm = ({ state, dispatch }) => {
   /**
    * wrappers for useState setter functions
    * */
-  const setCommentContent = (commentContent) => {
-    dispatch({
-      type: questionActions.SET_COMMENT_CONTENT,
-      commentContent,
-    })
+  const handleCommentChange = (event) => {
+    event.preventDefault()
+    const { value } = event.target
+    dispatch(setCommentContent(value))
   }
 
   const handleCommentPost = async () => {
@@ -68,7 +66,7 @@ const AddCommentForm = ({ state, dispatch }) => {
             fullWidth
             variant="outlined"
             value={commentContent}
-            onChange={(event) => setCommentContent(event.target.value)}
+            onChange={(event) => handleCommentChange(event)}
           />
           <Grid
             container
