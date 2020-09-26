@@ -1,16 +1,14 @@
 import axios from 'axios'
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL
-// eslint-disable-next-line no-unused-vars
-let token = null
 
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`
+const config = {
+  withCredentials: true,
 }
 
 const login = async (credentials) => {
   try {
-    const response = await axios.post(`${baseUrl}/login/`, credentials)
+    const response = await axios.post(`${baseUrl}/login/`, credentials, config)
     return response.data
   } catch (error) {
     console.log(error)
@@ -20,7 +18,7 @@ const login = async (credentials) => {
 
 const createUser = async (user) => {
   try {
-    const response = await axios.post(`${baseUrl}/users`, user)
+    const response = await axios.post(`${baseUrl}/users`, user, config)
     return response.data
   } catch (error) {
     console.log(error)
@@ -42,5 +40,4 @@ export default {
   login,
   createUser,
   getUser,
-  setToken,
 }
