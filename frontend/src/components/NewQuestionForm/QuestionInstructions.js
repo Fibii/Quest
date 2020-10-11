@@ -6,6 +6,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
+const { useState } = require('react')
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -21,11 +23,23 @@ const useStyles = makeStyles((theme) => ({
 
 const QuestionInstructions = () => {
   const classes = useStyles()
+  const [firstExpanded, setFirstExpanded] = useState(false)
+  const [secondExpanded, setSecondExpanded] = useState(false)
+
+  const firstOnChange = (event, expanded) => {
+    setFirstExpanded(expanded)
+    setSecondExpanded(false)
+  }
+
+  const secondOnChange = (event, expanded) => {
+    setSecondExpanded(expanded)
+    setFirstExpanded(false)
+  }
 
   return (
     <div className={classes.root}>
       <Typography variant="h6" align="center" className={classes.title}>Tips on getting good answers quickly</Typography>
-      <Accordion>
+      <Accordion expanded={firstExpanded} onChange={firstOnChange}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -44,13 +58,13 @@ const QuestionInstructions = () => {
           </ul>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion expanded={secondExpanded} onChange={secondOnChange}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography className={classes.heading}>Describe what you've tried</Typography>
+          <Typography className={classes.heading}>Describe what you&apos;ve tried</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant="body2">
