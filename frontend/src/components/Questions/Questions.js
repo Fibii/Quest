@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
-import grey from '@material-ui/core/colors/grey'
 import Notification from '../Notification/Notification'
 import questionService from '../../services/questions'
 import QPaper from '../QPaper/QPaper'
@@ -10,8 +9,8 @@ import NoQuestions from '../NoQuestions/NoQuestions'
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: '100%',
-    backgroundColor: grey[100],
+    marginTop: 32,
+    marginBottom: 16,
   },
 }))
 
@@ -89,6 +88,5 @@ const Questions = ({ user }) => {
     </div>
   )
 }
-
 
 export default Questions
