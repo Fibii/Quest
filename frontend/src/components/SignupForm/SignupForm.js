@@ -1,30 +1,20 @@
-import React, { useState } from 'react'
-import Avatar from '@material-ui/core/Avatar'
+import React, { useContext, useState } from 'react'
 import Button from '@material-ui/core/Button'
-import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import { useHistory, Link } from 'react-router-dom'
-import Notification from '../Notification/Notification'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { useHistory } from 'react-router-dom'
+import { lightBlue } from '@material-ui/core/colors'
 import userService from '../../services/users'
 
 import validator from '../../services/validator'
+import SignContainer from '../Containers/SignContainer/SignContainer'
+import loginImg from '../../resources/images/login.png'
+import QLink from '../QLink/QLink'
+import UserContext from '../UserContext/UserContext'
+import Notification from '../Notification/Notification'
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -33,6 +23,18 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }))
+
+const SignUpButton = withStyles({
+  root: {
+    backgroundColor: lightBlue[700],
+    border: '1px solid',
+    boxShadow: 'none',
+    '&:hover': {
+      backgroundColor: lightBlue[800],
+      boxShadow: 'none',
+    },
+  },
+})(Button)
 
 const SignupForm = () => {
   const classes = useStyles()
@@ -49,8 +51,19 @@ const SignupForm = () => {
   const [dateOfBirthHelperText, setDateOfBirthHelperText] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
+  const [user] = useContext(UserContext)
   const history = useHistory()
 
+  if (user) {
+    setTimeout(() => history.push('/'), 5000)
+    return (
+      <Notification
+        title="Already logged in"
+        message="You're already logged in, you'll be redirected to the homepage in 5 seconds"
+        severity="info"
+      />
+    )
+  }
 
   const fullNameOnChange = (event) => {
     const fullName = event.target.value
@@ -133,154 +146,117 @@ const SignupForm = () => {
   }
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        minHeight: '100vh',
-      }}
-      data-testid="signup-container"
-    >
-      <Notification title="Error" message={errorMessage} severity="error" />
-      <Container
-        component="main"
-        maxWidth="xs"
-        style={{
-          paddingBottom: '3 rem',
-        }}
-      >
-        <CssBaseline />
-        <div className={classes.paper}>
+    <SignContainer errorMessage={errorMessage} image={loginImg} title="Sign up">
+      <form className={classes.form} noValidate onSubmit={formOnSubmitHandler}>
+        <TextField
+          error={fullNameHelperText.length > 0}
+          margin="dense"
+          helperText={fullNameHelperText}
+          autoComplete="fname"
+          name="fullName"
+          variant="outlined"
+          required
+          fullWidth
+          id="fullName"
+          label="Full Name"
+          autoFocus
+          onChange={fullNameOnChange}
+          inputProps={{
+            'data-testid': 'fullname-input',
+          }}
+        />
 
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+        <TextField
+          error={usernameHelperText.length > 0}
+          margin="dense"
+          helperText={usernameHelperText}
+          onChange={userNameOnChange}
+          variant="outlined"
+          required
+          fullWidth
+          id="username"
+          label="Username"
+          name="username"
+          autoComplete="username"
+          inputProps={{
+            'data-testid': 'username-input',
+          }}
+        />
 
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+        <TextField
+          error={emailHelperText.length > 0}
+          margin="dense"
+          helperText={emailHelperText}
+          onChange={emailOnChange}
+          variant="outlined"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          inputProps={{
+            'data-testid': 'email-input',
+          }}
+        />
 
-          <form className={classes.form} noValidate onSubmit={formOnSubmitHandler}>
+        <TextField
+          error={passwordHelperText.length > 0}
+          margin="dense"
+          helperText={passwordHelperText}
+          onChange={passwordOnChange}
+          variant="outlined"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          inputProps={{
+            'data-testid': 'password-input',
+          }}
+        />
 
-            <Grid container spacing={2}>
+        <TextField
+          error={dateOfBirthHelperText.length > 0}
+          margin="dense"
+          helperText={dateOfBirthHelperText}
+          onChange={dateOfBirthOnChange}
+          variant="outlined"
+          id="dateOfBirth"
+          label="Birthday"
+          type="date"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            'data-testid': 'dateOfBirth-input',
+          }}
+        />
 
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  error={fullNameHelperText.length > 0}
-                  helperText={fullNameHelperText}
-                  autoComplete="fname"
-                  name="fullName"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="fullName"
-                  label="Full Name"
-                  autoFocus
-                  onChange={fullNameOnChange}
-                  inputProps={{
-                    'data-testid': 'fullname-input',
-                  }}
-                />
-              </Grid>
+        <SignUpButton
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          data-testid="submit-button"
+        >
+          Sign Up
+        </SignUpButton>
 
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  error={usernameHelperText.length > 0}
-                  helperText={usernameHelperText}
-                  onChange={userNameOnChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                  inputProps={{
-                    'data-testid': 'username-input',
-                  }}
-                />
-              </Grid>
+        <Grid container justify="flex-end">
+          <Grid item>
+            <QLink to="/login" testId="login-link">
+              Already have an account? Sign in
+            </QLink>
+          </Grid>
+        </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  error={emailHelperText.length > 0}
-                  helperText={emailHelperText}
-                  onChange={emailOnChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  inputProps={{
-                    'data-testid': 'email-input',
-                  }}
-                />
-              </Grid>
+      </form>
 
-              <Grid item xs={12}>
-                <TextField
-                  error={passwordHelperText.length > 0}
-                  helperText={passwordHelperText}
-                  onChange={passwordOnChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  inputProps={{
-                    'data-testid': 'password-input',
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  error={dateOfBirthHelperText.length > 0}
-                  helperText={dateOfBirthHelperText}
-                  onChange={dateOfBirthOnChange}
-                  variant="outlined"
-                  id="dateOfBirth"
-                  label="Birthday"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{
-                    'data-testid': 'dateOfBirth-input',
-                  }}
-                />
-              </Grid>
-
-            </Grid>
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              data-testid="submit-button"
-            >
-              Sign Up
-            </Button>
-
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link to="/login" data-testid="login-link">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
-
-          </form>
-        </div>
-      </Container>
-    </div>
-
+    </SignContainer>
   )
 }
 export default SignupForm
