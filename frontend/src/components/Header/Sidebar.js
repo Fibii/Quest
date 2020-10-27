@@ -9,6 +9,7 @@ import List from '@material-ui/core/List'
 import { Link } from 'react-router-dom'
 import ListItem from '@material-ui/core/ListItem'
 import HomeIcon from '@material-ui/icons/Home'
+import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import ListItemText from '@material-ui/core/ListItemText'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Sidebar = ({ state, dispatch }) => {
-  const [, setUser] = useContext(UserContext)
+  const [user, setUser] = useContext(UserContext)
   const { drawerIsOpen } = state
   const classes = useStyles()
   const theme = useTheme()
@@ -100,6 +101,14 @@ const Sidebar = ({ state, dispatch }) => {
               <ListItem button key="newQuestion">
                 <AddBoxIcon className={classes.icons} />
                 <ListItemText primary="New Question" />
+              </ListItem>
+            </Paper>
+          </Link>
+          <Link to={`/user/${user.id}`} className={classes.link} data-testid="newQuestion-button">
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="myProfile">
+                <AccountBoxIcon className={classes.icons} />
+                <ListItemText primary="My Profile" />
               </ListItem>
             </Paper>
           </Link>
