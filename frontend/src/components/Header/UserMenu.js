@@ -26,6 +26,7 @@ const UserMenu = ({ state, dispatch }) => {
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('qa_userLoggedIn')
+    window.sessionStorage.removeItem('qa_user')
   }
 
   const isMenuOpen = Boolean(anchorEl)
