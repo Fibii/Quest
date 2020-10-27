@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Route, Switch, useHistory,
+  Route, Switch,
 } from 'react-router-dom'
-import grey from '@material-ui/core/colors/grey'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import UserContext from '../UserContext/UserContext'
@@ -19,15 +18,15 @@ import { setErrorMessage } from '../../actions/questionActions'
 import Profile from '../Profile/Profile'
 import Footer from '../Footer/Footer'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import NoPage from '../NoPage/NoPage'
 
 const useStyles = makeStyles(() => ({
   container: {
-    backgroundColor: grey[100],
     minHeight: '100%',
+    height: '100%',
   },
   content: {
     flex: '1 0 auto',
-    marginTop: 32,
   },
   footer: {
     flexShrink: 0,
@@ -37,7 +36,6 @@ const useStyles = makeStyles(() => ({
 const MainApp = () => {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const history = useHistory()
   const classes = useStyles()
 
   useEffect(() => {
@@ -61,7 +59,7 @@ const MainApp = () => {
   }
 
   return (
-    <Grid container direction="column" className={classes.container}>
+    <Grid container direction="column" className={classes.container} wrap="nowrap">
       <UserContext.Provider value={[user, setUser]}>
         <Header />
         <Grid className={classes.content}>
@@ -83,6 +81,7 @@ const MainApp = () => {
             <Route path="/question/new" exact render={() => <NewQuestionForm />} />
             <Route path="/question/:id" exact render={() => <Question />} />
             <Route path="/user/:id" exact render={() => <Profile />} />
+            <Route component={NoPage} />
           </Switch>
         </Grid>
       </UserContext.Provider>
