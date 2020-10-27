@@ -14,8 +14,8 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import React, { useContext } from 'react'
 import { grey, lightBlue } from '@material-ui/core/colors'
+import Paper from '@material-ui/core/Paper'
 import UserContext from '../UserContext/UserContext'
-
 
 const drawerWidth = 240
 
@@ -44,6 +44,11 @@ const useStyles = makeStyles((theme) => ({
   icons: {
     color: lightBlue[800],
     marginRight: 16,
+  },
+  itemPaper: {
+    marginTop: 4,
+    marginLeft: 4,
+    marginRight: 4,
   },
 
 }))
@@ -83,21 +88,27 @@ const Sidebar = ({ state, dispatch }) => {
         <Divider />
         <List>
           <Link to="/" className={classes.link}>
-            <ListItem button key="home" data-testid="home-button">
-              <HomeIcon className={classes.icons} />
-              <ListItemText primary="Home" />
-            </ListItem>
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="home" data-testid="home-button">
+                <HomeIcon className={classes.icons} />
+                <ListItemText primary="Home" />
+              </ListItem>
+            </Paper>
           </Link>
           <Link to="/question/new" className={classes.link} data-testid="newQuestion-button">
-            <ListItem button key="newQuestion">
-              <AddBoxIcon className={classes.icons} />
-              <ListItemText primary="New Question" />
-            </ListItem>
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="newQuestion">
+                <AddBoxIcon className={classes.icons} />
+                <ListItemText primary="New Question" />
+              </ListItem>
+            </Paper>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutDrawer-button">
-            <ExitToAppIcon className={classes.icons} />
-            <ListItemText primary="Logout" />
-          </ListItem>
+          <Paper onClick={() => handleLogout()} className={classes.itemPaper}>
+            <ListItem button key="logout" data-testid="logoutDrawer-button">
+              <ExitToAppIcon className={classes.icons} />
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </Paper>
         </List>
       </Drawer>
     </>
