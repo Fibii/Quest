@@ -77,7 +77,7 @@ const AddCommentForm = ({ state, dispatch }) => {
           >
             <Button
               variant="outlined"
-              onClick={() => setCommentContent('')}
+              onClick={() => dispatch(setCommentContent(''))}
             >
               clear
             </Button>
