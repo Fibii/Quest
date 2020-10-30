@@ -71,6 +71,7 @@ const SignIn = () => {
         title="Already logged in"
         message="You're already logged in, you'll be redirected to the homepage in 5 seconds"
         severity="info"
+        style={{ marginTop: 32 }}
       />
     )
   }
