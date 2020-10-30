@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { lightBlue } from '@material-ui/core/colors'
 import userService from '../../services/users'
-import questionService from '../../services/questions'
 import SignContainer from '../Containers/SignContainer/SignContainer'
 import loginImg from '../../resources/images/login.png'
 import QLink from '../QLink/QLink'
@@ -65,7 +64,7 @@ const SignIn = () => {
 
   const history = useHistory()
 
-  if (user && user.id) {
+  if (user && user.id && history.action === 'POP') {
     setTimeout(() => history.push('/'), 5000)
     return (
       <Notification
