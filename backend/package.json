@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
