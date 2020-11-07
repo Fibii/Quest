@@ -2,92 +2,186 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import grey from '@material-ui/core/colors/grey'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { lightBlue } from '@material-ui/core/colors'
+import Button from '@material-ui/core/Button'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import questions from '../../resources/images/questions.png'
+import VHContainer from '../Containers/VHContainer/VHContainer'
+import HVContainer from '../Containers/HVContainer/HVContainer'
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
-  buttons: {
-    backgroundColor: grey[600],
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
-  },
-  card: {
-    height: '100%',
+  typographyContainer: {
+    width: '50%',
     display: 'flex',
-    flexDirection: 'column',
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      alignItems: 'flex-end',
+    },
   },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
+  firstHeader: {
+    fontFamily: 'Volkhov',
+    fontSize: '42px',
+    [theme.breakpoints.down('lg')]: {
+      fontSize: '32px',
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: '28px',
+    },
   },
-  cardContent: {
-    flexGrow: 1,
+  secondHeader: {
+    fontFamily: 'Volkhov',
+    fontSize: '48px',
+    [theme.breakpoints.down('lg')]: {
+      fontSize: '38px',
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: '34px',
+    },
   },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
+  body: {
+    fontFamily: 'Alegreya Sans',
+    fontSize: '32px',
+    [theme.breakpoints.down('lg')]: {
+      fontSize: '22px',
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: '18px',
+    },
+  },
+  imageContainer: {
+    width: '60%',
+    display: 'flex',
+    alignItems: 'flex-end',
+    [theme.breakpoints.down('md')]: {
+      alignItems: 'center',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginTop: 8,
+      width: '100%',
+    },
+  },
+  buttonsContainer: {
+    marginTop: 12,
+    [theme.breakpoints.down('md')]: {
+      justifyContent: 'flex-end',
+    },
   },
 }))
 
-const Welcome = () => {
-  const classes = useStyles()
+const SignInButton = withStyles((theme) => ({
+  root: {
+    backgroundColor: '#ffffff',
+    border: '1px solid',
+    boxShadow: 'none',
+    marginRight: 12,
+    width: 140,
+    height: 50,
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#ebebeb',
+      boxShadow: 'none',
+    },
+    [theme.breakpoints.down('md')]: {
+      width: 100,
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: 80,
+      height: 40,
+      fontSize: '12px',
+    },
+  },
+}))(Button)
+
+const SignUpButton = withStyles((theme) => ({
+  root: {
+    backgroundColor: '#f9c138',
+    border: '1px solid',
+    boxShadow: 'none',
+    width: 140,
+    height: 50,
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#d69f37',
+      boxShadow: 'none',
+    },
+    [theme.breakpoints.down('md')]: {
+      width: 100,
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: 80,
+      height: 40,
+      fontSize: '12px',
+    },
+  },
+}))(Button)
+
+const DesktopView = () => {
   const history = useHistory()
+  const classes = useStyles()
   return (
-    <div className={classes.heroContent} data-testid="welcome-container">
-      <Container maxWidth="sm">
-        <Typography
-          component="h1"
-          variant="h2"
-          align="center"
-          gutterBottom
-          style={{
-            color: grey[800],
-          }}
-        >
-          Welcome to QA
-        </Typography>
-        <Typography variant="h5" align="center" color="textSecondary" paragraph>
-          Question Answer webapp, made using react for the frontend and expressjs for the backend,
-          alongside mongodb as a database choice, or we can just say made using mern stack :)
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary">
-          * you must be logged in to see how the app works, either *
-        </Typography>
-        <div className={classes.heroButtons}>
-          <Grid container spacing={2} justify="center">
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.buttons}
-                onClick={() => history.push('/register')}
-              >
-                SignUp
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="outlined" color="primary" onClick={() => history.push('/login')}>
-                Login
-              </Button>
+    (
+      <Grid container style={{ width: '70%', marginTop: '1rem' }}>
+        <Grid container direction="row" justify="center" wrap="nowrap">
+          <Grid item className={classes.typographyContainer}>
+            <Grid container direction="column" justify="flex-end">
+              <Typography className={classes.firstHeader}>Ask Question, Get</Typography>
+              <Typography className={classes.secondHeader}>Answers</Typography>
+              <Typography className={classes.body}>
+                Quest is a question/answer webapp where users ask questions,
+                and other users answer those questions
+              </Typography>
+              <Grid container direction="row" style={{ marginTop: 12 }}>
+                <SignInButton className={classes.button} onClick={() => history.push('/login')}>Sign In</SignInButton>
+                <SignUpButton className={classes.button} onClick={() => history.push('/register')}>Sign Up</SignUpButton>
+              </Grid>
             </Grid>
           </Grid>
-        </div>
-      </Container>
-    </div>
+          <Grid item className={classes.imageContainer}>
+            <img src={questions} alt="Quest logo" style={{ width: '100%' }} />
+          </Grid>
+        </Grid>
+      </Grid>
+    )
+  )
+}
+const Welcome = () => {
+  const history = useHistory()
+  const classes = useStyles()
+  const isMobile = useMediaQuery('(max-width:700px)')
+
+  if (isMobile) {
+    return (
+      <HVContainer outerStyle={{ background: lightBlue[600] }}>
+        <VHContainer>
+          <Grid item style={{ width: '80%' }}>
+            <Typography className={classes.firstHeader}>Ask Question, Get</Typography>
+            <Typography className={classes.secondHeader}>Answers</Typography>
+            <Typography className={classes.body}>
+              Quest is a question/answer webapp where users ask questions,
+              and other users answer those questions
+            </Typography>
+            <Grid item className={classes.imageContainer}>
+              <img src={questions} alt="Quest logo" style={{ width: '100%' }} />
+            </Grid>
+            <Grid container direction="row" className={classes.buttonsContainer}>
+              <SignInButton className={classes.button} onClick={() => history.push('/login')}>Sign In</SignInButton>
+              <SignUpButton className={classes.button} onClick={() => history.push('/register')}>Sign Up</SignUpButton>
+            </Grid>
+          </Grid>
+        </VHContainer>
+      </HVContainer>
+    )
+  }
+
+  return (
+    <VHContainer outerStyle={{ background: lightBlue[600] }}>
+      <DesktopView />
+    </VHContainer>
   )
 }
 
