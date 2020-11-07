@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@300&family=Volkhov&display=swap');
+
 html {
     min-height: 100%;
     background: #f4f6ff;
@@ -15,4 +17,9 @@ html, body {
 
 #root {
     height: 100%;
+}
+
+
+.landing-page-font {
+    font-family: 'Libre Baskerville', serif;
 }

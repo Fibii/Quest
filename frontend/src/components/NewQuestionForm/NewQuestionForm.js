@@ -324,7 +324,7 @@ const NewQuestionForm = () => {
 
   if (isMobile) {
     return (
-      <VHContainer style={{ marginTop: 16, marginBottom: 16, height: 'inherit' }} dataTestId="questionForm-container">
+      <VHContainer outerStyle={{ marginTop: 16, marginBottom: 16, height: 'inherit' }}>
         <Notification
           title="Error"
           message={errorMessage}
@@ -347,7 +347,7 @@ const NewQuestionForm = () => {
   }
 
   return (
-    <VHContainer dataTestId="questionForm-container">
+    <VHContainer>
       <Notification
         title="Error"
         message={errorMessage}
