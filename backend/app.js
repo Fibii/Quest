@@ -8,7 +8,6 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const middleware = require('./utils/middleware')
 
-const indexRouter = require('./controllers/index')
 const usersRouter = require('./controllers/users')
 const questionRouter = require('./controllers/questions')
 const loginRouter = require('./controllers/login')
@@ -62,12 +61,17 @@ app.use(cors({
 app.use(express.json())
 app.use(middleware.tokenExtractor)
 app.use(express.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '../frontend/build')))
 
-app.use('/', indexRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/questions', questionRouter)
 app.use('/api/login', loginRouter)
+
+if (process.env.NODE_ENV === 'PROD') {
+  app.get('*', (request, response) => {
+    response.sendFile(path.resolve(__dirname, '../frontend', 'build', 'index.html'))
+  })
+}
 
 app.use(middleware.errorLogger)
 app.use(middleware.unknownEndpoint)
