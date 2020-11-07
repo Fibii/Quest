@@ -11,9 +11,12 @@ const login = async (credentials) => {
     const response = await axios.post(`${baseUrl}/login/`, credentials, config)
     return response.data
   } catch (error) {
-    console.log(error)
+    console.log(error.response)
+    if (error.response.status === 401 || error.response.status === 404) {
+      return { error: 'invalid username or password' }
+    }
+    return { error: "Couldn't connect to the server, try again later or contact the owner" }
   }
-  return false
 }
 
 const createUser = async (user) => {
@@ -21,9 +24,8 @@ const createUser = async (user) => {
     const response = await axios.post(`${baseUrl}/users`, user, config)
     return response.data
   } catch (error) {
-    console.log(error)
+    return { error: "Couldn't connect to the server, try again later or contact the owner" }
   }
-  return false
 }
 
 const getUser = async (userId) => {

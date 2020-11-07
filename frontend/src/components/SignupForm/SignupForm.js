@@ -138,7 +138,8 @@ const SignupForm = () => {
     } else {
       const newUser = await userService.createUser(user)
       if (!newUser || newUser.error) {
-        setErrorMessage('error: couldn\'t connect to the server')
+        setErrorMessage(newUser.error)
+        setTimeout(() => setErrorMessage(''), 5000)
       } else {
         history.push('/login')
       }

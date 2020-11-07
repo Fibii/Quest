@@ -84,7 +84,7 @@ const SignIn = () => {
       rememberMe: rememberUser,
     })
     if (!user || user.error) {
-      setErrorMessage('error, incorrect username or password')
+      setErrorMessage(user.error)
       setTimeout(() => setErrorMessage(''), 5000)
     } else {
       setUser(user)
