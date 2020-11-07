@@ -24,10 +24,17 @@ router.post('/', async (request, response, next) => {
     const { username } = request.body
     const { password } = request.body
     const { rememberMe } = request.body
+
+    if (!username || !password) {
+      return response.status(401).json({
+        error: 'both username and password are required',
+      })
+    }
+
     const user = await User.findOne({ username })
 
-    if (!user || !password) {
-      return response.status(404).json({
+    if (!user) {
+      return response.status(401).json({
         error: "user doesn't exist",
       })
     }
