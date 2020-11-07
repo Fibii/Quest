@@ -10,12 +10,17 @@ const useStyles = makeStyles(() => ({
 
 /**
  * A Grid that centers it's child vertically then horizontally
+ *
+ * @param children: react components
+ * @param outerStyle: css style of the first Grid
+ * @param innerStyle: css style of the second Grid
  * */
-const VHContainer = ({ children, style, dataTestId }) => {
+
+const VHContainer = ({ children, outerStyle, innerStyle }) => {
   const classes = useStyles()
   return (
-    <Grid container direction="column" justify="center" className={classes.container} style={style} data-testid={dataTestId}>
-      <Grid container direction="row" justify="center">
+    <Grid container direction="column" justify="center" className={classes.container} style={outerStyle}>
+      <Grid container direction="row" justify="center" style={innerStyle}>
         {children}
       </Grid>
     </Grid>
