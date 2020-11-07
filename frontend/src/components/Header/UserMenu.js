@@ -3,16 +3,12 @@ import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
 import UserContext from '../UserContext/UserContext'
 
 const useStyles = makeStyles(() => ({
-  link: {
-    textDecoration: 'none',
-    color: 'inherit',
-    outline: 'none',
-  },
   userMenu: {
     display: 'flex',
   },
@@ -22,10 +18,12 @@ const UserMenu = ({ state, dispatch }) => {
   const classes = useStyles()
   const [user, setUser] = useContext(UserContext)
   const { anchorEl } = state
+  const history = useHistory()
 
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('qa_userLoggedIn')
+    window.sessionStorage.removeItem('qa_user')
   }
 
   const isMenuOpen = Boolean(anchorEl)
@@ -39,6 +37,11 @@ const UserMenu = ({ state, dispatch }) => {
 
   const handleLogoutClick = () => {
     handleLogout()
+    handleMenuClose()
+  }
+
+  const handleProfileMenu = () => {
+    history.push(`/user/${user.id}`)
     handleMenuClose()
   }
 
@@ -71,16 +74,16 @@ const UserMenu = ({ state, dispatch }) => {
         open={isMenuOpen}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleMenuClose}>
-          <Link
-            className={classes.link}
-            to={`/user/${user.id}`}
-            data-testid="profile-button"
-          >
+        <MenuItem onClick={handleProfileMenu}>
+          <Typography variant="body1">
             Profile
-          </Link>
+          </Typography>
         </MenuItem>
-        <MenuItem onClick={handleLogoutClick} data-testid="logoutHeader-button">Logout</MenuItem>
+        <MenuItem onClick={handleLogoutClick} data-testid="logoutHeader-button">
+          <Typography variant="body1">
+            Logout
+          </Typography>
+        </MenuItem>
       </Menu>
     </div>
   )

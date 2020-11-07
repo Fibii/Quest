@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Route, Switch, useLocation, useHistory,
+  Route, Switch,
 } from 'react-router-dom'
-import grey from '@material-ui/core/colors/grey'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import UserContext from '../UserContext/UserContext'
@@ -14,22 +13,20 @@ import SignupForm from '../SignupForm/SignupForm'
 import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
 import Question from '../Question/Question'
 import Questions from '../Questions/Questions'
-
-import questionService from '../../services/questions'
 import userService from '../../services/users'
 import { setErrorMessage } from '../../actions/questionActions'
 import Profile from '../Profile/Profile'
-import Notification from '../Notification/Notification'
 import Footer from '../Footer/Footer'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import NoPage from '../NoPage/NoPage'
 
 const useStyles = makeStyles(() => ({
   container: {
-    backgroundColor: grey[100],
     minHeight: '100%',
+    height: '100%',
   },
   content: {
     flex: '1 0 auto',
-    marginTop: 32,
   },
   footer: {
     flexShrink: 0,
@@ -38,38 +35,31 @@ const useStyles = makeStyles(() => ({
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
-  const location = useLocation()
-  const history = useHistory()
+  const [isLoading, setIsLoading] = useState(true)
   const classes = useStyles()
 
   useEffect(() => {
-    try {
-      const loggedUser = JSON.parse(window.localStorage.getItem('qa_userLoggedIn'))
-      if (loggedUser) {
-        setUser(loggedUser)
-        questionService.setToken(loggedUser.token)
-        userService.setToken(loggedUser.token)
+    const before = async () => {
+      try {
+        const user = await userService.getSavedUser()
+        if (user !== null) {
+          setUser(user)
+        }
+      } catch (error) {
+        setErrorMessage('error while loading the saved in user')
       }
-    } catch (error) {
-      setErrorMessage('error while loading the saved in user')
+      setIsLoading(false)
     }
+
+    before()
   }, [])
 
-  if (user) {
-    if (location.pathname === '/login' || location.pathname === '/register') {
-      setTimeout(() => history.push('/'), 5000)
-      return (
-        <Notification
-          title="Already logged in"
-          message="You're already logged in, you'll be redirected to the homepage in 5 seconds"
-          severity="info"
-        />
-      )
-    }
+  if (isLoading) {
+    return <LoadingScreen />
   }
 
   return (
-    <Grid container direction="column" className={classes.container}>
+    <Grid container direction="column" className={classes.container} wrap="nowrap">
       <UserContext.Provider value={[user, setUser]}>
         <Header />
         <Grid className={classes.content}>
@@ -91,6 +81,7 @@ const MainApp = () => {
             <Route path="/question/new" exact render={() => <NewQuestionForm />} />
             <Route path="/question/:id" exact render={() => <Question />} />
             <Route path="/user/:id" exact render={() => <Profile />} />
+            <Route component={NoPage} />
           </Switch>
         </Grid>
       </UserContext.Provider>

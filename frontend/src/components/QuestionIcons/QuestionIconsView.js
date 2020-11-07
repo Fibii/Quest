@@ -1,7 +1,4 @@
 import Grid from '@material-ui/core/Grid'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import IconButton from '@material-ui/core/IconButton'
-import ShareIcon from '@material-ui/icons/Share'
 import React, { useContext } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
@@ -35,7 +32,6 @@ const QuestionIconsView = ({
       dispatch(setErrorMessage('error: couldn\'t delete the question'))
     }
   }
-
 
   const handleQuestionUpdate = async () => {
     const tags = state.editedQuestionTags.split(' ')
@@ -96,15 +92,14 @@ const QuestionIconsView = ({
             flexDirection: isMobile ? 'column' : 'row',
           }}
         >
-          <CopyToClipboard text={window.location.href}>
-            <IconButton size="small">
-              <ShareIcon />
-            </IconButton>
-          </CopyToClipboard>
+          <QuestionIcons
+            path={`question/${question.id}`}
+            question={question}
+            direction="row"
+          />
         </div>)}
     </Grid>
   )
 }
-
 
 export default QuestionIconsView

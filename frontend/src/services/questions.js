@@ -1,14 +1,9 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api'
-let token = null
-let config = null
+const baseUrl = process.env.REACT_APP_BACKEND_URL
 
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`
-  config = {
-    headers: { Authorization: token },
-  }
+const config = {
+  withCredentials: true,
 }
 
 const getAll = async () => {
@@ -34,7 +29,7 @@ const get = async (id) => {
 const addComment = async (id, comment) => {
   try {
     const response = await axios
-      .post(`${baseUrl}/questions/${id}/new-comment`, comment, config)
+      .post(`${baseUrl}/questions/${id}/comments`, comment, config)
     return response
   } catch (error) {
     console.log(error)
@@ -45,7 +40,7 @@ const addComment = async (id, comment) => {
 const deleteComment = async (questionId, commentId) => {
   try {
     const response = await axios
-      .delete(`${baseUrl}/questions/${questionId}/delete-comment/${commentId}`, config)
+      .delete(`${baseUrl}/questions/${questionId}/comments/${commentId}`, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -55,7 +50,7 @@ const deleteComment = async (questionId, commentId) => {
 
 const upvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: 1 }, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: 1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -65,7 +60,7 @@ const upvoteComment = async (questionId, commentId) => {
 
 const downvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/likes/${commentId}`, { likes: -1 }, config)
+    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: -1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -134,7 +129,6 @@ const updateQuestion = async (id, updatedQuestion) => {
 
 export default {
   getAll,
-  setToken,
   get,
   addComment,
   addQuestion,

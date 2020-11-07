@@ -63,7 +63,7 @@ describe('NewQuestionForm tests', () => {
         tags: ['question', 'test', 'tag'],
         title: 'question test title',
       },
-      null) // null here is for config object, check services/questions addQuestion
+      { withCredentials: true })
   })
 
   test('renders NewQuestionForm and validates input', async () => {

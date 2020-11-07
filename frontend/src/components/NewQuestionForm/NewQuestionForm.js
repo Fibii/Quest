@@ -2,52 +2,92 @@ import React, { useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import { useHistory } from 'react-router-dom'
+import Typography from '@material-ui/core/Typography'
+import { lightBlue, pink } from '@material-ui/core/colors'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 import UserContext from '../UserContext/UserContext'
 import Notification from '../Notification/Notification'
 import questionService from '../../services/questions'
 import validator from '../../services/validator'
+import QuestionInstructions from './QuestionInstructions'
+import QuestionInstructionSmall from './QuestionInstructionSmall'
+import VHContainer from '../Containers/VHContainer/VHContainer'
+
+const initialState = {
+  questionTitle: '',
+  questionContent: '',
+  questionTags: '',
+  titleHelperText: '',
+  contentHelperText: '',
+  tagsHelperText: '',
+}
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: 600,
-    overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
-    paddingBottom: 24,
-  },
 
   paper: {
-    minWidth: 340,
-    prefWidth: 600,
-    width: 600,
+    [theme.breakpoints.down('md')]: {
+      width: '80%',
+      marginRight: 0,
+      marginBottom: 32,
+    },
     padding: 16,
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginRight: 20,
+    marginBottom: 16,
   },
-
+  instructionPaper: {
+    width: 300,
+    height: 100,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingBottom: 64,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
   item: {
     marginTop: 8,
   },
 }))
 
+const SubmitButton = withStyles({
+  root: {
+    border: '1px solid',
+    boxShadow: 'none',
+    borderColor: lightBlue[600],
+    color: lightBlue[700],
+    '&:hover': {
+      borderColor: lightBlue[400],
+      backgroundColor: lightBlue[100],
+    },
+  },
+})(Button)
 
-const NewQuestionForm = () => {
+const ClearButton = withStyles({
+  root: {
+    border: '1px solid',
+    boxShadow: 'none',
+    borderColor: pink[600],
+    color: pink[700],
+    '&:hover': {
+      borderColor: pink[400],
+      backgroundColor: pink[100],
+    },
+  },
+})(Button)
+
+const TextFields = ({ state, setState }) => {
   const classes = useStyles()
-
-  const [questionTitle, setQuestionTitle] = useState('')
-  const [questionContent, setQuestionContent] = useState('')
-  const [questionTags, setQuestionTags] = useState('')
-  const [titleHelperText, setTitleHelperText] = useState('')
-  const [contentHelperText, setContentHelperText] = useState('')
-  const [tagsHelperText, setTagsHelperText] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const [user] = useContext(UserContext)
-  const history = useHistory()
-
+  const {
+    questionTitle, questionContent, questionTags,
+    contentHelperText, titleHelperText, tagsHelperText,
+  } = state
 
   /**
    * Updates questionTitle to user input, validates the title
@@ -57,11 +97,17 @@ const NewQuestionForm = () => {
    * @param event, react onChange event used to get the value of the textfield
    * */
   const titleOnChange = (event) => {
-    setQuestionTitle(event.target.value)
-    setTitleHelperText('')
-
+    event.persist()
+    setState((previousState) => ({
+      ...previousState,
+      questionTitle: event.target.value,
+      titleHelperText: '',
+    }))
     if (!validator.questionFormValidator({ title: questionTitle })) {
-      setTitleHelperText('title must be 6 characters long at least and 64 at most')
+      setState((previousState) => ({
+        ...previousState,
+        titleHelperText: 'title must be 6 characters long at least and 64 at most',
+      }))
     }
   }
 
@@ -73,11 +119,18 @@ const NewQuestionForm = () => {
    * @param event, react onChange event used to get the value of the textfield
    * */
   const contentOnChange = (event) => {
-    setQuestionContent(event.target.value)
-    setContentHelperText('')
+    event.persist()
+    setState((previousState) => ({
+      ...previousState,
+      questionContent: event.target.value,
+      contentHelperText: '',
+    }))
 
     if (!validator.questionFormValidator({ content: questionContent })) {
-      setContentHelperText('content must be at least 8 characters long')
+      setState((previousState) => ({
+        ...previousState,
+        contentHelperText: 'content must be at least 8 characters long',
+      }))
     }
   }
 
@@ -90,13 +143,94 @@ const NewQuestionForm = () => {
    * */
   const tagsOnChange = (event) => {
     const tags = event.target.value
-    setQuestionTags(tags)
-    setTagsHelperText('')
+    setState((previousState) => ({
+      ...previousState,
+      questionTags: tags,
+      tagsHelperText: '',
+    }))
 
     if (!validator.questionFormValidator({ tags })) {
-      setTagsHelperText('tags must be words, separated by space, like in "hello world"')
+      setState((previousState) => ({
+        ...previousState,
+        tagsHelperText: 'tags must be words, separated by space, like in "hello world"',
+      }))
     }
   }
+
+  return (
+    <Grid container direction="column" className={classes.mobileContainer}>
+      <Grid>
+        <Typography variant="h6">Title</Typography>
+        <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+          Be specific and imagine you’re asking a question to another person
+        </Typography>
+        <TextField
+          error={titleHelperText.length > 0}
+          helperText={titleHelperText}
+          id="title"
+          margin="dense"
+          placeholder="Ex: how do i undo git commit without losing changes?"
+          fullWidth
+          variant="outlined"
+          value={questionTitle}
+          onChange={titleOnChange}
+          inputProps={{
+            'data-testid': 'title-input',
+          }}
+        />
+      </Grid>
+      <Grid item className={classes.item}>
+        <Typography variant="h6">Body</Typography>
+        <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+          Include all the information someone would need to answer your question
+        </Typography>
+        <TextField
+          error={contentHelperText.length > 0}
+          helperText={contentHelperText}
+          id="content"
+          placeholder="Content"
+          multiline
+          rows={3}
+          rowsMax={8}
+          fullWidth
+          variant="outlined"
+          value={questionContent}
+          onChange={contentOnChange}
+          inputProps={{
+            'data-testid': 'content-input',
+          }}
+        />
+      </Grid>
+      <Grid item className={classes.item}>
+        <Typography variant="h6">Tags</Typography>
+        <Typography variant="subtitle2" style={{ marginBottom: 2 }}>
+          Add tags to describe what your question is about (tags are separated by space)
+        </Typography>
+        <TextField
+          error={tagsHelperText.length > 0}
+          helperText={tagsHelperText}
+          id="tags"
+          placeholder="Ex: Java Spring_boot"
+          margin="dense"
+          fullWidth
+          variant="outlined"
+          value={questionTags}
+          onChange={tagsOnChange}
+          inputProps={{
+            'data-testid': 'tags-input',
+          }}
+        />
+      </Grid>
+    </Grid>
+  )
+}
+
+const Buttons = ({ state, setState, setErrorMessage }) => {
+  const classes = useStyles()
+  const history = useHistory()
+  const {
+    questionTitle, questionContent, questionTags, tagsHelperText,
+  } = state
 
   /**
    * Adds a new Question to the database
@@ -125,6 +259,7 @@ const NewQuestionForm = () => {
 
     if (!valid || tagsHelperText) {
       setErrorMessage('All fields are required, if a field is red, fix it')
+      setTimeout(() => setErrorMessage(''), 5000)
     } else {
       const newQuestion = await questionService.addQuestion(question)
 
@@ -140,12 +275,7 @@ const NewQuestionForm = () => {
    * helper function that clears all the textfields
    * */
   const clearAll = () => {
-    setQuestionContent('')
-    setQuestionTitle('')
-    setQuestionTags('')
-    setTitleHelperText('')
-    setContentHelperText('')
-    setTagsHelperText('')
+    setState(initialState)
   }
 
   /**
@@ -155,106 +285,91 @@ const NewQuestionForm = () => {
     clearAll()
   }
 
+  return (
+    <Grid container justify="flex-end" className={classes.item}>
+      <ClearButton
+        variant="outlined"
+        color="secondary"
+        onClick={handleClearButton}
+        style={{
+          marginRight: 8,
+        }}
+        data-testid="clear-button"
+      >
+        clear
+      </ClearButton>
+      <SubmitButton
+        variant="outlined"
+        color="primary"
+        onClick={handleQuestionPost}
+        data-testid="submit-button"
+      >
+        submit
+      </SubmitButton>
+    </Grid>
+  )
+}
+const NewQuestionForm = () => {
+  const classes = useStyles()
+  const [user] = useContext(UserContext)
+  const [errorMessage, setErrorMessage] = useState('')
+  const isMobile = useMediaQuery('(max-width:600px)')
+  const [state, setState] = useState(initialState)
+
   if (!user) {
     return (
       <Notification title="Error" message="you must be logged in" severity="error" />
     )
   }
 
-  return (
-    <div
-      id="container"
-      style={{
-        position: 'relative',
-        height: '100%',
-      }}
-      data-testid="questionForm-container"
-    >
-      <Notification title="Error" message={errorMessage} severity="error" data-testid="error-message" />
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        paddingBotton: '3.5 rem',
-      }}
-      >
+  if (isMobile) {
+    return (
+      <VHContainer outerStyle={{ marginTop: 16, marginBottom: 16, height: 'inherit' }}>
+        <Notification
+          title="Error"
+          message={errorMessage}
+          severity="error"
+          style={{
+            marginTop: 16,
+            marginBottom: 16,
+            width: '80%',
+          }}
+        />
+        <QuestionInstructionSmall />
         <Paper className={classes.paper}>
-          <Grid container justify="flex-start" direction="column" className={classes.root}>
-            <Grid item className={classes.item}>
-              <TextField
-                error={titleHelperText.length > 0}
-                helperText={titleHelperText}
-                id="title"
-                placeholder="Title"
-                multiline
-                fullWidth
-                variant="outlined"
-                value={questionTitle}
-                onChange={titleOnChange}
-                inputProps={{
-                  'data-testid': 'title-input',
-                }}
-              />
-            </Grid>
-            <Grid item className={classes.item}>
-              <TextField
-                error={contentHelperText.length > 0}
-                helperText={contentHelperText}
-                id="content"
-                placeholder="Content"
-                multiline
-                rows={3}
-                rowsMax={8}
-                fullWidth
-                variant="outlined"
-                value={questionContent}
-                onChange={contentOnChange}
-                inputProps={{
-                  'data-testid': 'content-input',
-                }}
-              />
-            </Grid>
-            <Grid item className={classes.item}>
-              <TextField
-                error={tagsHelperText.length > 0}
-                helperText={tagsHelperText}
-                id="tags"
-                placeholder="Tags"
-                multiline
-                fullWidth
-                variant="outlined"
-                value={questionTags}
-                onChange={tagsOnChange}
-                inputProps={{
-                  'data-testid': 'tags-input',
-                }}
-              />
-            </Grid>
-            <Grid container justify="flex-end" className={classes.item}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleClearButton}
-                style={{
-                  marginRight: 8,
-                }}
-                data-testid="clear-button"
-              >
-                clear
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleQuestionPost}
-                data-testid="submit-button"
-              >
-                submit
-              </Button>
-            </Grid>
+          <Grid item>
+            <TextFields state={state} setState={setState} />
           </Grid>
+          <Buttons state={state} setState={setState} setErrorMessage={setErrorMessage} />
         </Paper>
-      </div>
-    </div>
+      </VHContainer>
+    )
+  }
+
+  return (
+    <VHContainer>
+      <Notification
+        title="Error"
+        message={errorMessage}
+        severity="error"
+        style={{
+          marginTop: 16,
+          marginBottom: 16,
+          width: '80%',
+        }}
+      />
+      <Grid item>
+        <Paper className={classes.paper}>
+          <TextFields state={state} setState={setState} />
+          <Buttons state={state} setState={setState} setErrorMessage={setErrorMessage} />
+        </Paper>
+      </Grid>
+      <Grid item>
+        <Paper className={classes.instructionPaper}>
+          <QuestionInstructions />
+        </Paper>
+      </Grid>
+    </VHContainer>
   )
 }
 

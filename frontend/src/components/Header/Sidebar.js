@@ -9,13 +9,14 @@ import List from '@material-ui/core/List'
 import { Link } from 'react-router-dom'
 import ListItem from '@material-ui/core/ListItem'
 import HomeIcon from '@material-ui/icons/Home'
+import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import ListItemText from '@material-ui/core/ListItemText'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import React, { useContext } from 'react'
 import { grey, lightBlue } from '@material-ui/core/colors'
+import Paper from '@material-ui/core/Paper'
 import UserContext from '../UserContext/UserContext'
-
 
 const drawerWidth = 240
 
@@ -45,11 +46,16 @@ const useStyles = makeStyles((theme) => ({
     color: lightBlue[800],
     marginRight: 16,
   },
+  itemPaper: {
+    marginTop: 4,
+    marginLeft: 4,
+    marginRight: 4,
+  },
 
 }))
 
 const Sidebar = ({ state, dispatch }) => {
-  const [, setUser] = useContext(UserContext)
+  const [user, setUser] = useContext(UserContext)
   const { drawerIsOpen } = state
   const classes = useStyles()
   const theme = useTheme()
@@ -83,21 +89,35 @@ const Sidebar = ({ state, dispatch }) => {
         <Divider />
         <List>
           <Link to="/" className={classes.link}>
-            <ListItem button key="home" data-testid="home-button">
-              <HomeIcon className={classes.icons} />
-              <ListItemText primary="Home" />
-            </ListItem>
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="home" data-testid="home-button">
+                <HomeIcon className={classes.icons} />
+                <ListItemText primary="Home" />
+              </ListItem>
+            </Paper>
           </Link>
           <Link to="/question/new" className={classes.link} data-testid="newQuestion-button">
-            <ListItem button key="newQuestion">
-              <AddBoxIcon className={classes.icons} />
-              <ListItemText primary="New Question" />
-            </ListItem>
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="newQuestion">
+                <AddBoxIcon className={classes.icons} />
+                <ListItemText primary="New Question" />
+              </ListItem>
+            </Paper>
           </Link>
-          <ListItem button key="logout" onClick={() => handleLogout()} data-testid="logoutDrawer-button">
-            <ExitToAppIcon className={classes.icons} />
-            <ListItemText primary="Logout" />
-          </ListItem>
+          <Link to={`/user/${user.id}`} className={classes.link} data-testid="newQuestion-button">
+            <Paper className={classes.itemPaper}>
+              <ListItem button key="myProfile">
+                <AccountBoxIcon className={classes.icons} />
+                <ListItemText primary="My Profile" />
+              </ListItem>
+            </Paper>
+          </Link>
+          <Paper onClick={() => handleLogout()} className={classes.itemPaper}>
+            <ListItem button key="logout" data-testid="logoutDrawer-button">
+              <ExitToAppIcon className={classes.icons} />
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </Paper>
         </List>
       </Drawer>
     </>

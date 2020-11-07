@@ -1,59 +1,54 @@
-const express = require('express')
-const router = express.Router()
 const bcrypt = require('bcrypt')
+
+const express = require('express')
+
+const router = express.Router()
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 const validator = require('../utils/validator')
+const userService = require('../utils/user')
 
-router.get('/', async(request, response, next) => {
-
+router.get('/', async (request, response, next) => {
   try {
     const users = await User.find({})
-        .populate({
-          path: 'questions',
-          model: 'Question',
-          select: ['title', 'likes']
-        })
+      .populate({
+        path: 'questions',
+        model: 'Question',
+        select: ['title', 'likes'],
+      })
     return response.json(users)
   } catch (error) {
-    next(error)
+    return next(error)
   }
-
 })
-
 
 // used for a user page
 router.get('/:id', async (request, response, next) => {
-
   try {
-    const id = request.params.id;
+    const { id } = request.params
     const user = await User.findById(id).populate({
       path: 'questions',
       model: 'Question',
-      select: ['title', 'likes']
+      select: ['title', 'likes'],
     })
     return response.json(user)
   } catch (error) {
-    next(error)
+    return next(error)
   }
+})
 
-});
-
-
-router.post('/', async(request, response, next) => {
-  const body = request.body
+router.post('/', async (request, response, next) => {
+  const { body } = request
   const salt = 10
 
-  if(body.password === undefined || body.username === undefined || body.email === undefined){
-    response.status(400).send({
-      error:'error: Both username and password and email must be given'
+  if (body.password === undefined || body.username === undefined || body.email === undefined) {
+    return response.status(400).send({
+      error: 'error: Both username and password and email must be given',
     })
-    return
   }
 
   const error = await validator.validate(body.username, body.password, body.email, body.dateOfBirth)
 
-  if(error){
+  if (error) {
     return response.status(400).send(error)
   }
 
@@ -62,7 +57,7 @@ router.post('/', async(request, response, next) => {
 
     const newUser = new User({
       username: body.username,
-      passwordHash: passwordHash,
+      passwordHash,
       email: body.email,
       dateOfBirth: body.dateOfBirth,
       registerDate: new Date(),
@@ -71,47 +66,32 @@ router.post('/', async(request, response, next) => {
     })
 
     await newUser.save()
-    return response.status(200).json(newUser);
-
+    return response.status(200).json(newUser)
   } catch (error) {
-    next(error)
+    return next(error)
   }
+})
 
-});
-
-
-//used to update a user's info
+// used to update a user's info
 router.put('/:id', async (request, response, next) => {
   try {
-    const body = request.body
-    const id = request.params.id
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+    const { body } = request
+    const { id } = request.params
 
-    if (!decodedToken.id || decodedToken.id !== id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthorized(request.cookies.token, id, body.password)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
 
-    const user = await User.findById(id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const isPasswordCorrect = user === null ?
-        false : await bcrypt.compare(body.password, user.passwordHash)
-
-    if(!isPasswordCorrect) {
-      return response.status(401).json({error: 'wrong password'})
-    }
-
-    if(!body.email || !body.dateOfBirth || !body.fullname) {
+    if (!body.email || !body.dateOfBirth || !body.fullname) {
       return response.status(401)
-          .json({error: 'email, dateOfBirth, fullname must be provided'})
+        .json({ error: 'email, dateOfBirth, fullname must be provided' })
     }
 
-    const error = await validator.validate(body.username, body.password, body.email, body.dateOfBirth)
+    const error = await validator
+      .validate(body.username, body.password, body.email, body.dateOfBirth)
 
-    if(error){
+    if (error) {
       return response.status(400).send(error)
     }
 
@@ -120,45 +100,30 @@ router.put('/:id', async (request, response, next) => {
       email: body.email,
       dateOfBirth: body.dateOfBirth,
       location: body.location,
-      fullname: body.fullname
+      fullname: body.fullname,
     }
     const updatedUser = await User.findByIdAndUpdate(id, updatedUserObj)
     return response.status(200).json(updatedUser)
   } catch (error) {
-    next(error)
+    return next(error)
   }
 })
 
-
 // used to delete a user
-router.delete('/:id',  async (request, response, next) => {
+router.delete('/:id', async (request, response, next) => {
   try {
-    const body = request.body
-    const id = request.params.id
-    const decodedToken = jwt.decode(request.token, process.env.SECRET)
+    const { body } = request
+    const { id } = request.params
 
-    if (!decodedToken.id || decodedToken.id !== id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+    const user = await userService.isAuthorized(request.cookies.token, id, body.password)
+    if (user.error) {
+      return response.status(401).json(user.error)
     }
-
-    const user = await User.findById(id)
-
-    if (!user) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
-    const isPasswordCorrect = user === null ?
-        false : await bcrypt.compare(body.password, user.passwordHash)
-
-    if(!isPasswordCorrect) {
-      return response.status(401).json({error: 'wrong password'})
-    }
-
     await User.findByIdAndRemove(id)
     return response.status(204).end()
   } catch (error) {
-    next(error)
+    return next(error)
   }
 })
 
-module.exports = router;
+module.exports = router

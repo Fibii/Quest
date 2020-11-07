@@ -3,17 +3,14 @@ import Typography from '@material-ui/core/Typography'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
     outline: 'none',
   },
   title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
+    display: 'block',
   },
 }))
 

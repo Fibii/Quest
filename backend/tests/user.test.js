@@ -1,32 +1,54 @@
+const supertest = require('supertest')
+const mongoose = require('mongoose')
 const app = require('../app')
 const User = require('../models/user')
-const supertest = require('supertest')
-const api = supertest(app)
-const mongoose = require('mongoose')
 const testHelper = require('../utils/testHelper')
 
-beforeEach(async () => {
+const agent = supertest.agent(app)
 
+/**
+ *
+ * logs in a user, and updates the cookie of agent to the user's cookie
+ *
+ * @param userIndex: the index of user in initialUsers
+ * @returns the response of user login
+ * */
+const createSession = async (userIndex = 0) => {
+  const initialUsers = testHelper.getInitialUsers()
+  const user = initialUsers[userIndex]
+
+  // login
+  const response = await agent
+    .post('/api/login')
+    .send(user)
+
+  const cookie = response
+    .headers['set-cookie'][0]
+    .split(',')
+    .map((item) => item.split(';')[0])
+  agent.jar.setCookie(cookie[0])
+  return response
+}
+
+beforeEach(async () => {
   // clear the database
   await User.deleteMany({})
 
   // add initial users to the db
   const users = testHelper.getInitialUsers()
 
-  const promiseArray = users.map(user => api.post('/api/users').send(user))
+  const promiseArray = users.map((user) => agent.post('/api/users').send(user))
   await Promise.all(promiseArray)
-
 })
 
 describe('user crud', () => {
-
-  test("all users are returned", async() => {
+  test('all users are returned', async () => {
     const initialUsers = await testHelper.getUsersInDb()
 
-    const response = await api.get("/api/users")
-    .expect(200)
+    const response = await agent.get('/api/users')
+      .expect(200)
 
-    const finalUsers = JSON.parse(response.text).map(user => {
+    const finalUsers = JSON.parse(response.text).map((user) => {
       const userObj = {
         username: user.username,
         email: user.email,
@@ -41,147 +63,131 @@ describe('user crud', () => {
     })
 
     expect(finalUsers.sort()).toEqual(initialUsers.sort())
-
   })
 
-  test("a proper user can be registered", async () => {
-
+  test('a proper user can be registered', async () => {
     const initialUsers = await testHelper.getUsersInDb()
 
     const newUser = {
-      username: "fibi",
-      password: "ayoFibCome6layHere",
-      email: "fibi@fibi.fr",
-      dateOfBirth: "06-22-1955"
+      username: 'fibi',
+      password: 'ayoFibCome6layHere',
+      email: 'fibi@fibi.fr',
+      dateOfBirth: '06-22-1955',
     }
 
-    const response = await api.post('/api/users')
-        .send(newUser)
-        .expect(200)
+    await agent.post('/api/users')
+      .send(newUser)
+      .expect(200)
 
     const finalUsers = await testHelper.getUsersInDb()
 
-    const usernames = finalUsers.map(user => user.username)
+    const usernames = finalUsers.map((user) => user.username)
 
     expect(finalUsers.length).toBe(initialUsers.length + 1)
     expect(usernames).toContain(newUser.username)
-
   })
 
   test('a user can be deleted', async () => {
-
     const initialUsers = testHelper.getInitialUsers()
 
     const firstUser = {
       username: initialUsers[0].username,
-      password: initialUsers[0].password
+      password: initialUsers[0].password,
     }
 
     const secondUser = {
       username: initialUsers[1].username,
-      password: initialUsers[1].password
+      password: initialUsers[1].password,
     }
 
-    const firstUserResponse = await api.post('/api/login')
-        .send(firstUser)
+    const firstUserResponse = await createSession()
 
-    const secondUserResponse = await api.post('/api/login')
-        .send(secondUser)
+    // bad cookie and bad password
+    await agent.delete(`/api/users/${firstUserResponse.body.id}`)
+      .send(secondUser)
+      .expect(401)
 
-    // bad token and bad password
-    await api.delete(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send(secondUser)
-        .expect(401)
+    // good cookie and bad password
+    await agent.delete(`/api/users/${firstUserResponse.body.id}`)
+      .send(secondUser)
+      .expect(401)
 
-    // bad token and good password
-    await api.delete(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send(firstUser)
-        .expect(401)
+    const secondUserResponse = await createSession(1)
 
-    // good token and bad password
-    await api.delete(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send(secondUser)
-        .expect(401)
+    // bad cookie and good password
+    await agent.delete(`/api/users/${firstUserResponse.body.id}`)
+      .send(firstUser)
+      .expect(401)
 
-    // good token and good password
-    await api.delete(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send(firstUser)
-        .expect(204)
+    // good cookie and bad password
+    await agent.delete(`/api/users/${secondUserResponse.body.id}`)
+      .send(firstUser)
+      .expect(401)
 
+    // good cookie and good password
+    await agent.delete(`/api/users/${secondUserResponse.body.id}`)
+      .send(secondUser)
+      .expect(204)
 
     const finalUsers = await testHelper.getUsersInDb()
-    const finalUsernames = finalUsers.map(user => user.username)
+    const finalUsernames = finalUsers.map((user) => user.username)
 
     expect(finalUsers.length).toBe(initialUsers.length - 1)
-    expect(finalUsernames).not.toContain(firstUser.username)
-
+    expect(finalUsernames).not.toContain(secondUser.username)
   })
 
   test('a user can be updated', async () => {
     const initialUsers = testHelper.getInitialUsers()
 
-
     const updatedUser = {
-      ...initialUsers[0],
+      ...initialUsers[1],
       email: 'newemailwho@dis.com',
     }
 
     const firstUser = {
       username: initialUsers[0].username,
-      password: initialUsers[0].password
+      password: initialUsers[0].password,
     }
 
     const secondUser = {
       username: initialUsers[1].username,
-      password: initialUsers[1].password
+      password: initialUsers[1].password,
     }
 
-    // login both users
-    const firstUserResponse = await api.post('/api/login')
-        .send(firstUser)
+    const firstUserResponse = await createSession()
 
-    const secondUserResponse = await api.post('/api/login')
-        .send(secondUser)
+    // good cookie and bad password
+    await agent.put(`/api/users/${firstUserResponse.body.id}`)
+      .send(secondUser)
+      .expect(401)
 
-    // bad token and bad password
-    await api.put(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send(secondUser)
-        .expect(401)
+    const secondUserResponse = await createSession(1)
 
-    // bad token and good password
-    await api.put(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${secondUserResponse.body.token}`)
-        .send(firstUser)
-        .expect(401)
+    // bad cookie and good password
+    await agent.put(`/api/users/${firstUserResponse.body.id}`)
+      .send(firstUser)
+      .expect(401)
 
-    // good token and bad password
-    await api.put(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send(secondUser)
-        .expect(401)
+    // bad cookie and bad password
+    await agent.put(`/api/users/${firstUserResponse.body.id}`)
+      .send(secondUser)
+      .expect(401)
 
-    // good token and good password
-    await api.put(`/api/users/${firstUserResponse.body.id}`)
-        .set('Authorization', `bearer ${firstUserResponse.body.token}`)
-        .send(updatedUser)
-        .expect(200)
+    // good cookie and good password
+    await agent.put(`/api/users/${secondUserResponse.body.id}`)
+      .send(updatedUser)
+      .expect(200)
 
     const finalUsers = await testHelper.getUsersInDb()
-    const finalUser = finalUsers.filter(user => user.username === initialUsers[0].username)[0]
+    const finalUser = finalUsers.filter((user) => user.username === initialUsers[1].username)[0]
 
     expect(finalUser.email).toEqual(updatedUser.email)
-
   })
 
   test('a specific user is returned', async () => {
     const initialUsers = await testHelper.getUsersInDb()
-    const response = await api.get(`/api/users/${initialUsers[0].id}`)
-    .expect(200)
+    const response = await agent.get(`/api/users/${initialUsers[0].id}`)
+      .expect(200)
 
     const user = JSON.parse(response.text)
     const finalUser = {
@@ -197,7 +203,6 @@ describe('user crud', () => {
 
     expect(finalUser).toEqual(initialUsers[0])
   })
-
 })
 
 afterAll(() => {

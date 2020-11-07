@@ -5,7 +5,15 @@ import Notification from '../Notification/Notification'
 const QuestionContainer = ({ state, children }) => {
   const { errorMessage } = state
   return (
-    <Grid container justify="center" data-testid="question-container">
+    <Grid
+      container
+      justify="center"
+      data-testid="question-container"
+      style={{
+        marginTop: 32,
+        marginBottom: 16,
+      }}
+    >
       <Grid
         container
         direction="column"

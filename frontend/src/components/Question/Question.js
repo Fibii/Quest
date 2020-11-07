@@ -42,7 +42,7 @@ const Question = () => {
         }
 
         if (state.editedQuestionTags === null && question.tags) {
-          dispatch(setEditedQuestionTags(question.tags.join(', ')))
+          dispatch(setEditedQuestionTags(question.tags.join(' ')))
         }
       }
       setIsLoading(false)
