@@ -78,6 +78,11 @@ const SignIn = () => {
 
   const formHandler = async (event) => {
     event.preventDefault()
+    if (username.length < 3 || password.length < 3) {
+      setErrorMessage('username and password must have a minimum length of 3')
+      setTimeout(() => setErrorMessage(''), 5000)
+      return
+    }
     const user = await userService.login({
       username,
       password,
