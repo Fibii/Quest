@@ -5,9 +5,8 @@ import { grey } from '@material-ui/core/colors'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useHistory, useLocation } from 'react-router-dom'
 import questionService from '../../services/questions'
+import config from '../../config'
 
-
-const QUESTION_URL = '/question'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -49,6 +48,7 @@ const SearchBar = () => {
   const [questions, setQuestions] = useState([])
   const history = useHistory()
   const location = useLocation()
+  const { urls } = config
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -61,7 +61,6 @@ const SearchBar = () => {
     }
     getQuestions()
   }, [])
-
 
   return (
     <div data-testid="searchBar-container" className={classes.search}>
@@ -82,7 +81,7 @@ const SearchBar = () => {
         onChange={(event, newValue) => {
           if (newValue && newValue[0]) {
             console.log(newValue[0].id)
-            history.push(`${QUESTION_URL}/${newValue[0].id}`)
+            history.push(`${urls.question}/${newValue[0].id}`)
           }
         }}
         renderInput={(params) => (

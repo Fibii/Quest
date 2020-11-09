@@ -8,7 +8,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { lightBlue } from '@material-ui/core/colors'
 import { useHistory } from 'react-router-dom'
 import noQuestionsImg from '../../resources/images/no-questions.png'
-
+import config from '../../config'
 
 const AddQuestionButton = withStyles({
   root: {
@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 const NoQuestions = () => {
   const classes = useStyles()
   const history = useHistory()
+  const { urls } = config
 
   return (
     (
@@ -71,7 +72,7 @@ const NoQuestions = () => {
                 color="primary"
                 disableElevation
                 endIcon={<AddIcon>send</AddIcon>}
-                onClick={() => history.push('/question/new')}
+                onClick={() => history.push(urls.newQuestion)}
               >
                 Ask a Question
               </AddQuestionButton>

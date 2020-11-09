@@ -10,6 +10,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import questions from '../../resources/images/questions.png'
 import VHContainer from '../Containers/VHContainer/VHContainer'
 import HVContainer from '../Containers/HVContainer/HVContainer'
+import config from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   typographyContainer: {
@@ -123,6 +124,8 @@ const SignUpButton = withStyles((theme) => ({
 const DesktopView = () => {
   const history = useHistory()
   const classes = useStyles()
+  const { urls } = config
+  console.log(urls)
   return (
     (
       <Grid container style={{ width: '70%', marginTop: '1rem' }}>
@@ -136,8 +139,18 @@ const DesktopView = () => {
                 and other users answer those questions
               </Typography>
               <Grid container direction="row" style={{ marginTop: 12 }}>
-                <SignInButton className={classes.button} onClick={() => history.push('/login')}>Sign In</SignInButton>
-                <SignUpButton className={classes.button} onClick={() => history.push('/register')}>Sign Up</SignUpButton>
+                <SignInButton
+                  className={classes.button}
+                  onClick={() => history.push(urls.login)}
+                >
+                  Sign In
+                </SignInButton>
+                <SignUpButton
+                  className={classes.button}
+                  onClick={() => history.push(urls.register)}
+                >
+                  Sign Up
+                </SignUpButton>
               </Grid>
             </Grid>
           </Grid>
@@ -153,6 +166,7 @@ const Welcome = () => {
   const history = useHistory()
   const classes = useStyles()
   const isMobile = useMediaQuery('(max-width:700px)')
+  const { urls } = config
 
   if (isMobile) {
     return (
@@ -169,8 +183,18 @@ const Welcome = () => {
               <img src={questions} alt="Quest logo" style={{ width: '100%' }} />
             </Grid>
             <Grid container direction="row" className={classes.buttonsContainer}>
-              <SignInButton className={classes.button} onClick={() => history.push('/login')}>Sign In</SignInButton>
-              <SignUpButton className={classes.button} onClick={() => history.push('/register')}>Sign Up</SignUpButton>
+              <SignInButton
+                className={classes.button}
+                onClick={() => history.push(urls.login)}
+              >
+                Sign In
+              </SignInButton>
+              <SignUpButton
+                className={classes.button}
+                onClick={() => history.push(urls.register)}
+              >
+                Sign Up
+              </SignUpButton>
             </Grid>
           </Grid>
         </VHContainer>

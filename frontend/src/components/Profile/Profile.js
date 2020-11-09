@@ -13,6 +13,7 @@ import Notification from '../Notification/Notification'
 import users from '../../services/users'
 import utils from '../../services/utils'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
+import config from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -63,6 +64,7 @@ const Profile = () => {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const classes = useStyles()
+  const { urls } = config
 
   useEffect(() => {
     const getUser = async () => {
@@ -87,7 +89,6 @@ const Profile = () => {
       <Notification severity="error" title="Error" message={error} />
     )
   }
-
 
   return (
     <Grid container justify="center" data-testid="profile-container" className={classes.mainContainer}>
@@ -131,7 +132,7 @@ const Profile = () => {
           className={classes.questionList}
         >
           {user.questions && user.questions.map((question) => (
-            <Link to={`/question/${question.id}`} className={classes.link} key={question.id}>
+            <Link to={`${urls.question}/${question.id}`} className={classes.link} key={question.id}>
               <ListItem button>
                 <ListItemText
                   primary={question.title}

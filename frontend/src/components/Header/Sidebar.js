@@ -17,6 +17,7 @@ import React, { useContext } from 'react'
 import { grey, lightBlue } from '@material-ui/core/colors'
 import Paper from '@material-ui/core/Paper'
 import UserContext from '../UserContext/UserContext'
+import config from '../../config'
 
 const drawerWidth = 240
 
@@ -59,6 +60,7 @@ const Sidebar = ({ state, dispatch }) => {
   const { drawerIsOpen } = state
   const classes = useStyles()
   const theme = useTheme()
+  const { urls } = config
 
   const handleDrawerClose = () => {
     dispatch({ type: 'CLOSE_DRAWER' })
@@ -88,7 +90,7 @@ const Sidebar = ({ state, dispatch }) => {
         </div>
         <Divider />
         <List>
-          <Link to="/" className={classes.link}>
+          <Link to={urls.root} className={classes.link}>
             <Paper className={classes.itemPaper}>
               <ListItem button key="home" data-testid="home-button">
                 <HomeIcon className={classes.icons} />
@@ -96,7 +98,7 @@ const Sidebar = ({ state, dispatch }) => {
               </ListItem>
             </Paper>
           </Link>
-          <Link to="/question/new" className={classes.link} data-testid="newQuestion-button">
+          <Link to={urls.newQuestion} className={classes.link} data-testid="newQuestion-button">
             <Paper className={classes.itemPaper}>
               <ListItem button key="newQuestion">
                 <AddBoxIcon className={classes.icons} />
@@ -104,7 +106,7 @@ const Sidebar = ({ state, dispatch }) => {
               </ListItem>
             </Paper>
           </Link>
-          <Link to={`/user/${user.id}`} className={classes.link} data-testid="newQuestion-button">
+          <Link to={`${urls.user}/${user.id}`} className={classes.link} data-testid="newQuestion-button">
             <Paper className={classes.itemPaper}>
               <ListItem button key="myProfile">
                 <AccountBoxIcon className={classes.icons} />

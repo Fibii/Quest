@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import UserContext from '../UserContext/UserContext'
+import config from '../../config'
 
 const useStyles = makeStyles(() => ({
   userMenu: {
@@ -19,6 +20,7 @@ const UserMenu = ({ state, dispatch }) => {
   const [user, setUser] = useContext(UserContext)
   const { anchorEl } = state
   const history = useHistory()
+  const { urls } = config
 
   const handleLogout = () => {
     setUser(null)
@@ -41,7 +43,7 @@ const UserMenu = ({ state, dispatch }) => {
   }
 
   const handleProfileMenu = () => {
-    history.push(`/user/${user.id}`)
+    history.push(`${urls.user}/${user.id}`)
     handleMenuClose()
   }
 

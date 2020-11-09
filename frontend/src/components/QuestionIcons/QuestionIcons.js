@@ -91,7 +91,7 @@ const QuestionIcons = ({
 
       {path
       && (
-        <CopyToClipboard text={path ? `${window.location.origin}/${path}` : window.location.href}>
+        <CopyToClipboard text={path ? `${window.location.origin}${path}` : window.location.href}>
           <IconButton onClick={handleShareButton} size="small" data-testid="share-button">
             <ShareIcon />
           </IconButton>

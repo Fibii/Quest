@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import validator from '../../services/validator'
 import utils from '../../services/utils'
 import QuestionIcons from '../QuestionIcons/QuestionIcons'
+import config from '../../config'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -56,7 +57,9 @@ const useStyles = makeStyles((theme) => ({
 
 const QPaper = ({ user, question, handleDelete }) => {
   const classes = useStyles()
-  const path = `question/${question.id}`
+  const { urls } = config
+
+  const path = `${urls.question}/${question.id}`
 
   return (
     <Grid container justify="center" data-testid="qpaper-container">
