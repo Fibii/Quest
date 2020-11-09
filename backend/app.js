@@ -63,9 +63,11 @@ app.use(middleware.tokenExtractor)
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, '../frontend/build')))
 
-app.use('/api/users', usersRouter)
-app.use('/api/questions', questionRouter)
-app.use('/api/login', loginRouter)
+const ROOT_URL = process.env.ROOT_URL === '/' ? '' : process.env.REACT_APP_URL
+
+app.use(`${ROOT_URL}/api/users`, usersRouter)
+app.use(`${ROOT_URL}/api/questions`, questionRouter)
+app.use(`${ROOT_URL}/api/login`, loginRouter)
 
 if (process.env.NODE_ENV === 'PROD') {
   app.get('*', (request, response) => {
