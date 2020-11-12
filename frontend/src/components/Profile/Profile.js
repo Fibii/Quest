@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('xs')]: {
       width: '90%',
     },
+    marginTop: 32,
   },
   questionList: {
     marginTop: 16,
