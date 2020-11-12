@@ -1,14 +1,15 @@
 import axios from 'axios'
-
-const baseUrl = process.env.REACT_APP_BACKEND_URL
+import configs from '../config'
 
 const config = {
   withCredentials: true,
 }
 
+const { urls } = configs.backend
+
 const login = async (credentials) => {
   try {
-    const response = await axios.post(`${baseUrl}/login/`, credentials, config)
+    const response = await axios.post(`${urls.login}/`, credentials, config)
     return response.data
   } catch (error) {
     console.log(error.response)
@@ -21,7 +22,7 @@ const login = async (credentials) => {
 
 const createUser = async (user) => {
   try {
-    const response = await axios.post(`${baseUrl}/users`, user, config)
+    const response = await axios.post(`${urls.users}`, user, config)
     return response.data
   } catch (error) {
     return { error: "Couldn't connect to the server, try again later or contact the owner" }
@@ -30,7 +31,7 @@ const createUser = async (user) => {
 
 const getUser = async (userId) => {
   try {
-    const response = await axios.get(`${baseUrl}/users/${userId}`)
+    const response = await axios.get(`${urls.users}/${userId}`)
     return response.data
   } catch (error) {
     console.log(error)
@@ -50,7 +51,7 @@ const getSavedUser = async () => {
   console.log('rm', rememberMe)
   if (loggedUser != null || rememberMe != null) {
     console.log('we here chief')
-    const response = await axios.get(`${baseUrl}/login/isValidToken`, config)
+    const response = await axios.get(`${urls.isValidToken}`, config)
     const isValidToken = response.status === 200
     console.log('vt', isValidToken)
     if (isValidToken) {

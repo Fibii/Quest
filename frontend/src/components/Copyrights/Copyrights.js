@@ -4,6 +4,7 @@ import Link from '@material-ui/core/Link'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import blue from '@material-ui/core/colors/blue'
+import config from '../../config'
 
 const useStyles = makeStyles(() => ({
   copyright: {
@@ -17,12 +18,13 @@ const useStyles = makeStyles(() => ({
 
 const Copyright = () => {
   const classes = useStyles()
+  const { urls } = config
 
   return (
     <Grid container justify="center" className={classes.copyright}>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
-        <Link color="inherit" href="/">
+        <Link color="inherit" href={urls.root}>
           QA
         </Link>
         {' '}

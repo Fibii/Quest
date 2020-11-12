@@ -13,6 +13,7 @@ import loginImg from '../../resources/images/login.png'
 import QLink from '../QLink/QLink'
 import UserContext from '../UserContext/UserContext'
 import Notification from '../Notification/Notification'
+import config from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -53,9 +54,10 @@ const SignupForm = () => {
 
   const [user] = useContext(UserContext)
   const history = useHistory()
+  const { urls } = config
 
   if (user) {
-    setTimeout(() => history.push('/'), 5000)
+    setTimeout(() => history.push(urls.root), 5000)
     return (
       <Notification
         title="Already logged in"
@@ -141,7 +143,7 @@ const SignupForm = () => {
         setErrorMessage(newUser.error)
         setTimeout(() => setErrorMessage(''), 5000)
       } else {
-        history.push('/login')
+        history.push(urls.login)
       }
     }
   }
@@ -249,7 +251,7 @@ const SignupForm = () => {
 
         <Grid container justify="flex-end">
           <Grid item>
-            <QLink to="/login" testId="login-link">
+            <QLink to={urls.login} testId="login-link">
               Already have an account? Sign in
             </QLink>
           </Grid>

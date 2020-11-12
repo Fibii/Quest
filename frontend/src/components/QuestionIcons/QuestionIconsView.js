@@ -8,6 +8,7 @@ import utils from '../../services/utils'
 import UserContext from '../UserContext/UserContext'
 import questionService from '../../services/questions'
 import { setErrorMessage, setQuestion, setShowEditFields } from '../../actions/questionActions'
+import config from '../../config'
 
 const QuestionIconsView = ({
   dispatch, state,
@@ -19,14 +20,14 @@ const QuestionIconsView = ({
   } = state
   const [user] = useContext(UserContext)
   const isMobile = useMediaQuery('(max-width:600px)')
-
+  const { urls } = config
   /**
    * deletes a question form the database
    * */
   const handleDeleteQuestion = async () => {
     const response = await questionService.deleteQuestion(id)
     if (response) {
-      history.push('/')
+      history.push(urls.root)
     } else {
       setTimeout(() => dispatch(setErrorMessage('')), 5000)
       dispatch(setErrorMessage('error: couldn\'t delete the question'))
@@ -93,7 +94,7 @@ const QuestionIconsView = ({
           }}
         >
           <QuestionIcons
-            path={`question/${question.id}`}
+            path={urls.question}
             question={question}
             direction="row"
           />

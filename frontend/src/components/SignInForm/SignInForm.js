@@ -13,6 +13,7 @@ import loginImg from '../../resources/images/login.png'
 import QLink from '../QLink/QLink'
 import UserContext from '../UserContext/UserContext'
 import Notification from '../Notification/Notification'
+import config from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -61,11 +62,12 @@ const SignIn = () => {
   const [rememberUser, setRememberUser] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [user, setUser] = useContext(UserContext)
+  const { urls } = config
 
   const history = useHistory()
 
   if (user && user.id && history.action === 'POP') {
-    setTimeout(() => history.push('/'), 5000)
+    setTimeout(() => history.push(urls.root), 5000)
     return (
       <Notification
         title="Already logged in"
@@ -97,7 +99,7 @@ const SignIn = () => {
         window.localStorage.setItem('qa_userRememberMe', JSON.stringify(user))
       }
       window.localStorage.setItem('qa_userLoggedIn', JSON.stringify(user))
-      history.push('/')
+      history.push(urls.root)
     }
   }
 
@@ -151,12 +153,12 @@ const SignIn = () => {
         </SignInButton>
         <Grid container>
           <Grid item xs>
-            <QLink to="/">
+            <QLink to={urls.root}>
               Forgot password?
             </QLink>
           </Grid>
           <Grid item>
-            <QLink to="/register">
+            <QLink to={urls.register}>
               Don&apos;t have an account? Sign Up
             </QLink>
           </Grid>

@@ -1,14 +1,15 @@
 import axios from 'axios'
-
-const baseUrl = process.env.REACT_APP_BACKEND_URL
+import configs from '../config'
 
 const config = {
   withCredentials: true,
 }
 
+const { urls } = configs.backend
+
 const getAll = async () => {
   try {
-    const result = await axios.get(`${baseUrl}/questions/`)
+    const result = await axios.get(`${urls.questions}`)
     return result.data
   } catch (error) {
     console.log(error)
@@ -18,7 +19,7 @@ const getAll = async () => {
 
 const get = async (id) => {
   try {
-    const result = await axios.get(`${baseUrl}/questions/${id}`)
+    const result = await axios.get(`${urls.questions}/${id}`)
     return result.data
   } catch (error) {
     console.log(error)
@@ -29,7 +30,7 @@ const get = async (id) => {
 const addComment = async (id, comment) => {
   try {
     const response = await axios
-      .post(`${baseUrl}/questions/${id}/comments`, comment, config)
+      .post(`${urls.questions}/${id}/${urls.comments}`, comment, config)
     return response
   } catch (error) {
     console.log(error)
@@ -40,7 +41,7 @@ const addComment = async (id, comment) => {
 const deleteComment = async (questionId, commentId) => {
   try {
     const response = await axios
-      .delete(`${baseUrl}/questions/${questionId}/comments/${commentId}`, config)
+      .delete(`${urls.questions}/${questionId}/${urls.comments}/${commentId}`, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -50,7 +51,7 @@ const deleteComment = async (questionId, commentId) => {
 
 const upvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: 1 }, config)
+    const response = await axios.post(`${urls.questions}/${questionId}/${urls.comments}/${commentId}/${urls.likes}`, { likes: 1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -60,7 +61,7 @@ const upvoteComment = async (questionId, commentId) => {
 
 const downvoteComment = async (questionId, commentId) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${questionId}/comments/${commentId}/likes`, { likes: -1 }, config)
+    const response = await axios.post(`${urls.questions}/${questionId}/${urls.comments}/${commentId}/${urls.likes}`, { likes: -1 }, config)
     return response.status === 200
   } catch (error) {
     console.log(error)
@@ -70,7 +71,7 @@ const downvoteComment = async (questionId, commentId) => {
 
 const addQuestion = async (question) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions`, question, config)
+    const response = await axios.post(`${urls.questions}`, question, config)
     return response.data
   } catch (error) {
     console.log(error)
@@ -86,7 +87,7 @@ const addQuestion = async (question) => {
  * */
 const deleteQuestion = async (id) => {
   try {
-    const response = await axios.delete(`${baseUrl}/questions/${id}`, config)
+    const response = await axios.delete(`${urls.questions}/${id}`, config)
     console.log(response)
     return response.status === 204
   } catch (error) {
@@ -97,7 +98,7 @@ const deleteQuestion = async (id) => {
 
 const upvoteQuestion = async (id) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${id}/likes`, { likes: 1 }, config)
+    const response = await axios.post(`${urls.questions}/${id}/${urls.likes}`, { likes: 1 }, config)
     console.log(response)
     return response.status === 200
   } catch (error) {
@@ -108,7 +109,7 @@ const upvoteQuestion = async (id) => {
 
 const downvoteQuestion = async (id) => {
   try {
-    const response = await axios.post(`${baseUrl}/questions/${id}/likes`, { likes: -1 }, config)
+    const response = await axios.post(`${urls.questions}/${id}/${urls.likes}`, { likes: -1 }, config)
     console.log(response)
     return response.status === 200
   } catch (error) {
@@ -119,7 +120,7 @@ const downvoteQuestion = async (id) => {
 
 const updateQuestion = async (id, updatedQuestion) => {
   try {
-    const response = await axios.put(`${baseUrl}/questions/${id}`, updatedQuestion, config)
+    const response = await axios.put(`${urls.questions}/${id}`, updatedQuestion, config)
     return response.status === 200
   } catch (error) {
     console.log(error.response)

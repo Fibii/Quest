@@ -19,6 +19,7 @@ import Profile from '../Profile/Profile'
 import Footer from '../Footer/Footer'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
 import NoPage from '../NoPage/NoPage'
+import config from '../../config'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -37,6 +38,7 @@ const MainApp = () => {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const classes = useStyles()
+  const { urls } = config
 
   useEffect(() => {
     const before = async () => {
@@ -66,7 +68,7 @@ const MainApp = () => {
           <Switch>
             <Route
               exact
-              path="/"
+              path={urls.root}
               render={() => (
                 user ? (
                   <Questions user={user} />
@@ -75,12 +77,12 @@ const MainApp = () => {
                 )
               )}
             />
-            <Route path="/welcome" render={() => <Welcome />} />
-            <Route path="/login" render={() => <SignIn setUser={setUser} />} />
-            <Route path="/register" component={SignupForm} />
-            <Route path="/question/new" exact render={() => <NewQuestionForm />} />
-            <Route path="/question/:id" exact render={() => <Question />} />
-            <Route path="/user/:id" exact render={() => <Profile />} />
+            <Route path={urls.welcome} render={() => <Welcome />} />
+            <Route path={urls.login} render={() => <SignIn setUser={setUser} />} />
+            <Route path={urls.register} component={SignupForm} />
+            <Route path={urls.newQuestion} exact render={() => <NewQuestionForm />} />
+            <Route path={`${urls.question}/:id`} exact render={() => <Question />} />
+            <Route path={`${urls.user}/:id`} exact render={() => <Profile />} />
             <Route component={NoPage} />
           </Switch>
         </Grid>

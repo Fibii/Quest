@@ -15,6 +15,7 @@ import validator from '../../services/validator'
 import QuestionInstructions from './QuestionInstructions'
 import QuestionInstructionSmall from './QuestionInstructionSmall'
 import VHContainer from '../Containers/VHContainer/VHContainer'
+import config from '../../config'
 
 const initialState = {
   questionTitle: '',
@@ -231,6 +232,7 @@ const Buttons = ({ state, setState, setErrorMessage }) => {
   const {
     questionTitle, questionContent, questionTags, tagsHelperText,
   } = state
+  const { urls } = config
 
   /**
    * Adds a new Question to the database
@@ -266,7 +268,7 @@ const Buttons = ({ state, setState, setErrorMessage }) => {
       if (!newQuestion || newQuestion.error) {
         setErrorMessage('error: could not create a new question')
       } else {
-        history.push(`/question/${newQuestion.id}`)
+        history.push(`${urls.question}/${newQuestion.id}`)
       }
     }
   }
