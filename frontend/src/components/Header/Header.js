@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 0,
+    },
   },
   toolbar: {
     background: lightBlue[600],
@@ -33,7 +36,6 @@ const Header = () => {
   if (!user) {
     return <UnauthenticatedHeader />
   }
-
 
   const handleDrawerOpen = () => {
     dispatch({ type: 'OPEN_DRAWER' })

@@ -4,11 +4,14 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import config from '../../config'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
     outline: 'none',
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 16,
+    },
   },
   title: {
     display: 'block',

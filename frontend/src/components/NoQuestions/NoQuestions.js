@@ -9,6 +9,7 @@ import { lightBlue } from '@material-ui/core/colors'
 import { useHistory } from 'react-router-dom'
 import noQuestionsImg from '../../resources/images/no-questions.png'
 import config from '../../config'
+import VHContainer from '../Containers/VHContainer/VHContainer'
 
 const AddQuestionButton = withStyles({
   root: {
@@ -48,7 +49,7 @@ const NoQuestions = () => {
 
   return (
     (
-      <Grid container justify="center">
+      <VHContainer>
         <Paper className={classes.paper}>
           <Grid container direction="column">
             <Grid container justify="center">
@@ -79,7 +80,7 @@ const NoQuestions = () => {
             </Grid>
           </Grid>
         </Paper>
-      </Grid>
+      </VHContainer>
     )
   )
 }
