@@ -1,13 +1,38 @@
-## What's supported
+## Quest
+This is a monorepo for the Quest web app, for a live version of the app, [click here](https://fibi.xyz/quest)
+
+### What is Quest
+- Quest is a question/answer webapp where users ask questions, and other users answer those questions,
+both questions and answers have an upvote system, where users can upvote/downvote a question or a comment 
+
+### Why should you use Quest ?
+- Offer a community feedback for your product (like battlelog for the game battlefied 3 game, or steam forums for steam) ... 
+
+- Use it as a ticket system for you client, such that they can ask questions, or report issues (like github issues)
+
+- Use it as a question/answer platform, like google answers or yahoo answers 
+
+### How to use Quest
+Quest requires both `backend` and `frontend` to run, you can find the instructions to get both ends running here:
+- [backend](https://github.com/Fibii/Quest/tree/master/backend)
+- [frontend](https://github.com/Fibii/Quest/tree/master/frontend)
+
+
+### Contribute 
+We accept contributes from the community, specially new developer, just make sure
+to use [eslint](https://eslint.org/) and follow [github workflow](https://guides.github.com/introduction/flow/) 
+
+
 
 #### Backend 
-* all basic crud endpoints with partial updates for `question` and `user` models
-* user auth using jwt tokens
+* Restful API 
+* All basic crud endpoints with partial updates for `question` and `user` models
+* User auth using jwt tokens and cookies
 
 #### Frontend
 * User: Register, Login, Logout
-* Question: Create, Read, Edit, Delete, Share
-* Comment: Create, Read, Delete (other features will be implemented in the future)
+* Question: Create, Read, Edit, Delete, Share, Upvote, Downvote
+* Comment: Create, Read, Delete, Upvote, Downvote (other features will be implemented in the future)
  
 ### Try it
 
