@@ -42,7 +42,7 @@ const AddCommentForm = ({ state, dispatch }) => {
             likes: [],
           }),
         }))
-        setCommentContent('')
+        dispatch(setCommentContent(''))
       }
     }
   }
