@@ -9,15 +9,14 @@ import UserContext from '../UserContext/UserContext'
 // import Header from '../Header/Header'
 // import SignIn from '../SignInForm/SignInForm'
 // import SignupForm from '../SignupForm/SignupForm'
-import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
-import Question from '../Question/Question'
+// import NewQuestionForm from '../NewQuestionForm/NewQuestionForm'
 // import Questions from '../Questions/Questions'
+// import Profile from '../Profile/Profile'
+// import Footer from '../Footer/Footer'
+import LoadingScreen from '../LoadingScreen/LoadingScreen'
+// import NoPage from '../NoPage/NoPage'
 import userService from '../../services/users'
 import { setErrorMessage } from '../../actions/questionActions'
-import Profile from '../Profile/Profile'
-import Footer from '../Footer/Footer'
-import LoadingScreen from '../LoadingScreen/LoadingScreen'
-import NoPage from '../NoPage/NoPage'
 import config from '../../config'
 
 const useStyles = makeStyles(() => ({
@@ -38,8 +37,11 @@ const SignIn = lazy(() => import('../SignInForm/SignInForm'))
 const SignupForm = lazy(() => import('../SignupForm/SignupForm'))
 const Questions = lazy(() => import('../Questions/Questions'))
 const Header = lazy(() => import('../Header/Header'))
-// const Welcome = lazy(() => import('../Welcome/Welcome'))
-// const Welcome = lazy(() => import('../Welcome/Welcome'))
+const Question = lazy(() => import('../Question/Question'))
+const NewQuestionForm = lazy(() => import('../NewQuestionForm/NewQuestionForm'))
+const Profile = lazy(() => import('../Profile/Profile'))
+const Footer = lazy(() => import('../Footer/Footer'))
+const NoPage = lazy(() => import('../NoPage/NoPage'))
 
 const MainApp = () => {
   const [user, setUser] = useState(null)
@@ -70,7 +72,9 @@ const MainApp = () => {
   return (
     <Grid container direction="column" className={classes.container} wrap="nowrap">
       <UserContext.Provider value={[user, setUser]}>
-          <Header />
+        <Suspense fallback=''>
+          <Header user={user} />
+        </Suspense>
           <Grid className={classes.content}>
             <Switch>
               <Route
@@ -78,36 +82,52 @@ const MainApp = () => {
                 path={urls.root}
                 render={() => (
                   user ? (
-                    <Suspense fallback="loading">
+                    <Suspense fallback={<LoadingScreen/>}>
                       <Questions user={user} />
                     </Suspense>
                   ) : (
-                    <Welcome />
+                    <Suspense fallback={<LoadingScreen/>}>
+                      <Welcome />
+                    </Suspense>
                   )
                 )}
               />
               <Route path={urls.welcome} render={() =>
-                <Suspense fallback="loading">
+                <Suspense fallback={<LoadingScreen />}>
                   <Welcome />
                 </Suspense>} />
               <Route path={urls.login} render={() =>
-                <Suspense fallback="loading">
+                <Suspense fallback={<LoadingScreen />}>
                   <SignIn setUser={setUser} />
                 </Suspense>} />
-              <Route path={urls.register} render={
-                <Suspense fallback="loading">
+              <Route path={urls.register} render={() =>
+                <Suspense fallback={<LoadingScreen/>}>
                   <SignupForm />
                 </Suspense>
               } />
-              <Route path={urls.newQuestion} exact render={() => <NewQuestionForm />} />
-              <Route path={`${urls.question}/:id`} exact render={() => <Question />} />
-              <Route path={`${urls.user}/:id`} exact render={() => <Profile />} />
-              <Route component={NoPage} />
+              <Route path={urls.newQuestion} exact render={() =>
+                <Suspense fallback={<LoadingScreen/>}>
+                  <NewQuestionForm />
+                </Suspense>} />
+              <Route path={`${urls.question}/:id`} exact render={() =>
+                <Suspense fallback={<LoadingScreen/>}>
+                  <Question />
+                </Suspense>} />
+              <Route path={`${urls.user}/:id`} exact render={() =>
+                <Suspense fallback={<LoadingScreen/>}>
+                  <Profile />
+                </Suspense>} />
+              <Route render={() =>
+                <Suspense fallback={<LoadingScreen/>}>
+                  <NoPage/>
+                </Suspense>} />
             </Switch>
           </Grid>
       </UserContext.Provider>
       <Grid className={classes.footer}>
-        <Footer />
+        <Suspense fallback=''>
+          <Footer />
+        </Suspense>
       </Grid>
     </Grid>
   )
